@@ -18,6 +18,8 @@ using DevExpress.XtraSplashScreen;
 using DevExpress.XtraPrinting.Native;
 using DevExpress.XtraLayout;
 using System.Reflection;
+using DevExpress.XtraGrid.Views.Grid;
+using System.IO;
 
 namespace spc_client.ShowForm
 {
@@ -29,7 +31,22 @@ namespace spc_client.ShowForm
             InitializeComponent();
             gridView_Pcbs.FocusedRowChanged += GridView_Pcbs_FocusedRowChanged;
             gridView_Results.FocusedRowChanged += GridView_Results_FocusedRowChanged;
+            gridView_Pcbs.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
+            gridView_Results.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
             rectFront = rectBack = new Rectangle(-1, -1, 0, 0);
+        }
+
+        private void GridView_CustomDrawEmptyForeground(object sender, DevExpress.XtraGrid.Views.Base.CustomDrawEventArgs e)
+        {
+            GridView gridView = sender as GridView;
+            if (gridView.RowCount == 0)
+            {
+                string str = "暂未查找到匹配的数据!";
+                Font f = new Font("微软雅黑", 16);
+                Rectangle r = new Rectangle(gridView.GridControl.Width / 2 - 100, e.Bounds.Top + 45, e.Bounds.Right - 5, e.Bounds.Height - 5);
+                e.Graphics.DrawString(str, f, Brushes.Gray, r);
+
+            }
         }
 
         void DrawCrossLine(bool isBack, Rectangle rect)
@@ -38,11 +55,13 @@ namespace spc_client.ShowForm
             {
                 if (isBack)
                 {
-                    rectBack = ConvertRect(pictureBox_Back, rect); 
+                    rectBack = ConvertRect(pictureBox_Back, rect);
+                    pictureBox_Back.Refresh();
                 }
                 else
                 {
                     rectFront = ConvertRect(pictureBox_Front, rect);
+                    pictureBox_Front.Refresh();
                 }
             }
             catch (Exception er) { }
@@ -66,27 +85,39 @@ namespace spc_client.ShowForm
                         Convert.ToInt32(double.Parse(region[1])),
                         Convert.ToInt32(double.Parse(region[2])),
                         Convert.ToInt32(double.Parse(region[3])));
-                    Image image = Image.FromFile(ap.PathConcatenate(ap.GetBasePath(), ap.part_image_path));
+                    string file = ap.PathConcatenate(ap.GetBasePath(), ap.part_image_path);
+                    if (File.Exists(file))
                     {
-
-                        using (Graphics g = Graphics.FromImage(image))
+                        Image image = Image.FromFile(file);
                         {
-                            using (Pen pen = new Pen(Color.Red, 3))
+
+                            using (Graphics g = Graphics.FromImage(image))
                             {
-                                g.DrawRectangle(pen, rectRegion.X, rectRegion.Y, rectRegion.Width, rectRegion.Height);
+                                using (Pen pen = new Pen(Color.Red, 3))
+                                {
+                                    g.DrawRectangle(pen, rectRegion.X, rectRegion.Y, rectRegion.Width, rectRegion.Height);
+                                }
                             }
                         }
+                        this.BeginInvoke((Action<Image, int, Rectangle>)((img, isback, r2) =>
+                        {
+                            imageBox_Part.TextDisplayMode = Cyotek.Windows.Forms.ImageBoxGridDisplayMode.None;
+                            xtraTabControl1.SelectedTabPageIndex = isback;
+                            if (imageBox_Part.Image != null) imageBox_Part.Image.Dispose();
+                            imageBox_Part.Image = img;
+                            imageBox_Part.CenterAt(new Point(r2.X, r2.Y));
+                            imageBox_Part.Invalidate();
+                        }), image.Clone(), ap.is_back, rectRegion);
+                        image.Dispose();
                     }
-                    this.BeginInvoke((Action<Image, int, Rectangle>)((img, isback, r2) =>
+                    else
                     {
-                        xtraTabControl1.SelectedTabPageIndex = isback;
-
-                        imageBox_Part.Image = img;
-                        imageBox_Part.CenterAt(new Point(r2.X, r2.Y));
-                        //imageBox_Part.ZoomIn(true);
-                        imageBox_Part.Invalidate();
-                    }), image.Clone(), ap.is_back, rectRegion);
-                    image.Dispose();
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            if (imageBox_Part.Image != null) imageBox_Part.Image.Dispose();
+                            imageBox_Part.TextDisplayMode = Cyotek.Windows.Forms.ImageBoxGridDisplayMode.Client;
+                        }));
+                    }
                 }
                 catch(Exception er) { }
             }, currentRetResult);
@@ -94,41 +125,61 @@ namespace spc_client.ShowForm
 
         private void GridView_Results_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
+            if(gridView_Results.GetFocusedRow()!=null)
             ShowResultInfo(gridView_Results.GetFocusedRow() as RetResults);
         }
 
         private void GridView_Pcbs_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
+            SplashScreenManager sp = new SplashScreenManager(this, typeof(global::spc_client.MyWaitForm), true, true);
+            sp.ShowWaitForm();
             AoiPcbs currentPcb = gridView_Pcbs.GetFocusedRow() as AoiPcbs;
-            MySmartThreadPool.Instance().QueueWorkItem((ap) =>
+            MySmartThreadPool.Instance().QueueWorkItem((ap, sw) =>
             {
                 SpcModel spcModel = DB.Instance();
                 try
                 {
-                    SplashScreenManager sp = new SplashScreenManager(this, typeof(global::spc_client.MyWaitForm), true, true);
-                    sp.ShowWaitForm();
                     MySmartThreadPool.Instance().QueueWorkItem((f1, f2) =>
                     {
-                        this.BeginInvoke((Action)(() =>
+                        bool f1IsExist, f2IsExist;
+                        f1IsExist = File.Exists(f1) ? true : false;
+                        f2IsExist = File.Exists(f2) ? true : false;
+
+                        this.BeginInvoke((Action<bool, bool>)((a1, a2) =>
                         {
                             pictureBox_Front.Image = null;
-                            pictureBox_Front.Load(f1);
                             pictureBox_Back.Image = null;
-                            pictureBox_Back.Load(f2);
-                        }));
+                            if (a1) pictureBox_Front.Load(f1); else pictureBox_Front.LoadAsync("showErrImg");
+                            if (a2) pictureBox_Back.Load(f2); else pictureBox_Back.LoadAsync("showErrImg");
+                        }), f1IsExist, f2IsExist);
                     }, ap.PathConcatenate(ap.GetBasePath(), "front.jpg"),
                     ap.PathConcatenate(ap.GetBasePath(), "back.jpg"));
+                    //this.BeginInvoke((Action)(() =>
+                    //{
+
+                    //}));
+
 
                     List<RetResults> retResults = spcModel.Database.SqlQuery<RetResults>(String.Format("SELECT is_back,score,area,region,ng_str,result_ng_type_id,pc_ip,pcb_path,part_image_path, pcb_id FROM (SELECT * FROM aoi_results WHERE aoi_results.pcb_id = '{0}') as ss LEFT JOIN aoi_pcbs ON ss.pcb_id = aoi_pcbs.id LEFT JOIN aoi_ng_types ON aoi_ng_types.id = ss.ng_type_id LEFT JOIN aoi_softwares ON aoi_ng_types.software_id = aoi_softwares.id LEFT JOIN aoi_pcs ON aoi_pcs.id = aoi_softwares.pc_id", ap.id)).ToList();
                     this.BeginInvoke((Action)(() =>
                     {
                         gridControl_Results.DataSource = retResults;
-                        if (retResults.Count > 0) ShowResultInfo(retResults[0]);
                         //gridView_Pcbs.FocusedRowHandle = 0;
                         //gridView_Results.FocusedRowHandle = 0;
                         //gridControl_Results.Focus();
                     }));
-                    sp.CloseWaitForm();
+                    if (retResults.Count > 0)
+                    {
+                        MySmartThreadPool.Instance().QueueWorkItem((a) =>
+                        {
+                            this.BeginInvoke((Action)(() =>
+                            {
+                                ShowResultInfo(retResults[0]);
+                            }));
+
+                        }, retResults[0]);
+                    }
+                    sw.CloseWaitForm();
                 }
                 catch (Exception er)
                 {
@@ -138,12 +189,26 @@ namespace spc_client.ShowForm
                 {
                     spcModel.Dispose();
                 }
-            }, currentPcb);
+            }, currentPcb, sp);
+        }
+        void ReSetInfo()
+        {
+            pictureBox_Front.Image = null;
+            pictureBox_Back.Image = null;
+            gridControl_Pcbs.DataSource = null;
+            gridControl_Results.DataSource = null;
         }
 
         public override void QueryReset()
         {
-            splashScreenManager.ShowWaitForm();
+            ReSetInfo();
+           
+            if(QueryPars.enableResult)
+            {
+                //string aa = gridView_Results.ActiveFilterString;
+                gridView_Results.ActiveFilterString = String.Format("[ng_str] = '{0}'", QueryPars.ng_type);
+            }
+            if (!splashScreenManager.IsSplashFormVisible)splashScreenManager.ShowWaitForm();
             MySmartThreadPool.Instance().QueueWorkItem(() =>
             {
                 SpcModel spcModel = DB.Instance();
@@ -153,7 +218,7 @@ namespace spc_client.ShowForm
                     this.BeginInvoke((Action)(() =>
                     {
                         gridControl_Pcbs.DataSource = aoiPcbs;
-                        splashScreenManager.CloseWaitForm();
+                        if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
                     }));
                 }
                 catch (Exception er)

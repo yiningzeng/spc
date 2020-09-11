@@ -33,6 +33,7 @@
             this.gridView_Pcbs = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridColumn1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryItemDateEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
+            this.gridColumn8 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn2 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn3 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn4 = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -99,6 +100,7 @@
             // 
             this.gridView_Pcbs.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.gridColumn1,
+            this.gridColumn8,
             this.gridColumn2,
             this.gridColumn3,
             this.gridColumn4});
@@ -114,7 +116,7 @@
             this.gridColumn1.Name = "gridColumn1";
             this.gridColumn1.Visible = true;
             this.gridColumn1.VisibleIndex = 0;
-            this.gridColumn1.Width = 160;
+            this.gridColumn1.Width = 144;
             // 
             // repositoryItemDateEdit1
             // 
@@ -137,14 +139,23 @@
             this.repositoryItemDateEdit1.Name = "repositoryItemDateEdit1";
             this.repositoryItemDateEdit1.VistaDisplayMode = DevExpress.Utils.DefaultBoolean.False;
             // 
+            // gridColumn8
+            // 
+            this.gridColumn8.Caption = "程序名";
+            this.gridColumn8.FieldName = "software_name";
+            this.gridColumn8.Name = "gridColumn8";
+            this.gridColumn8.Visible = true;
+            this.gridColumn8.VisibleIndex = 1;
+            this.gridColumn8.Width = 60;
+            // 
             // gridColumn2
             // 
             this.gridColumn2.Caption = "条码号";
             this.gridColumn2.FieldName = "pcb_number";
             this.gridColumn2.Name = "gridColumn2";
             this.gridColumn2.Visible = true;
-            this.gridColumn2.VisibleIndex = 1;
-            this.gridColumn2.Width = 126;
+            this.gridColumn2.VisibleIndex = 2;
+            this.gridColumn2.Width = 118;
             // 
             // gridColumn3
             // 
@@ -152,8 +163,8 @@
             this.gridColumn3.FieldName = "pcb_childen_number";
             this.gridColumn3.Name = "gridColumn3";
             this.gridColumn3.Visible = true;
-            this.gridColumn3.VisibleIndex = 2;
-            this.gridColumn3.Width = 74;
+            this.gridColumn3.VisibleIndex = 3;
+            this.gridColumn3.Width = 69;
             // 
             // gridColumn4
             // 
@@ -161,8 +172,8 @@
             this.gridColumn4.FieldName = "ng_count";
             this.gridColumn4.Name = "gridColumn4";
             this.gridColumn4.Visible = true;
-            this.gridColumn4.VisibleIndex = 3;
-            this.gridColumn4.Width = 60;
+            this.gridColumn4.VisibleIndex = 4;
+            this.gridColumn4.Width = 61;
             // 
             // splitContainerControl2
             // 
@@ -195,7 +206,11 @@
             this.gridColumn6,
             this.gridColumn7});
             this.gridView_Results.GridControl = this.gridControl_Results;
+            this.gridView_Results.GroupCount = 1;
             this.gridView_Results.Name = "gridView_Results";
+            this.gridView_Results.OptionsBehavior.ReadOnly = true;
+            this.gridView_Results.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
+            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn5, DevExpress.Data.ColumnSortOrder.Ascending)});
             // 
             // gridColumn5
             // 
@@ -211,7 +226,7 @@
             this.gridColumn6.FieldName = "score";
             this.gridColumn6.Name = "gridColumn6";
             this.gridColumn6.Visible = true;
-            this.gridColumn6.VisibleIndex = 1;
+            this.gridColumn6.VisibleIndex = 0;
             // 
             // gridColumn7
             // 
@@ -219,7 +234,7 @@
             this.gridColumn7.FieldName = "ResultString";
             this.gridColumn7.Name = "gridColumn7";
             this.gridColumn7.Visible = true;
-            this.gridColumn7.VisibleIndex = 2;
+            this.gridColumn7.VisibleIndex = 1;
             // 
             // splitContainerControl3
             // 
@@ -286,12 +301,17 @@
             // 
             // imageBox_Part
             // 
+            this.imageBox_Part.AllowZoom = false;
             this.imageBox_Part.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imageBox_Part.Font = new System.Drawing.Font("Tahoma", 20F);
             this.imageBox_Part.Location = new System.Drawing.Point(0, 0);
             this.imageBox_Part.Name = "imageBox_Part";
             this.imageBox_Part.SelectionColor = System.Drawing.Color.Transparent;
             this.imageBox_Part.Size = new System.Drawing.Size(451, 362);
             this.imageBox_Part.TabIndex = 0;
+            this.imageBox_Part.Text = "图片缺失";
+            this.imageBox_Part.TextBackColor = System.Drawing.Color.Gray;
+            this.imageBox_Part.TextDisplayMode = Cyotek.Windows.Forms.ImageBoxGridDisplayMode.None;
             // 
             // ShowDetail
             // 
@@ -346,5 +366,6 @@
         private DevExpress.XtraTab.XtraTabPage xtraTabPage2;
         private System.Windows.Forms.PictureBox pictureBox_Front;
         private System.Windows.Forms.PictureBox pictureBox_Back;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn8;
     }
 }

@@ -41,7 +41,7 @@
             this.teUser.EditValue = "admin";
             this.teUser.Location = new System.Drawing.Point(92, 65);
             this.teUser.Name = "teUser";
-            this.teUser.Properties.ContextImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("textEdit1.Properties.ContextImageOptions.Image")));
+            this.teUser.Properties.ContextImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("teUser.Properties.ContextImageOptions.Image")));
             this.teUser.Size = new System.Drawing.Size(128, 20);
             this.teUser.TabIndex = 0;
             // 
@@ -50,7 +50,7 @@
             this.tePassword.EditValue = "admin";
             this.tePassword.Location = new System.Drawing.Point(92, 109);
             this.tePassword.Name = "tePassword";
-            this.tePassword.Properties.ContextImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("textEdit2.Properties.ContextImageOptions.Image")));
+            this.tePassword.Properties.ContextImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("tePassword.Properties.ContextImageOptions.Image")));
             this.tePassword.Properties.PasswordChar = '*';
             this.tePassword.Properties.UseSystemPasswordChar = true;
             this.tePassword.Size = new System.Drawing.Size(128, 20);
@@ -60,9 +60,9 @@
             // 
             this.simpleButton1.Location = new System.Drawing.Point(92, 163);
             this.simpleButton1.Name = "simpleButton1";
-            this.simpleButton1.Size = new System.Drawing.Size(114, 23);
+            this.simpleButton1.Size = new System.Drawing.Size(128, 23);
             this.simpleButton1.TabIndex = 2;
-            this.simpleButton1.Text = "simpleButton1";
+            this.simpleButton1.Text = "登  录";
             this.simpleButton1.Click += new System.EventHandler(this.simpleButton1_Click);
             // 
             // Login
@@ -74,7 +74,7 @@
             this.Controls.Add(this.tePassword);
             this.Controls.Add(this.teUser);
             this.Name = "Login";
-            this.Text = "Login";
+            this.Text = "登录";
             ((System.ComponentModel.ISupportInitialize)(this.teUser.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tePassword.Properties)).EndInit();
             this.ResumeLayout(false);

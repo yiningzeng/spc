@@ -25,16 +25,16 @@ namespace spc_client
         SearchForm searchForm;
         public MainView()
         {
-            //SplashScreenManager.ShowForm(typeof(MySplashScreen));  //ShowForm方法显示LoadIng窗口
+            SplashScreenManager.ShowForm(typeof(MySplashScreen));  //ShowForm方法显示LoadIng窗口
+            Thread.Sleep(3000);    //为展示效果，将线程延迟设置为5秒
+            SplashScreenManager.CloseForm();   //关闭加载窗口
+            Thread.Sleep(500);
+            Login login = new Login();
+            login.StartPosition = FormStartPosition.CenterScreen;
+            login.ShowDialog();
             searchForm = new SearchForm();
             searchForm.StartPosition = FormStartPosition.CenterScreen;
             searchForm.BringToFront();
-            //Thread.Sleep(3000);    //为展示效果，将线程延迟设置为5秒
-            //SplashScreenManager.CloseForm();   //关闭加载窗口
-            //Thread.Sleep(500);
-            //Login login = new Login();
-            //login.StartPosition = FormStartPosition.CenterScreen;
-            //login.ShowDialog();
             InitializeComponent();
             if (!mvvmContext1.IsDesignMode)
                 InitializeBindings();

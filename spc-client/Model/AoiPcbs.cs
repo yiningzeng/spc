@@ -74,6 +74,7 @@ namespace spc_client.Model
         public DateTime create_time { get; set; }
 
         public string pc_ip { get; set; }
+        public string software_name { get; set; }
         public List<AoiResults> results { get; set; }
 
         public string PathConcatenate(string s1, string s2)

@@ -2,3 +2,7 @@
 packages/
 
 spc-client/bin/
+
+.vs/spc-client/
+
+spc-client/obj/

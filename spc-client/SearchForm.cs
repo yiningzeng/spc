@@ -57,32 +57,37 @@ namespace spc_client
         public SearchForm()
         {
             InitializeComponent();
+            this.Load += SearchForm_Load;
+            IniDefaultValue();
+            IniButton(groupControl_Code);
+            IniButton(groupControl_AppName);
+            IniButton(groupControl_Result);
+        }
+
+        private void SearchForm_Load(object sender, EventArgs e)
+        {
             MySmartThreadPool.Instance().QueueWorkItem(() =>
             {
                 SpcModel spcModel = DB.Instance();
                 try
                 {
                     List<AoiSoftwares> aoiSoftwares = spcModel.softwares.ToList();
-                    this.BeginInvoke((Action)(() =>
+                    this.BeginInvoke((Action<List<AoiSoftwares>>)((res) =>
                     {
-                        gridLookUpEdit_Software.Properties.DataSource = aoiSoftwares;
+                        gridLookUpEdit_Software.Properties.DataSource = res;
                         gridLookUpEdit_Software.Properties.DisplayMember = "software_name";
                         gridLookUpEdit_Software.Properties.ValueMember = "id";
-                    }));
+                    }), aoiSoftwares);
                 }
-                catch(Exception er)
+                catch (Exception er)
                 {
-
+                    int a = 0;
                 }
                 finally
                 {
                     spcModel.Dispose();
                 }
             });
-            IniDefaultValue();
-            IniButton(groupControl_Code);
-            IniButton(groupControl_AppName);
-            IniButton(groupControl_Result);
         }
 
         public void XtraFormReset(XtraFormBase formBase)
@@ -97,12 +102,14 @@ namespace spc_client
             QueryPars.pcbNumber = textEdit_Number.Text;
             QueryPars.softwareId = gridLookUpEdit_Software.EditValue + "";
             QueryPars.resultId = gridLookUpEdit_NgTypeList.EditValue + "";
+            QueryPars.ng_type = gridLookUpEdit_NgTypeList.Text;
             if (radioGroup_NgTye.SelectedIndex == 0)
             {
                 QueryPars.resultId = "-1";
             }
-            if(xtraFormBase!=null) xtraFormBase.QueryReset(); // 触发窗体事件查询
             this.Hide();
+            if(xtraFormBase!=null) xtraFormBase.QueryReset(); // 触发窗体事件查询
+ 
         }
 
         private void SearchForm_FormClosing(object sender, FormClosingEventArgs e)
