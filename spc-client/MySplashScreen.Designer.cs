@@ -99,7 +99,7 @@
             this.peLogo.Size = new System.Drawing.Size(158, 39);
             this.peLogo.TabIndex = 8;
             // 
-            // SplashScreen1
+            // MySplashScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -110,7 +110,7 @@
             this.Controls.Add(this.labelCopyright);
             this.Controls.Add(this.progressBarControl);
             this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
-            this.Name = "SplashScreen1";
+            this.Name = "MySplashScreen";
             this.Padding = new System.Windows.Forms.Padding(1);
             this.Text = "SplashScreen1";
             ((System.ComponentModel.ISupportInitialize)(this.progressBarControl.Properties)).EndInit();

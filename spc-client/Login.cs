@@ -15,6 +15,7 @@ namespace spc_client
 {
     public partial class Login : DevExpress.XtraEditors.XtraForm
     {
+        bool isLogined = false;
         public Login()
         {
             InitializeComponent();
@@ -29,31 +30,39 @@ namespace spc_client
                 AoiUsers user = spcModel.users.Where(u => u.username == teUser.Text && u.password == md5Pass).FirstOrDefault();
                 if (user != null)
                 {
+                    isLogined = true;
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
                 else
                 {
-                    //this.BeginInvoke((Action)(() =>
-                    //{
-                    //    lbResult.Text = "用户名或密码错误";
-                    //    lbResult.Visible = true;
-                    //}));
-
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        labelControl_Status.Text = "用户名或密码错误";
+                        labelControl_Status.Visible = true;
+                    }));
                 }
             }
             catch (Exception err)
             {
-                //this.BeginInvoke((Action)(() =>
-                //{
-                //    lbResult.Text = "连接数据库出错";
-                //    lbResult.Visible = true;
-                //}));
+                this.BeginInvoke((Action)(() =>
+                {
+                    labelControl_Status.Text = "连接数据库出错";
+                    labelControl_Status.Visible = true;
+                }));
                 //LogHelper.WriteLog("Login error", err);
             }
             finally
             {
                 spcModel.Dispose();
+            }
+        }
+
+        private void Login_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isLogined)
+            {
+                Environment.Exit(0);
             }
         }
     }

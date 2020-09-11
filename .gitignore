@@ -6,3 +6,7 @@ spc-client/bin/
 .vs/spc-client/
 
 spc-client/obj/
+
+*.exe
+
+images/bg.jpg

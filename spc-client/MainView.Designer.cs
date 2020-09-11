@@ -153,6 +153,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1109, 530);
             this.Controls.Add(this.ribbonControl_Main);
+            this.IconOptions.Image = ((System.Drawing.Image)(resources.GetObject("MainView.IconOptions.Image")));
             this.IsMdiContainer = true;
             this.Name = "MainView";
             this.Ribbon = this.ribbonControl_Main;
