@@ -20,6 +20,8 @@ using DevExpress.XtraLayout;
 using System.Reflection;
 using DevExpress.XtraGrid.Views.Grid;
 using System.IO;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.Utils;
 
 namespace spc_client.ShowForm
 {
@@ -131,11 +133,11 @@ namespace spc_client.ShowForm
 
         private void GridView_Pcbs_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
-            SplashScreenManager sp = new SplashScreenManager(this, typeof(global::spc_client.MyWaitForm), true, true);
-            sp.ShowWaitForm();
             AoiPcbs currentPcb = gridView_Pcbs.GetFocusedRow() as AoiPcbs;
-            MySmartThreadPool.Instance().QueueWorkItem((ap, sw) =>
+            MySmartThreadPool.Instance().QueueWorkItem((ap) =>
             {
+                SplashScreenManager sp = new SplashScreenManager(this, typeof(global::spc_client.MyWaitForm), true, true);
+                sp.ShowWaitForm();
                 SpcModel spcModel = DB.Instance();
                 try
                 {
@@ -149,8 +151,16 @@ namespace spc_client.ShowForm
                         {
                             pictureBox_Front.Image = null;
                             pictureBox_Back.Image = null;
-                            if (a1) pictureBox_Front.Load(f1); else pictureBox_Front.LoadAsync("showErrImg");
-                            if (a2) pictureBox_Back.Load(f2); else pictureBox_Back.LoadAsync("showErrImg");
+                            if (a1) pictureBox_Front.Load(f1);
+                            else
+                            {
+                                pictureBox_Front.LoadAsync("showErrImg");
+                            }
+                            if (a2) pictureBox_Back.Load(f2);
+                            else
+                            {
+                                pictureBox_Back.LoadAsync("showErrImg");
+                            }
                         }), f1IsExist, f2IsExist);
                     }, ap.PathConcatenate(ap.GetBasePath(), "front.jpg"),
                     ap.PathConcatenate(ap.GetBasePath(), "back.jpg"));
@@ -160,7 +170,11 @@ namespace spc_client.ShowForm
                     //}));
 
 
-                    List<RetResults> retResults = spcModel.Database.SqlQuery<RetResults>(String.Format("SELECT is_back,score,area,region,ng_str,result_ng_type_id,pc_ip,pcb_path,part_image_path, pcb_id FROM (SELECT * FROM aoi_results WHERE aoi_results.pcb_id = '{0}') as ss LEFT JOIN aoi_pcbs ON ss.pcb_id = aoi_pcbs.id LEFT JOIN aoi_ng_types ON aoi_ng_types.id = ss.ng_type_id LEFT JOIN aoi_softwares ON aoi_ng_types.software_id = aoi_softwares.id LEFT JOIN aoi_pcs ON aoi_pcs.id = aoi_softwares.pc_id", ap.id)).ToList();
+                    List<RetResults> retResults = spcModel.Database.SqlQuery<RetResults>(String.Format("SELECT is_back,score,area,region,ng_str,result_ng_type_id, ng_type_id, result_ng_type_id != '' as NG,pc_ip,pcb_path,part_image_path, pcb_id FROM (SELECT * FROM aoi_results WHERE aoi_results.pcb_id = '{0}') as ss LEFT JOIN aoi_pcbs ON ss.pcb_id = aoi_pcbs.id LEFT JOIN aoi_softwares ON aoi_pcbs.software_id = aoi_softwares.id LEFT JOIN aoi_ng_types ON aoi_ng_types.id = ss.result_ng_type_id LEFT JOIN aoi_pcs ON aoi_pcs.id = aoi_softwares.pc_id", ap.id)).ToList();
+                    foreach(RetResults r in retResults)
+                    {
+                        r.NG = r.NG == "1" ? "NG" : "OK";
+                    }
                     this.BeginInvoke((Action)(() =>
                     {
                         gridControl_Results.DataSource = retResults;
@@ -179,17 +193,17 @@ namespace spc_client.ShowForm
 
                         }, retResults[0]);
                     }
-                    sw.CloseWaitForm();
                 }
                 catch (Exception er)
                 {
-
+                    //LogHelper.WriteLog(er.Message);
                 }
                 finally
                 {
+                    sp.CloseWaitForm();
                     spcModel.Dispose();
                 }
-            }, currentPcb, sp);
+            }, currentPcb);
         }
         void ReSetInfo()
         {
@@ -208,9 +222,10 @@ namespace spc_client.ShowForm
                 //string aa = gridView_Results.ActiveFilterString;
                 gridView_Results.ActiveFilterString = String.Format("[ng_str] = '{0}'", QueryPars.ng_type);
             }
-            if (!splashScreenManager.IsSplashFormVisible)splashScreenManager.ShowWaitForm();
+
             MySmartThreadPool.Instance().QueueWorkItem(() =>
             {
+                if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
                 SpcModel spcModel = DB.Instance();
                 try
                 {
@@ -218,7 +233,6 @@ namespace spc_client.ShowForm
                     this.BeginInvoke((Action)(() =>
                     {
                         gridControl_Pcbs.DataSource = aoiPcbs;
-                        if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
                     }));
                 }
                 catch (Exception er)
@@ -227,6 +241,7 @@ namespace spc_client.ShowForm
                 }
                 finally
                 {
+                    if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
                     spcModel.Dispose();
                 }
             });
@@ -238,6 +253,7 @@ namespace spc_client.ShowForm
         /// <param name="point"></param>
         Rectangle ConvertRect(PictureBox pictureBox, Rectangle originalRect)
         {
+            if (pictureBox.Image == null) return new Rectangle(-1, -1, 0, 0);
             int originalWidth = pictureBox.Image.Width;
             int originalHeight = pictureBox.Image.Height;
 
