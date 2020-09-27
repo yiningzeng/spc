@@ -116,6 +116,7 @@ namespace spc_client.ShowForm
                     {
                         this.BeginInvoke((Action)(() =>
                         {
+                            LogHelper.WriteLog(file);
                             if (imageBox_Part.Image != null) imageBox_Part.Image.Dispose();
                             imageBox_Part.TextDisplayMode = Cyotek.Windows.Forms.ImageBoxGridDisplayMode.Client;
                         }));
