@@ -43,6 +43,7 @@
             this.gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn6 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn7 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn9 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.splitContainerControl3 = new DevExpress.XtraEditors.SplitContainerControl();
             this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
             this.xtraTabPage1 = new DevExpress.XtraTab.XtraTabPage();
@@ -204,11 +205,13 @@
             this.gridView_Results.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.gridColumn5,
             this.gridColumn6,
-            this.gridColumn7});
+            this.gridColumn7,
+            this.gridColumn9});
             this.gridView_Results.GridControl = this.gridControl_Results;
             this.gridView_Results.GroupCount = 1;
             this.gridView_Results.Name = "gridView_Results";
             this.gridView_Results.OptionsBehavior.ReadOnly = true;
+            this.gridView_Results.OptionsClipboard.AllowExcelFormat = DevExpress.Utils.DefaultBoolean.True;
             this.gridView_Results.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
             new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn5, DevExpress.Data.ColumnSortOrder.Ascending)});
             // 
@@ -231,10 +234,18 @@
             // gridColumn7
             // 
             this.gridColumn7.Caption = "人工检验";
-            this.gridColumn7.FieldName = "ResultString";
+            this.gridColumn7.FieldName = "ng_str";
             this.gridColumn7.Name = "gridColumn7";
             this.gridColumn7.Visible = true;
             this.gridColumn7.VisibleIndex = 1;
+            // 
+            // gridColumn9
+            // 
+            this.gridColumn9.Caption = "结果";
+            this.gridColumn9.FieldName = "NG";
+            this.gridColumn9.Name = "gridColumn9";
+            this.gridColumn9.Visible = true;
+            this.gridColumn9.VisibleIndex = 2;
             // 
             // splitContainerControl3
             // 
@@ -367,5 +378,6 @@
         private System.Windows.Forms.PictureBox pictureBox_Front;
         private System.Windows.Forms.PictureBox pictureBox_Back;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn8;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn9;
     }
 }
