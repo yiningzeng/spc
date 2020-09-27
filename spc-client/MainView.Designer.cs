@@ -43,6 +43,8 @@
             this.mvvmContext1 = new DevExpress.Utils.MVVM.MVVMContext(this.components);
             this.xtraTabbedMdiManager1 = new DevExpress.XtraTabbedMdi.XtraTabbedMdiManager(this.components);
             this.ribbonPageGroup3 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.ribbonPageGroup5 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl_Main)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mvvmContext1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabbedMdiManager1)).BeginInit();
@@ -60,9 +62,10 @@
             this.ribbonControl_Main.SearchEditItem,
             this.bBISearch,
             this.barButtonItem_ShowResult,
-            this.barButtonItem1});
+            this.barButtonItem1,
+            this.barButtonItem2});
             this.ribbonControl_Main.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl_Main.MaxItemId = 7;
+            this.ribbonControl_Main.MaxItemId = 8;
             this.ribbonControl_Main.Name = "ribbonControl_Main";
             this.ribbonControl_Main.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1,
@@ -122,7 +125,8 @@
             // ribbonPage2
             // 
             this.ribbonPage2.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
-            this.ribbonPageGroup4});
+            this.ribbonPageGroup4,
+            this.ribbonPageGroup5});
             this.ribbonPage2.Name = "ribbonPage2";
             this.ribbonPage2.Text = "统计";
             // 
@@ -146,6 +150,20 @@
             // 
             this.ribbonPageGroup3.Name = "ribbonPageGroup3";
             this.ribbonPageGroup3.Text = "ribbonPageGroup3";
+            // 
+            // ribbonPageGroup5
+            // 
+            this.ribbonPageGroup5.ItemLinks.Add(this.barButtonItem2);
+            this.ribbonPageGroup5.Name = "ribbonPageGroup5";
+            this.ribbonPageGroup5.Text = "显示";
+            // 
+            // barButtonItem2
+            // 
+            this.barButtonItem2.Caption = "整板统计";
+            this.barButtonItem2.Id = 7;
+            this.barButtonItem2.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem2.ImageOptions.Image")));
+            this.barButtonItem2.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem2.ImageOptions.LargeImage")));
+            this.barButtonItem2.Name = "barButtonItem2";
             // 
             // MainView
             // 
@@ -183,6 +201,8 @@
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup4;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup3;
         private DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem2;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup5;
     }
 }
 

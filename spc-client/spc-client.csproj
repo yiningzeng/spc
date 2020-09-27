@@ -190,6 +190,12 @@
     <Compile Include="MyWaitForm.Designer.cs">
       <DependentUpon>MyWaitForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ShowForm\Statistical.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowForm\Statistical.Designer.cs">
+      <DependentUpon>Statistical.cs</DependentUpon>
+    </Compile>
     <Compile Include="ShowForm\ShowDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -234,6 +240,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MyWaitForm.resx">
       <DependentUpon>MyWaitForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowForm\Statistical.resx">
+      <DependentUpon>Statistical.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ShowForm\ShowDetail.resx">
       <DependentUpon>ShowDetail.cs</DependentUpon>
