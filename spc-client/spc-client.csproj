@@ -171,7 +171,14 @@
     <Compile Include="Model\AoiNgTypes.cs" />
     <Compile Include="Model\AoiPcbs.cs" />
     <Compile Include="Model\AoiResults.cs" />
+    <Compile Include="ShowForm\ShowDetailNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowForm\ShowDetailNew.Designer.cs">
+      <DependentUpon>ShowDetailNew.cs</DependentUpon>
+    </Compile>
     <Compile Include="SqlPar\RetNgTypesPai.cs" />
+    <Compile Include="SqlPar\RetAllInfoPcbs.cs" />
     <Compile Include="SqlPar\RetStatistical.cs" />
     <Compile Include="Model\SpcModel.cs" />
     <Compile Include="Model\AoiPcs.cs" />
@@ -247,6 +254,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MyWaitForm.resx">
       <DependentUpon>MyWaitForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowForm\ShowDetailNew.resx">
+      <DependentUpon>ShowDetailNew.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ShowForm\Statistical.resx">
       <DependentUpon>Statistical.cs</DependentUpon>

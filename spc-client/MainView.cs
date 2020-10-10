@@ -116,7 +116,7 @@ namespace spc_client
                     searchForm.ShowDialog();
                     return;
                 case "整板结果":
-                    xtraForm = new ShowDetail();
+                    xtraForm = new ShowDetailNew();
                     break;
                 case "整板统计":
                     xtraForm = new Statistical();
