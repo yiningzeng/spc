@@ -17,9 +17,11 @@ namespace spc_client.Model
         [Column(name: "id", TypeName = "varchar")]
         [StringLength(50)]
         public string id { get; set; }
-        //[Column(name: "software_id", TypeName = "varchar")]
-        //[StringLength(50)]
-        //public string SoftwareId { get; set; }
+
+        [Column(name: "software_id", TypeName = "varchar")]
+        [StringLength(50)]
+        public string software_id { get; set; }
+
         [Column(name: "pcb_number")]
         [StringLength(250)]
         [Description("板号")]

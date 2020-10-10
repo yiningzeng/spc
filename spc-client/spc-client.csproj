@@ -68,13 +68,18 @@
       <HintPath>..\packages\CyotekImageBox.1.2.1\lib\net20\Cyotek.Windows.Forms.ImageBox.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.BonusSkins.v20.1" />
+    <Reference Include="DevExpress.Charts.v20.1.Core, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Data.Desktop.v20.1" />
     <Reference Include="DevExpress.Data.v20.1" />
     <Reference Include="DevExpress.Mvvm.v20.1, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Printing.v20.1.Core" />
     <Reference Include="DevExpress.Utils.v20.1" />
+    <Reference Include="DevExpress.Utils.v20.1.UI, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraBars.v20.1" />
     <Reference Include="DevExpress.Sparkline.v20.1.Core" />
+    <Reference Include="DevExpress.XtraCharts.v20.1, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraCharts.v20.1.UI, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v20.1.Wizard, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraEditors.v20.1" />
     <Reference Include="DevExpress.XtraGrid.v20.1, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraLayout.v20.1, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
@@ -166,6 +171,15 @@
     <Compile Include="Model\AoiNgTypes.cs" />
     <Compile Include="Model\AoiPcbs.cs" />
     <Compile Include="Model\AoiResults.cs" />
+    <Compile Include="ShowForm\ShowDetailNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowForm\ShowDetailNew.Designer.cs">
+      <DependentUpon>ShowDetailNew.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SqlPar\RetNgTypesPai.cs" />
+    <Compile Include="SqlPar\RetAllInfoPcbs.cs" />
+    <Compile Include="SqlPar\RetStatistical.cs" />
     <Compile Include="Model\SpcModel.cs" />
     <Compile Include="Model\AoiPcs.cs" />
     <Compile Include="Model\AoiUsers.cs" />
@@ -189,6 +203,12 @@
     </Compile>
     <Compile Include="MyWaitForm.Designer.cs">
       <DependentUpon>MyWaitForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShowForm\Statistical.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowForm\Statistical.Designer.cs">
+      <DependentUpon>Statistical.cs</DependentUpon>
     </Compile>
     <Compile Include="ShowForm\ShowDetail.cs">
       <SubType>Form</SubType>
@@ -234,6 +254,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MyWaitForm.resx">
       <DependentUpon>MyWaitForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowForm\ShowDetailNew.resx">
+      <DependentUpon>ShowDetailNew.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowForm\Statistical.resx">
+      <DependentUpon>Statistical.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ShowForm\ShowDetail.resx">
       <DependentUpon>ShowDetail.cs</DependentUpon>

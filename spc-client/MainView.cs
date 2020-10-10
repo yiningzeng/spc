@@ -116,11 +116,14 @@ namespace spc_client
                     searchForm.ShowDialog();
                     return;
                 case "整板结果":
-                    xtraForm = new ShowDetail();
+                    xtraForm = new ShowDetailNew();
                     break;
-                //case "我是测试2":
-                //    xtraForm = new ShowDetail2();
-                //    break;
+                case "整板统计":
+                    xtraForm = new Statistical();
+                    break;
+                    //case "我是测试2":
+                    //    xtraForm = new ShowDetail2();
+                    //    break;
             }
             try
             {
