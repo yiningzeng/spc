@@ -31,6 +31,10 @@ namespace spc_client.SqlPar
         }
         public string GetBasePath()
         {
+            if(pc_ip.Contains("Ftp://"))
+            {
+                pc_ip = pc_ip.Replace("Ftp://", "").Replace("/", "");
+            }
             if (!pcb_path.StartsWith("\\")) pcb_path += "\\";
             return String.Format("\\\\{0}{1}", pc_ip, pcb_path);
         }

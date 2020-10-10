@@ -71,7 +71,7 @@ namespace spc_client.ShowForm
             dt2.Rows.Add(new object[] { "不良板数", retStatistical.count_error_pcb});
             dt2.Rows.Add(new object[] { "误报板数", retStatistical.count_warning_pcb });
             dt2.Rows.Add(new object[] { "GOOD板数", retStatistical.count_good_pcb });
-            CreatePieChart(dt, dt2);
+            CreatePieChart(retStatistical.software_id, dt, dt2);
             CreateBarChart(retStatistical);
         }
         private void CreateBarChart(RetStatistical retStatistical)
@@ -93,55 +93,84 @@ namespace spc_client.ShowForm
             chartControl1.Series.Add(series1);
             //chartControl1.Series.Add(series2);
         }
-        private void CreatePieChart(DataTable dt, DataTable dt2)
+        private void CreatePieChart(string software_id, DataTable dt, DataTable dt2)
         {
-            chartControl2.Series.Clear();
-            
-            Series series = new Series("饼图", ViewType.Pie3D);
+            chartControl3.Series.Clear();
+            Series series = new Series("饼图2", ViewType.Pie);
             series.DataSource = dt;
-            series.ArgumentScaleType = ScaleType.Qualitative;
-
+            //series.ArgumentScaleType = ScaleType.Qualitative;
             //项目名称
             series.ArgumentDataMember = "ItemName";
             series.ValueScaleType = ScaleType.Numerical;
-
             //取值字段
             series.ValueDataMembers.AddRange(new string[] { "ItemValue" });
-            (series.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
-
-            //显示百分比和项目名称(业务员姓名)
+            //(series.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
+            ////显示百分比和项目名称(业务员姓名)
             series.PointOptions.PointView = PointView.ArgumentAndValues;
             series.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
+            chartControl3.Series.Add(series);
 
-            Series series2 = new Series("饼图2", ViewType.Pie3D);
-            series2.DataSource = dt2;
-            series2.ArgumentScaleType = ScaleType.Qualitative;
-
+            series = new Series("饼图3", ViewType.Pie);
+            series.DataSource = dt2;
+            //series.ArgumentScaleType = ScaleType.Qualitative;
             //项目名称
-            series2.ArgumentDataMember = "ItemName";
-            series2.ValueScaleType = ScaleType.Numerical;
-
+            series.ArgumentDataMember = "ItemName";
+            series.ValueScaleType = ScaleType.Numerical;
             //取值字段
-            series2.ValueDataMembers.AddRange(new string[] { "ItemValue" });
-            (series2.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
+            series.ValueDataMembers.AddRange(new string[] { "ItemValue" });
+            //(series.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
+            ////显示百分比和项目名称(业务员姓名)
+            series.PointOptions.PointView = PointView.ArgumentAndValues;
+            series.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
+            chartControl3.Series.Add(series);
 
-            //显示百分比和项目名称(业务员姓名)
-            series2.PointOptions.PointView = PointView.ArgumentAndValues;
-            series2.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
-
-            chartControl2.Series.Add(series2);
-            chartControl2.Series.Add(series);
             //右上角分组视图
-            chartControl2.Legend.MarkerSize = new System.Drawing.Size(20, 20);
-            chartControl2.Legend.TextOffset = 5;
-            chartControl2.Legend.VerticalIndent = 5;
-            chartControl2.Legend.Border.Color = Color.Red;//红色边框
+            //chartControl2.Legend.MarkerSize = new System.Drawing.Size(20, 20);
+            //chartControl2.Legend.TextOffset = 5;
+            //chartControl2.Legend.VerticalIndent = 5;
+            //chartControl2.Legend.Border.Color = Color.Red;//红色边框
+            MySmartThreadPool.Instance().QueueWorkItem(() =>
+            {
+                if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
+                SpcModel spcModel = DB.Instance();
+                try
+                {
+                    List<RetNgTypesPai> rets = spcModel.Database.SqlQuery<RetNgTypesPai>(string.Format("SELECT ng_str, COUNT(*) as num FROM softwares_ngtype WHERE software_id = '{0}' GROUP BY ng_str", software_id)).ToList();
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        chartControl_NG.Series.Clear();
+                        Series series2 = new Series("饼图1", ViewType.Pie);
+                        series2.DataSource = rets;
+                        //series.ArgumentScaleType = ScaleType.Qualitative;
+                        //项目名称
+                        series2.ArgumentDataMember = "ng_str";
+                        series2.ValueScaleType = ScaleType.Numerical;
+                        //取值字段
+                        series2.ValueDataMembers.AddRange(new string[] { "num" });
+                        //(series2.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
+                        ////显示百分比和项目名称(业务员姓名)
+                        series2.PointOptions.PointView = PointView.ArgumentAndValues;
+                        series2.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
+                        chartControl_NG.Series.Add(series2);
+
+                    }));
+                }
+                catch (Exception er)
+                {
+
+                }
+                finally
+                {
+                    if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+                    spcModel.Dispose();
+                }
+            });
         }
 
         void ReSetInfo()
         {
             chartControl1.DataSource = null;
-            chartControl2.DataSource = null;
+            chartControl_NG.DataSource = null;
             gridControl_Results.DataSource = null;
         }
 
