@@ -18,8 +18,8 @@ namespace spc_client.SqlPar
         public int pcb_childen_number { get; set; }
         public int ng_count { get; set; }
         //is_back,score,area,region,ng_str,result_string,pc_ip,pcb_path,part_image_path, pcb_id
-        public int is_back { get; set; }
-        public float score_final { get; set; }
+        public int? is_back { get; set; }
+        public float? score_final { get; set; }
         //int PassPcbNums = "(select count(*) from pcbs where is_misjudge = 0 and is_error = 0)";
         public string area { get; set; }
         public string region { get; set; }

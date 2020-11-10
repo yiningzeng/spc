@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -70,6 +70,10 @@ namespace spc_client.ShowForm
 
         private void ShowResultInfo(RetAllInfoPcbs currentRetResult)
         {
+            if (currentRetResult.is_back == null && currentRetResult.area == null)
+            {
+                return;
+            }
             string[] reg = currentRetResult.area.Split(',');
             int x = Convert.ToInt32(double.Parse(reg[0]));
             int y = Convert.ToInt32(double.Parse(reg[1]));
