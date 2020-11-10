@@ -172,6 +172,9 @@ namespace spc_client.ShowForm
             chartControl1.DataSource = null;
             chartControl_NG.DataSource = null;
             gridControl_Results.DataSource = null;
+            chartControl1.Series.Clear();
+            chartControl_NG.Series.Clear();
+            chartControl3.Series.Clear();
         }
 
         public override void QueryReset()

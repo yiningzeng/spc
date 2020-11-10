@@ -49,13 +49,13 @@ namespace spc_client.SqlPar
                                             "   pc_name," +
                                             "	pc_id," +
                                             "	software_name," +
-                                            "	( SELECT COUNT( * ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id ) AS 'count_pcb'," +
-                                            "	( SELECT SUM( is_error = 1 ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id ) AS 'count_error_pcb'," +
-                                            "	( SELECT SUM( is_misjudge = 1 ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id ) AS 'count_warning_pcb'," +
-                                            "	( SELECT SUM( is_error = 0 ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id ) AS 'count_good_pcb'," +
-                                            "	( SELECT SUM( is_misjudge = 1 ) / COUNT( * ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id ) AS 'pcb_ppm'," +
-                                            "	( SELECT concat(truncate(SUM( is_error = 1 ) / COUNT( * ) * 100,2),'%') FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id ) AS 'defect_rate'," +
-                                            "	( SELECT concat(truncate(SUM( is_error = 0 ) / COUNT( * ) * 100,2),'%') FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id ) AS 'pass_rate' " +
+                                            "	( SELECT COUNT( * ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id AND create_time BETWEEN '{0}' AND '{1}') AS 'count_pcb'," +
+                                            "	( SELECT SUM( is_error = 1 ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id  AND create_time BETWEEN '{0}' AND '{1}') AS 'count_error_pcb'," +
+                                            "	( SELECT SUM( is_misjudge = 1 ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id  AND create_time BETWEEN '{0}' AND '{1}') AS 'count_warning_pcb'," +
+                                            "	( SELECT SUM( is_error = 0 ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id  AND create_time BETWEEN '{0}' AND '{1}') AS 'count_good_pcb'," +
+                                            "	( SELECT SUM( is_misjudge = 1 ) / COUNT( * ) FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id  AND create_time BETWEEN '{0}' AND '{1}') AS 'pcb_ppm'," +
+                                            "	( SELECT concat(truncate(SUM( is_error = 1 ) / COUNT( * ) * 100,2),'%') FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id  AND create_time BETWEEN '{0}' AND '{1}') AS 'defect_rate'," +
+                                            "	( SELECT concat(truncate(SUM( is_error = 0 ) / COUNT( * ) * 100,2),'%') FROM aoi_pcbs WHERE software_id = pcs_softwares_pcbs_view.software_id  AND create_time BETWEEN '{0}' AND '{1}') AS 'pass_rate' " +
                                             "FROM" +
                                             "   pcs_softwares_pcbs_view " +
                                             "WHERE" +
