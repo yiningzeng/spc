@@ -23,6 +23,7 @@ using System.IO;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.Utils;
 using DevExpress.XtraCharts;
+using DevExpress.XtraGrid.Columns;
 
 namespace spc_client.ShowForm
 {
@@ -35,8 +36,18 @@ namespace spc_client.ShowForm
             gridView_Results.FocusedRowChanged += GridView_Results_FocusedRowChanged;
             gridView_Results.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
             rectFront = rectBack = new Rectangle(-1, -1, 0, 0);
+            SetReadOnly(gridView_Results);
         }
-
+        void SetReadOnly(GridView gv)
+        {
+            foreach (GridColumn item in gv.Columns)
+            {
+                item.OptionsColumn.ReadOnly = true;
+                item.OptionsColumn.AllowEdit = false;
+                //禁止单元格获取焦点
+                item.OptionsColumn.AllowFocus = false;
+            }
+        }
         private void GridView_CustomDrawEmptyForeground(object sender, DevExpress.XtraGrid.Views.Base.CustomDrawEventArgs e)
         {
             GridView gridView = sender as GridView;
@@ -161,7 +172,12 @@ namespace spc_client.ShowForm
                 }
                 finally
                 {
-                    if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+                    try
+                    {
+                        if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+                    }
+                    catch { }
+    
                     spcModel.Dispose();
                 }
             });
@@ -175,6 +191,19 @@ namespace spc_client.ShowForm
             chartControl1.Series.Clear();
             chartControl_NG.Series.Clear();
             chartControl3.Series.Clear();
+        }
+        public override void Export()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "导出Excel";
+            saveFileDialog.Filter = "Excel文件(*.xls)|*.xls";
+            DialogResult dialogResult = saveFileDialog.ShowDialog(this);
+            if (dialogResult == DialogResult.OK)
+            {
+                DevExpress.XtraPrinting.XlsExportOptions options = new DevExpress.XtraPrinting.XlsExportOptions();
+                gridControl_Results.ExportToXls(saveFileDialog.FileName);
+                XtraMessageBox.Show("保存成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         public override void QueryReset()

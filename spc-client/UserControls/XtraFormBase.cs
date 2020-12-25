@@ -21,5 +21,8 @@ namespace spc_client.UserControls
         public virtual void QueryReset()
         {
         }
+        public virtual void Export()
+        {
+        }
     }
 }

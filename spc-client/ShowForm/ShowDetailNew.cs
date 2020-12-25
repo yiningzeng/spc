@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -169,6 +169,21 @@ namespace spc_client.ShowForm
             gridControl_Results.DataSource = null;
         }
 
+        public override void Export()
+        {
+            QueryReset();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "导出Excel";
+            saveFileDialog.Filter = "Excel文件(*.xls)|*.xls";
+            DialogResult dialogResult = saveFileDialog.ShowDialog(this);
+            if (dialogResult == DialogResult.OK)
+            {
+                DevExpress.XtraPrinting.XlsExportOptions options = new DevExpress.XtraPrinting.XlsExportOptions();
+                gridControl_Results.ExportToXls(saveFileDialog.FileName);
+                XtraMessageBox.Show("保存成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
         public override void QueryReset()
         {
             ReSetInfo();
@@ -185,7 +200,7 @@ namespace spc_client.ShowForm
                 SpcModel spcModel = DB.Instance();
                 try
                 {
-                    List<RetAllInfoPcbs> aoiPcbs = spcModel.Database.SqlQuery<RetAllInfoPcbs>(QueryPars.GetPcbsQueryStr()).ToList();
+                    List<RetAllInfoPcbs> aoiPcbs = spcModel.Database.SqlQuery<RetAllInfoPcbs>(QueryPars.GetAllInfoQueryStr()).ToList();
                     this.BeginInvoke((Action)(() =>
                     {
                         gridControl_Results.DataSource = aoiPcbs;

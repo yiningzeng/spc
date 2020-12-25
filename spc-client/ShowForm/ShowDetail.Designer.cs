@@ -208,18 +208,17 @@
             this.gridColumn7,
             this.gridColumn9});
             this.gridView_Results.GridControl = this.gridControl_Results;
-            this.gridView_Results.GroupCount = 1;
             this.gridView_Results.Name = "gridView_Results";
             this.gridView_Results.OptionsBehavior.ReadOnly = true;
             this.gridView_Results.OptionsClipboard.AllowExcelFormat = DevExpress.Utils.DefaultBoolean.True;
-            this.gridView_Results.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
-            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn5, DevExpress.Data.ColumnSortOrder.Ascending)});
             // 
             // gridColumn5
             // 
             this.gridColumn5.Caption = "NG类别";
             this.gridColumn5.FieldName = "ng_str";
             this.gridColumn5.Name = "gridColumn5";
+            this.gridColumn5.OptionsColumn.AllowEdit = false;
+            this.gridColumn5.OptionsColumn.ReadOnly = true;
             this.gridColumn5.Visible = true;
             this.gridColumn5.VisibleIndex = 0;
             // 
@@ -229,15 +228,15 @@
             this.gridColumn6.FieldName = "score";
             this.gridColumn6.Name = "gridColumn6";
             this.gridColumn6.Visible = true;
-            this.gridColumn6.VisibleIndex = 0;
+            this.gridColumn6.VisibleIndex = 1;
             // 
             // gridColumn7
             // 
             this.gridColumn7.Caption = "人工检验";
-            this.gridColumn7.FieldName = "ng_str";
+            this.gridColumn7.FieldName = "result_ng_str";
             this.gridColumn7.Name = "gridColumn7";
             this.gridColumn7.Visible = true;
-            this.gridColumn7.VisibleIndex = 1;
+            this.gridColumn7.VisibleIndex = 2;
             // 
             // gridColumn9
             // 
@@ -245,7 +244,7 @@
             this.gridColumn9.FieldName = "NG";
             this.gridColumn9.Name = "gridColumn9";
             this.gridColumn9.Visible = true;
-            this.gridColumn9.VisibleIndex = 2;
+            this.gridColumn9.VisibleIndex = 3;
             // 
             // splitContainerControl3
             // 

@@ -14,7 +14,8 @@ namespace spc_client.SqlPar
         //int PassPcbNums = "(select count(*) from pcbs where is_misjudge = 0 and is_error = 0)";
         public string area { get; set; }
         public string region { get; set; }
-        public string ng_str { get; set; } 
+        public string ng_str { get; set; }
+        public string result_ng_str { get; set; }
         public string result_ng_type_id { get; set; }
         public string ng_type_id { get; set; }
         public string NG { get; set; }

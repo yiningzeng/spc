@@ -21,6 +21,27 @@ namespace spc_client.SqlPar
         public static string ng_type { get; set; }
         public static string GetPcbsQueryStr()
         {
+            string queryStr = String.Format("SELECT * FROM aoi_pcbs WHERE aoi_pcbs.create_time BETWEEN '{0}' AND '{1}'",
+                startTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                 endTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            if (enableResult)
+            { //这里上面语句都要改成join
+                //queryStr += " AND aoi_pcbs.pcb_number LIKE '%" + pcbNumber + "%'";
+            }
+            if (enablePcbNumber)
+            {
+                queryStr += " AND aoi_pcbs.pcb_number LIKE '%" + pcbNumber + "%'";
+            }
+            if (enableSoftware)
+            {
+                queryStr += " AND aoi_pcbs.software_id = " + softwareId;
+            }
+            return String.Format("SELECT * FROM ({0}) ap " +
+                "LEFT JOIN (SELECT * from (SELECT id as software_id, software_name, pc_id FROM aoi_softwares) temp " +
+                "LEFT JOIN aoi_pcs ON temp.pc_id = aoi_pcs.id) t2 ON ap.software_id = t2.software_id", queryStr);
+        }
+        public static string GetAllInfoQueryStr()
+        {
             string queryStr = String.Format("SELECT *, FORMAT(score,2) AS score_final FROM all_info_pcbs WHERE all_info_pcbs.create_time BETWEEN '{0}' AND '{1}'",
                 startTime.ToString("yyyy-MM-dd HH:mm:ss"),
                  endTime.ToString("yyyy-MM-dd HH:mm:ss"));

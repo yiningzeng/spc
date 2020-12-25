@@ -45,6 +45,8 @@ namespace spc_client
         {
             xtraTabbedMdiManager1.SelectedPageChanged += XtraTabbedMdiManager1_SelectedPageChanged;
             xtraTabbedMdiManager1.PageRemoved += XtraTabbedMdiManager1_PageRemoved;
+            this.Text = "SPC v" + Application.ProductVersion.ToString();
+
             #region 初始化所有的Itme按钮事件
             foreach (RibbonPage p in ribbonControl_Main.Pages)
             {
@@ -116,10 +118,14 @@ namespace spc_client
                     searchForm.ShowDialog();
                     return;
                 case "整板结果":
-                    xtraForm = new ShowDetailNew();
+                    xtraForm = new ShowDetail();
                     break;
                 case "整板统计":
                     xtraForm = new Statistical();
+                    break;
+                case "导出报表":
+                    if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+                    try { xForms[xtraTabbedMdiManager1.SelectedPage.Text].Export(); } catch { }
                     break;
                     //case "我是测试2":
                     //    xtraForm = new ShowDetail2();
@@ -140,7 +146,11 @@ namespace spc_client
                     xtraForm.Show();
                 }
             }
-            finally { Cursor.Current = currentCursor; splashScreenManager.CloseWaitForm(); }
+            finally {
+                Cursor.Current = currentCursor;
+                if(splashScreenManager.IsSplashFormVisible)
+                splashScreenManager.CloseWaitForm(); 
+            }
 
         }
 

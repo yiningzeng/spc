@@ -22,6 +22,7 @@ using DevExpress.XtraGrid.Views.Grid;
 using System.IO;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.Utils;
+using DevExpress.XtraGrid.Columns;
 
 namespace spc_client.ShowForm
 {
@@ -36,6 +37,19 @@ namespace spc_client.ShowForm
             gridView_Pcbs.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
             gridView_Results.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
             rectFront = rectBack = new Rectangle(-1, -1, 0, 0);
+            SetReadOnly(gridView_Pcbs);
+            SetReadOnly(gridView_Results);
+        }
+
+        void SetReadOnly(GridView gv)
+        {
+            foreach (GridColumn item in gv.Columns)
+            {
+                item.OptionsColumn.ReadOnly = true;
+                item.OptionsColumn.AllowEdit = false;
+                //禁止单元格获取焦点
+                item.OptionsColumn.AllowFocus = false;
+            }
         }
 
         private void GridView_CustomDrawEmptyForeground(object sender, DevExpress.XtraGrid.Views.Base.CustomDrawEventArgs e)
@@ -170,7 +184,7 @@ namespace spc_client.ShowForm
                     //}));
 
 
-                    List<RetResults> retResults = spcModel.Database.SqlQuery<RetResults>(String.Format("SELECT is_back,score,area,region,ng_str,result_ng_type_id, ng_type_id, result_ng_type_id != '' as NG,pc_ip,pcb_path,part_image_path, pcb_id FROM (SELECT * FROM aoi_results WHERE aoi_results.pcb_id = '{0}') as ss LEFT JOIN aoi_pcbs ON ss.pcb_id = aoi_pcbs.id LEFT JOIN aoi_softwares ON aoi_pcbs.software_id = aoi_softwares.id LEFT JOIN aoi_ng_types ON aoi_ng_types.id = ss.result_ng_type_id LEFT JOIN aoi_pcs ON aoi_pcs.id = aoi_softwares.pc_id", ap.id)).ToList();
+                    List<RetResults> retResults = spcModel.Database.SqlQuery<RetResults>(String.Format("SELECT is_back,score,area,region,ng_str, (SELECT ng_str FROM aoi_ng_types WHERE id = ss.result_ng_type_id) as result_ng_str,result_ng_type_id, ng_type_id, result_ng_type_id != '' as NG,pc_ip,pcb_path,part_image_path, pcb_id FROM (SELECT * FROM aoi_results WHERE aoi_results.pcb_id = '{0}') as ss LEFT JOIN aoi_pcbs ON ss.pcb_id = aoi_pcbs.id LEFT JOIN aoi_softwares ON aoi_pcbs.software_id = aoi_softwares.id LEFT JOIN aoi_ng_types ON aoi_ng_types.id = ss.ng_type_id LEFT JOIN aoi_pcs ON aoi_pcs.id = aoi_softwares.pc_id", ap.id)).ToList();
                     foreach(RetResults r in retResults)
                     {
                         r.NG = r.NG == "1" ? "NG" : "OK";
@@ -212,7 +226,12 @@ namespace spc_client.ShowForm
             gridControl_Pcbs.DataSource = null;
             gridControl_Results.DataSource = null;
         }
-
+        public override void Export()
+        {
+            ShowDetailNew showDetailNew = new ShowDetailNew();
+            showDetailNew.Export();
+            showDetailNew.Dispose();
+        }
         public override void QueryReset()
         {
             ReSetInfo();
