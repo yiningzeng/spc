@@ -65,5 +65,11 @@ namespace spc_client
                 Environment.Exit(0);
             }
         }
+
+        private void simpleButton2_Click(object sender, EventArgs e)
+        {
+            MysqlSettings mysqlSettings = new MysqlSettings();
+            mysqlSettings.ShowDialog();
+        }
     }
 }

@@ -154,6 +154,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MysqlSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MysqlSettings.Designer.cs">
+      <DependentUpon>MysqlSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -218,6 +224,7 @@
     </Compile>
     <Compile Include="SqlPar\QueryPars.cs" />
     <Compile Include="SqlPar\RetResults.cs" />
+    <Compile Include="Tools\INIHelper.cs" />
     <Compile Include="Tools\LogHelper.cs" />
     <Compile Include="Tools\MyDateTimeHelper.cs" />
     <Compile Include="Tools\DB.cs" />
@@ -230,6 +237,9 @@
     <Compile Include="UserControls\XtraFormBase.Designer.cs">
       <DependentUpon>XtraFormBase.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="MysqlSettings.resx">
+      <DependentUpon>MysqlSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>

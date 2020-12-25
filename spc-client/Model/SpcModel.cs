@@ -1,6 +1,8 @@
-﻿using System;
+﻿using spc_client.Tools;
+using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace spc_client.Model
 {
@@ -13,10 +15,25 @@ namespace spc_client.Model
         // 
         //如果您想要针对其他数据库和/或数据库提供程序，请在应用程序配置文件中修改“AoiModel”
         //连接字符串。
+        //public SpcModel()
+        //    : base("name=Spc")
+        //{
+        //}
         public SpcModel()
-            : base("name=Spc")
+            : base(GetDbConnectionStr())
         {
         }
+
+        public static string GetDbConnectionStr()
+        {
+            string host = INIHelper.Read("db", "host", Application.StartupPath + "/config.ini");
+            string port = INIHelper.Read("db", "port", Application.StartupPath + "/config.ini");
+            string user = INIHelper.Read("db", "user", Application.StartupPath + "/config.ini");
+            string pass = INIHelper.Read("db", "password", Application.StartupPath + "/config.ini");
+            string database = INIHelper.Read("db", "database", Application.StartupPath + "/config.ini");
+            return "Data Source=" + host + ";user id=" + user + ";Password=" + pass + ";database=" + database + ";port=" + port + ";Character Set=utf8;Allow User Variables=True";
+        }
+
 
         //为您要在模型中包含的每种实体类型都添加 DbSet。有关配置和使用 Code First  模型
         //的详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=390109。
