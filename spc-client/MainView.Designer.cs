@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             this.splashScreenManager = new DevExpress.XtraSplashScreen.SplashScreenManager(this, typeof(global::spc_client.MyWaitForm), true, true);
             this.ribbonControl_Main = new DevExpress.XtraBars.Ribbon.RibbonControl();
+            this.barButtonItemUpdate = new DevExpress.XtraBars.BarButtonItem();
             this.bBISearch = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem_ShowResult = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
@@ -60,8 +61,10 @@
             // 
             // ribbonControl_Main
             // 
+            this.ribbonControl_Main.CaptionBarItemLinks.Add(this.barButtonItemUpdate);
             this.ribbonControl_Main.ExpandCollapseItem.Id = 0;
             this.ribbonControl_Main.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
+            this.barButtonItemUpdate,
             this.ribbonControl_Main.ExpandCollapseItem,
             this.ribbonControl_Main.SearchEditItem,
             this.bBISearch,
@@ -71,7 +74,7 @@
             this.barButtonItem3,
             this.barButtonItem4});
             this.ribbonControl_Main.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl_Main.MaxItemId = 11;
+            this.ribbonControl_Main.MaxItemId = 12;
             this.ribbonControl_Main.Name = "ribbonControl_Main";
             this.ribbonControl_Main.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1,
@@ -82,6 +85,15 @@
             this.ribbonControl_Main.ShowToolbarCustomizeItem = false;
             this.ribbonControl_Main.Size = new System.Drawing.Size(1109, 166);
             this.ribbonControl_Main.Toolbar.ShowCustomizeItem = false;
+            // 
+            // barButtonItemUpdate
+            // 
+            this.barButtonItemUpdate.Caption = "升级";
+            this.barButtonItemUpdate.Id = 11;
+            this.barButtonItemUpdate.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("barButtonItem5.ImageOptions.Image")));
+            this.barButtonItemUpdate.ImageOptions.LargeImage = ((System.Drawing.Image)(resources.GetObject("barButtonItem5.ImageOptions.LargeImage")));
+            this.barButtonItemUpdate.Name = "barButtonItemUpdate";
+            this.barButtonItemUpdate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItemUpdate_ItemClick);
             // 
             // bBISearch
             // 
@@ -243,6 +255,7 @@
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup6;
         private DevExpress.XtraBars.BarButtonItem barButtonItem4;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup7;
+        private DevExpress.XtraBars.BarButtonItem barButtonItemUpdate;
     }
 }
 

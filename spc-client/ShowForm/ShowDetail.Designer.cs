@@ -50,6 +50,7 @@
             this.pictureBox_Front = new System.Windows.Forms.PictureBox();
             this.xtraTabPage2 = new DevExpress.XtraTab.XtraTabPage();
             this.pictureBox_Back = new System.Windows.Forms.PictureBox();
+            this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
             this.imageBox_Part = new Cyotek.Windows.Forms.ImageBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
             this.splitContainerControl1.SuspendLayout();
@@ -69,6 +70,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Front)).BeginInit();
             this.xtraTabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Back)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
+            this.panelControl1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainerControl1
@@ -81,7 +84,7 @@
             this.splitContainerControl1.Panel2.Controls.Add(this.splitContainerControl2);
             this.splitContainerControl1.Panel2.Text = "Panel2";
             this.splitContainerControl1.Size = new System.Drawing.Size(1350, 633);
-            this.splitContainerControl1.SplitterPosition = 481;
+            this.splitContainerControl1.SplitterPosition = 520;
             this.splitContainerControl1.TabIndex = 0;
             // 
             // gridControl_Pcbs
@@ -92,7 +95,7 @@
             this.gridControl_Pcbs.Name = "gridControl_Pcbs";
             this.gridControl_Pcbs.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemDateEdit1});
-            this.gridControl_Pcbs.Size = new System.Drawing.Size(481, 633);
+            this.gridControl_Pcbs.Size = new System.Drawing.Size(520, 633);
             this.gridControl_Pcbs.TabIndex = 0;
             this.gridControl_Pcbs.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView_Pcbs});
@@ -117,7 +120,7 @@
             this.gridColumn1.Name = "gridColumn1";
             this.gridColumn1.Visible = true;
             this.gridColumn1.VisibleIndex = 0;
-            this.gridColumn1.Width = 144;
+            this.gridColumn1.Width = 159;
             // 
             // repositoryItemDateEdit1
             // 
@@ -147,7 +150,7 @@
             this.gridColumn8.Name = "gridColumn8";
             this.gridColumn8.Visible = true;
             this.gridColumn8.VisibleIndex = 1;
-            this.gridColumn8.Width = 60;
+            this.gridColumn8.Width = 91;
             // 
             // gridColumn2
             // 
@@ -156,7 +159,7 @@
             this.gridColumn2.Name = "gridColumn2";
             this.gridColumn2.Visible = true;
             this.gridColumn2.VisibleIndex = 2;
-            this.gridColumn2.Width = 118;
+            this.gridColumn2.Width = 129;
             // 
             // gridColumn3
             // 
@@ -165,7 +168,7 @@
             this.gridColumn3.Name = "gridColumn3";
             this.gridColumn3.Visible = true;
             this.gridColumn3.VisibleIndex = 3;
-            this.gridColumn3.Width = 69;
+            this.gridColumn3.Width = 62;
             // 
             // gridColumn4
             // 
@@ -174,7 +177,7 @@
             this.gridColumn4.Name = "gridColumn4";
             this.gridColumn4.Visible = true;
             this.gridColumn4.VisibleIndex = 4;
-            this.gridColumn4.Width = 61;
+            this.gridColumn4.Width = 52;
             // 
             // splitContainerControl2
             // 
@@ -185,8 +188,8 @@
             this.splitContainerControl2.Panel1.Text = "Panel1";
             this.splitContainerControl2.Panel2.Controls.Add(this.splitContainerControl3);
             this.splitContainerControl2.Panel2.Text = "Panel2";
-            this.splitContainerControl2.Size = new System.Drawing.Size(859, 633);
-            this.splitContainerControl2.SplitterPosition = 398;
+            this.splitContainerControl2.Size = new System.Drawing.Size(820, 633);
+            this.splitContainerControl2.SplitterPosition = 377;
             this.splitContainerControl2.TabIndex = 1;
             // 
             // gridControl_Results
@@ -195,7 +198,7 @@
             this.gridControl_Results.Location = new System.Drawing.Point(0, 0);
             this.gridControl_Results.MainView = this.gridView_Results;
             this.gridControl_Results.Name = "gridControl_Results";
-            this.gridControl_Results.Size = new System.Drawing.Size(398, 633);
+            this.gridControl_Results.Size = new System.Drawing.Size(377, 633);
             this.gridControl_Results.TabIndex = 0;
             this.gridControl_Results.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView_Results});
@@ -221,6 +224,7 @@
             this.gridColumn5.OptionsColumn.ReadOnly = true;
             this.gridColumn5.Visible = true;
             this.gridColumn5.VisibleIndex = 0;
+            this.gridColumn5.Width = 106;
             // 
             // gridColumn6
             // 
@@ -229,6 +233,7 @@
             this.gridColumn6.Name = "gridColumn6";
             this.gridColumn6.Visible = true;
             this.gridColumn6.VisibleIndex = 1;
+            this.gridColumn6.Width = 85;
             // 
             // gridColumn7
             // 
@@ -237,6 +242,7 @@
             this.gridColumn7.Name = "gridColumn7";
             this.gridColumn7.Visible = true;
             this.gridColumn7.VisibleIndex = 2;
+            this.gridColumn7.Width = 106;
             // 
             // gridColumn9
             // 
@@ -245,6 +251,7 @@
             this.gridColumn9.Name = "gridColumn9";
             this.gridColumn9.Visible = true;
             this.gridColumn9.VisibleIndex = 3;
+            this.gridColumn9.Width = 53;
             // 
             // splitContainerControl3
             // 
@@ -255,9 +262,9 @@
             this.splitContainerControl3.Name = "splitContainerControl3";
             this.splitContainerControl3.Panel1.Controls.Add(this.xtraTabControl1);
             this.splitContainerControl3.Panel1.Text = "Panel1";
-            this.splitContainerControl3.Panel2.Controls.Add(this.imageBox_Part);
+            this.splitContainerControl3.Panel2.Controls.Add(this.panelControl1);
             this.splitContainerControl3.Panel2.Text = "Panel2";
-            this.splitContainerControl3.Size = new System.Drawing.Size(451, 633);
+            this.splitContainerControl3.Size = new System.Drawing.Size(433, 633);
             this.splitContainerControl3.SplitterPosition = 261;
             this.splitContainerControl3.TabIndex = 0;
             // 
@@ -267,7 +274,7 @@
             this.xtraTabControl1.Location = new System.Drawing.Point(0, 0);
             this.xtraTabControl1.Name = "xtraTabControl1";
             this.xtraTabControl1.SelectedTabPage = this.xtraTabPage1;
-            this.xtraTabControl1.Size = new System.Drawing.Size(451, 261);
+            this.xtraTabControl1.Size = new System.Drawing.Size(433, 261);
             this.xtraTabControl1.TabIndex = 1;
             this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.xtraTabPage1,
@@ -277,7 +284,7 @@
             // 
             this.xtraTabPage1.Controls.Add(this.pictureBox_Front);
             this.xtraTabPage1.Name = "xtraTabPage1";
-            this.xtraTabPage1.Size = new System.Drawing.Size(449, 231);
+            this.xtraTabPage1.Size = new System.Drawing.Size(431, 231);
             this.xtraTabPage1.Text = "正面";
             // 
             // pictureBox_Front
@@ -285,7 +292,7 @@
             this.pictureBox_Front.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox_Front.Location = new System.Drawing.Point(0, 0);
             this.pictureBox_Front.Name = "pictureBox_Front";
-            this.pictureBox_Front.Size = new System.Drawing.Size(449, 231);
+            this.pictureBox_Front.Size = new System.Drawing.Size(431, 231);
             this.pictureBox_Front.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_Front.TabIndex = 0;
             this.pictureBox_Front.TabStop = false;
@@ -309,15 +316,27 @@
             this.pictureBox_Back.TabStop = false;
             this.pictureBox_Back.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox_Back_Paint);
             // 
+            // panelControl1
+            // 
+            this.panelControl1.Controls.Add(this.imageBox_Part);
+            this.panelControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelControl1.Location = new System.Drawing.Point(0, 0);
+            this.panelControl1.Name = "panelControl1";
+            this.panelControl1.Size = new System.Drawing.Size(433, 362);
+            this.panelControl1.TabIndex = 1;
+            // 
             // imageBox_Part
             // 
             this.imageBox_Part.AllowZoom = false;
+            this.imageBox_Part.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.imageBox_Part.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imageBox_Part.Font = new System.Drawing.Font("Tahoma", 20F);
-            this.imageBox_Part.Location = new System.Drawing.Point(0, 0);
+            this.imageBox_Part.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(46)))), ((int)(((byte)(64)))));
+            this.imageBox_Part.GridColorAlternate = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(46)))), ((int)(((byte)(64)))));
+            this.imageBox_Part.Location = new System.Drawing.Point(2, 2);
             this.imageBox_Part.Name = "imageBox_Part";
             this.imageBox_Part.SelectionColor = System.Drawing.Color.Transparent;
-            this.imageBox_Part.Size = new System.Drawing.Size(451, 362);
+            this.imageBox_Part.Size = new System.Drawing.Size(429, 358);
             this.imageBox_Part.TabIndex = 0;
             this.imageBox_Part.Text = "图片缺失";
             this.imageBox_Part.TextBackColor = System.Drawing.Color.Gray;
@@ -349,6 +368,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Front)).EndInit();
             this.xtraTabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Back)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
+            this.panelControl1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -378,5 +399,6 @@
         private System.Windows.Forms.PictureBox pictureBox_Back;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn8;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn9;
+        private DevExpress.XtraEditors.PanelControl panelControl1;
     }
 }

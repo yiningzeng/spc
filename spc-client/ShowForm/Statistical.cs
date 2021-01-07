@@ -135,52 +135,48 @@ namespace spc_client.ShowForm
             series.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
             chartControl3.Series.Add(series);
 
-            //右上角分组视图
-            //chartControl2.Legend.MarkerSize = new System.Drawing.Size(20, 20);
-            //chartControl2.Legend.TextOffset = 5;
-            //chartControl2.Legend.VerticalIndent = 5;
-            //chartControl2.Legend.Border.Color = Color.Red;//红色边框
-            MySmartThreadPool.Instance().QueueWorkItem(() =>
-            {
-                if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
-                SpcModel spcModel = DB.Instance();
-                try
-                {
-                    List<RetNgTypesPai> rets = spcModel.Database.SqlQuery<RetNgTypesPai>(string.Format("SELECT ng_str, COUNT(*) as num FROM softwares_ngtype WHERE software_id = '{0}' GROUP BY ng_str", software_id)).ToList();
-                    this.BeginInvoke((Action)(() =>
-                    {
-                        chartControl_NG.Series.Clear();
-                        Series series2 = new Series("饼图1", ViewType.Pie);
-                        series2.DataSource = rets;
-                        //series.ArgumentScaleType = ScaleType.Qualitative;
-                        //项目名称
-                        series2.ArgumentDataMember = "ng_str";
-                        series2.ValueScaleType = ScaleType.Numerical;
-                        //取值字段
-                        series2.ValueDataMembers.AddRange(new string[] { "num" });
-                        //(series2.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
-                        ////显示百分比和项目名称(业务员姓名)
-                        series2.PointOptions.PointView = PointView.ArgumentAndValues;
-                        series2.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
-                        chartControl_NG.Series.Add(series2);
+          
+            //MySmartThreadPool.Instance().QueueWorkItem(() =>
+            //{
+            //    if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
+            //    SpcModel spcModel = DB.Instance();
+            //    try
+            //    {
+            //        List<RetNgTypesPai> rets = spcModel.Database.SqlQuery<RetNgTypesPai>(string.Format("SELECT ng_str, COUNT(*) as num FROM softwares_ngtype WHERE software_id = '{0}' and create_time BETWEEN '{1}' AND '{2}'  GROUP BY ng_str", software_id, QueryPars.startTime, QueryPars.endTime)).ToList();
+            //        this.BeginInvoke((Action)(() =>
+            //        {
+            //            chartControl_NG.Series.Clear();
+            //            Series series2 = new Series("饼图1", ViewType.Pie);
+            //            series2.DataSource = rets;
+            //            //series.ArgumentScaleType = ScaleType.Qualitative;
+            //            //项目名称
+            //            series2.ArgumentDataMember = "ng_str";
+            //            series2.ValueScaleType = ScaleType.Numerical;
+            //            //取值字段
+            //            series2.ValueDataMembers.AddRange(new string[] { "num" });
+            //            //(series2.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
+            //            ////显示百分比和项目名称(业务员姓名)
+            //            series2.PointOptions.PointView = PointView.ArgumentAndValues;
+            //            series2.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
+            //            chartControl_NG.Series.Add(series2);
 
-                    }));
-                }
-                catch (Exception er)
-                {
+            //        }));
+            //    }
+            //    catch (Exception er)
+            //    {
 
-                }
-                finally
-                {
-                    try
-                    {
-                        if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
-                    }
-                    catch { }
+            //    }
+            //    finally
+            //    {
+            //        try
+            //        {
+            //            if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+            //        }
+            //        catch { }
     
-                    spcModel.Dispose();
-                }
-            });
+            //        spcModel.Dispose();
+            //    }
+            //});
         }
 
         void ReSetInfo()

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -40,6 +41,31 @@ namespace spc_client
                 InitializeBindings();
             Ini();
         }
+
+        #region 更新
+        public void CheckUpdate()
+        {
+            string path = Application.StartupPath + "/Update";
+            if (Directory.Exists(path))
+            {
+                DirectoryInfo root = new DirectoryInfo(path);
+                FileInfo[] fileInfos = root.GetFiles();
+                if (fileInfos.Length > 0)
+                {
+                    Update update = new Update(fileInfos);
+                    update.Show();
+                }
+                else
+                {
+                    MessageBox.Show("无可用更新");
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+        #endregion
 
         void Ini()
         {
@@ -183,5 +209,9 @@ namespace spc_client
             //};
         }
 
+        private void barButtonItemUpdate_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            CheckUpdate();
+        }
     }
 }

@@ -148,6 +148,7 @@ namespace spc_client.ShowForm
         private void GridView_Pcbs_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
             AoiPcbs currentPcb = gridView_Pcbs.GetFocusedRow() as AoiPcbs;
+            if (currentPcb == null) return;
             MySmartThreadPool.Instance().QueueWorkItem((ap) =>
             {
                 SplashScreenManager sp = new SplashScreenManager(this, typeof(global::spc_client.MyWaitForm), true, true);
