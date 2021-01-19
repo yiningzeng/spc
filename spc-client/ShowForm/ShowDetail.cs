@@ -28,6 +28,10 @@ namespace spc_client.ShowForm
 {
     public partial class ShowDetail : XtraFormBase
     {
+        List<AoiPcbs> finalDB = new List<AoiPcbs>();
+        AoiPcbs currentPcb = null;
+        int allQueryNum = 0; //指的是一共查询的月份个数
+        int currentNum = 0; // 标识当前运行了几个
         Rectangle rectFront,rectBack;
         public ShowDetail()
         {
@@ -83,7 +87,7 @@ namespace spc_client.ShowForm
             catch (Exception er) { }
         }
 
-        private void ShowResultInfo(RetResults currentRetResult)
+        private void ShowResultInfo(string pc_ip, string pcb_path, RetResults currentRetResult)
         {
             string[] reg = currentRetResult.area.Split(',');
             int x = Convert.ToInt32(double.Parse(reg[0]));
@@ -101,7 +105,7 @@ namespace spc_client.ShowForm
                         Convert.ToInt32(double.Parse(region[1])),
                         Convert.ToInt32(double.Parse(region[2])),
                         Convert.ToInt32(double.Parse(region[3])));
-                    string file = ap.PathConcatenate(ap.GetBasePath(), ap.part_image_path);
+                    string file = ap.PathConcatenate(ap.GetBasePath(pc_ip, pcb_path), ap.part_image_path);
                     if (File.Exists(file))
                     {
                         Image image = Image.FromFile(file);
@@ -141,21 +145,21 @@ namespace spc_client.ShowForm
 
         private void GridView_Results_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
-            if(gridView_Results.GetFocusedRow()!=null)
-            ShowResultInfo(gridView_Results.GetFocusedRow() as RetResults);
+            if (currentPcb == null || gridView_Results.GetFocusedRow() == null) return;
+            ShowResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, gridView_Results.GetFocusedRow() as RetResults);
         }
 
         private void GridView_Pcbs_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
-            AoiPcbs currentPcb = gridView_Pcbs.GetFocusedRow() as AoiPcbs;
+            currentPcb = gridView_Pcbs.GetFocusedRow() as AoiPcbs;
             if (currentPcb == null) return;
+            if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
             MySmartThreadPool.Instance().QueueWorkItem((ap) =>
             {
-                SplashScreenManager sp = new SplashScreenManager(this, typeof(global::spc_client.MyWaitForm), true, true);
-                sp.ShowWaitForm();
                 SpcModel spcModel = DB.Instance();
                 try
                 {
+                    #region 显示正反背景图
                     MySmartThreadPool.Instance().QueueWorkItem((f1, f2) =>
                     {
                         bool f1IsExist, f2IsExist;
@@ -179,17 +183,24 @@ namespace spc_client.ShowForm
                         }), f1IsExist, f2IsExist);
                     }, ap.PathConcatenate(ap.GetBasePath(), "front.jpg"),
                     ap.PathConcatenate(ap.GetBasePath(), "back.jpg"));
-                    //this.BeginInvoke((Action)(() =>
-                    //{
+                    #endregion
 
-                    //}));
-
-
-                    List<RetResults> retResults = spcModel.Database.SqlQuery<RetResults>(String.Format("SELECT is_back,score,area,region,ng_str, (SELECT ng_str FROM aoi_ng_types WHERE id = ss.result_ng_type_id) as result_ng_str,result_ng_type_id, ng_type_id, result_ng_type_id != '' as NG,pc_ip,pcb_path,part_image_path, pcb_id FROM (SELECT * FROM aoi_results WHERE aoi_results.pcb_id = '{0}') as ss LEFT JOIN aoi_pcbs ON ss.pcb_id = aoi_pcbs.id LEFT JOIN aoi_softwares ON aoi_pcbs.software_id = aoi_softwares.id LEFT JOIN aoi_ng_types ON aoi_ng_types.id = ss.ng_type_id LEFT JOIN aoi_pcs ON aoi_pcs.id = aoi_softwares.pc_id", ap.id)).ToList();
-                    foreach(RetResults r in retResults)
-                    {
-                        r.NG = r.NG == "1" ? "NG" : "OK";
-                    }
+                    string resultTable = Utils.GetFinalTableName(ap.create_time, "aoi_results");
+                    string sql = String.Format("SELECT" +
+                                    "	is_back," +
+                                    "	score," +
+                                    "	area," +
+                                    "	region," +
+                                    "	( SELECT ng_str FROM aoi_ng_types WHERE id = ng_type_id ) AS ng_str," +
+                                    "	( SELECT ng_str FROM aoi_ng_types WHERE id = result_ng_type_id ) AS result_ng_str," +
+                                    "	ng_type_id," +
+                                    "	result_ng_type_id," +
+                                    "	IF(result_ng_type_id != '', 'NG', 'OK') AS NG," +
+                                    "	part_image_path," +
+                                    "	pcb_id " +
+                                    "FROM" +
+                                    "   {0} WHERE pcb_id = '{1}'", resultTable, ap.id);
+                    List<RetResults> retResults = spcModel.Database.SqlQuery<RetResults>(sql).ToList();
                     this.BeginInvoke((Action)(() =>
                     {
                         gridControl_Results.DataSource = retResults;
@@ -203,7 +214,7 @@ namespace spc_client.ShowForm
                         {
                             this.BeginInvoke((Action)(() =>
                             {
-                                ShowResultInfo(retResults[0]);
+                                ShowResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, a);
                             }));
 
                         }, retResults[0]);
@@ -215,18 +226,59 @@ namespace spc_client.ShowForm
                 }
                 finally
                 {
-                    sp.CloseWaitForm();
+                    this.BeginInvoke((Action)(() =>
+                    {
+                        if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+                    }));
                     spcModel.Dispose();
                 }
             }, currentPcb);
         }
         void ReSetInfo()
         {
+            finalDB = null;
+            finalDB = new List<AoiPcbs>();
+            currentNum = allQueryNum = 0;
             pictureBox_Front.Image = null;
             pictureBox_Back.Image = null;
             gridControl_Pcbs.DataSource = null;
             gridControl_Results.DataSource = null;
         }
+
+        void MergeIntoDb(List<AoiPcbs> temp)
+        {
+            currentNum++;
+            if (temp.Count > 0)
+            {
+                if (finalDB.Count > 0)
+                {
+                    AoiPcbs aoiPcbs = finalDB[finalDB.Count - 1];
+                    if (aoiPcbs.create_time >= temp[0].create_time)
+                    {
+                        finalDB.AddRange(temp);
+                    }
+                    else
+                    {
+                        temp.AddRange(finalDB);
+                        finalDB = temp;
+                    }
+                }
+                else
+                {
+                    finalDB.AddRange(temp);
+                }
+            }
+
+            if(currentNum == allQueryNum)
+            {
+                this.BeginInvoke((Action)(() =>
+                {
+                    gridControl_Pcbs.DataSource = finalDB;
+                    if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+                }));
+            }
+        }
+
         public override void Export()
         {
             ShowDetailNew showDetailNew = new ShowDetailNew();
@@ -242,29 +294,33 @@ namespace spc_client.ShowForm
                 //string aa = gridView_Results.ActiveFilterString;
                 gridView_Results.ActiveFilterString = String.Format("[ng_str] = '{0}'", QueryPars.ng_type);
             }
+            if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
 
-            MySmartThreadPool.Instance().QueueWorkItem(() =>
+            List<string> tables = Utils.GetQueryTables(QueryPars.startTime, QueryPars.endTime, "aoi_pcbs");
+            allQueryNum = tables.Count;
+            foreach (var tb in tables)
             {
-                if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
-                SpcModel spcModel = DB.Instance();
-                try
+                MySmartThreadPool.Instance().QueueWorkItem((t) =>
                 {
-                    List<AoiPcbs> aoiPcbs = spcModel.pcbs.SqlQuery(QueryPars.GetPcbsQueryStr()).ToList();
-                    this.BeginInvoke((Action)(() =>
+                    SpcModel spcModel = DB.Instance();
+                    List<AoiPcbs> aoiPcbs = new List<AoiPcbs>();
+                    try
                     {
-                        gridControl_Pcbs.DataSource = aoiPcbs;
-                    }));
-                }
-                catch (Exception er)
-                {
+                        string sql = String.Format(QueryPars.GetPcbsQueryStr(), t);
+                        aoiPcbs = spcModel.pcbs.SqlQuery(sql).ToList();
+                    }
+                    catch (Exception er)
+                    {
 
-                }
-                finally
-                {
-                    if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
-                    spcModel.Dispose();
-                }
-            });
+                    }
+                    finally
+                    {
+                        MergeIntoDb(aoiPcbs);
+                        spcModel.Dispose();
+                    }
+                }, tb);
+            }
+            //if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
         }
 
         /// <summary>

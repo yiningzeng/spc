@@ -97,12 +97,19 @@ namespace spc_client
 
         private void sbStartSearch_Click(object sender, EventArgs e)
         {
+            if (dateEdit_Start.DateTime >= dateEdit_End.DateTime)
+            {
+                MessageBox.Show("开始时间大于结束时间，请重新输入");
+                return;
+            }
+
             QueryPars.startTime = dateEdit_Start.DateTime;
             QueryPars.endTime = dateEdit_End.DateTime;
             QueryPars.pcbNumber = textEdit_Number.Text;
             QueryPars.softwareId = gridLookUpEdit_Software.EditValue + "";
             QueryPars.resultId = gridLookUpEdit_NgTypeList.EditValue + "";
             QueryPars.ng_type = gridLookUpEdit_NgTypeList.Text;
+
             if (radioGroup_NgTye.SelectedIndex == 0)
             {
                 QueryPars.resultId = "-1";

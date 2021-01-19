@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +21,7 @@ namespace spc_client.SqlPar
         public static string ng_type { get; set; }
         public static string GetPcbsQueryStr()
         {
-            string queryStr = String.Format("SELECT * FROM aoi_pcbs WHERE aoi_pcbs.create_time BETWEEN '{0}' AND '{1}'",
+            string queryStr = String.Format("SELECT * FROM {{0}} WHERE create_time BETWEEN '{0}' AND '{1}'",
                 startTime.ToString("yyyy-MM-dd HH:mm:ss"),
                  endTime.ToString("yyyy-MM-dd HH:mm:ss"));
             if (enableResult)
@@ -30,11 +30,11 @@ namespace spc_client.SqlPar
             }
             if (enablePcbNumber)
             {
-                queryStr += " AND aoi_pcbs.pcb_number LIKE '%" + pcbNumber + "%'";
+                queryStr += " AND pcb_number LIKE '%" + pcbNumber + "%'";
             }
             if (enableSoftware)
             {
-                queryStr += " AND aoi_pcbs.software_id = " + softwareId;
+                queryStr += " AND software_id = " + softwareId;
             }
             return String.Format("SELECT * FROM ({0}) ap " +
                 "LEFT JOIN (SELECT * from (SELECT id as software_id, software_name, pc_id FROM aoi_softwares) temp " +

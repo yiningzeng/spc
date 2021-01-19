@@ -15,6 +15,52 @@ namespace spc_client.Tools
 {
     public class Utils
     {
+        /// <summary>
+        /// 主要用于判断是否是当月，如果是当月那么返回不加前缀的表名
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        public static string GetFinalTableName(DateTime time, string prefix)
+        {
+            if (time.Month == DateTime.Now.Month && time.Year == DateTime.Now.Year) // 开始时间是否是当月
+            {
+                return prefix;
+            }
+            else
+            {
+                return String.Format("{0}_{1}", prefix, time.ToString("yyyy_MM"));
+            }
+        }
+        /// <summary>
+        /// 获取两个时间之间的所有分表，如果是当月的话那么就不会加时间后缀
+        /// </summary>
+        /// <param name="startDateTime">开始时间</param>
+        /// <param name="endDateTime">结束时间</param>
+        /// <param name="prefix">表名前缀</param>
+        /// <returns></returns>
+        public static List<string> GetQueryTables(DateTime startDateTime, DateTime endDateTime, string prefix)
+        {
+            List<string> res = new List<string>();
+            res.Add(GetFinalTableName(startDateTime, prefix));
+
+            DateTime tempStartDt = DateTime.Parse(startDateTime.ToString("yyyy-MM"));
+            DateTime tempEndDt = DateTime.Parse(endDateTime.ToString("yyyy-MM"));
+            while (true)
+            {
+                tempStartDt = DateTime.Parse(tempStartDt.AddMonths(1).ToString("yyyy-MM"));
+                if (tempStartDt <= tempEndDt) // 开始时间加了一个月比结束时间还-*小，加一个
+                {
+                    res.Add(GetFinalTableName(tempStartDt, prefix));
+                    // 这里加完就可以退出了！因为大于当月的其他月份的是完全不存在的
+                    if (tempStartDt.Month >= DateTime.Now.Month && tempStartDt.Year == DateTime.Now.Year) break;
+                }
+                else break;
+            }
+            return res;
+        }
+
+
         public static int[] Sort(int[] arr)
         {
             int temp = 0;

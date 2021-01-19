@@ -19,8 +19,6 @@ namespace spc_client.SqlPar
         public string result_ng_type_id { get; set; }
         public string ng_type_id { get; set; }
         public string NG { get; set; }
-        public string pc_ip { get; set; }
-        public string pcb_path { get; set; }
         public string part_image_path { get; set; }
         public string pcb_id { get; set; }
 
@@ -30,9 +28,9 @@ namespace spc_client.SqlPar
             if (!s2.StartsWith("\\")) s2 = "\\" + s2;
             return String.Format("{0}{1}", s1, s2);
         }
-        public string GetBasePath()
+        public string GetBasePath(string pc_ip, string pcb_path)
         {
-            if(pc_ip.Contains("Ftp://"))
+            if (pc_ip.Contains("Ftp://"))
             {
                 pc_ip = pc_ip.Replace("Ftp://", "").Replace("/", "");
             }

@@ -29,13 +29,14 @@ namespace spc_client.ShowForm
 {
     public partial class Statistical : XtraFormBase
     {
-        Rectangle rectFront,rectBack;
+        List<RetNgTypesPai> finalDB = new List<RetNgTypesPai>();
+        int allQueryNum = 0; //指的是一共查询的月份个数
+        int currentNum = 0; // 标识当前运行了几个
         public Statistical()
         {
             InitializeComponent();
             gridView_Results.FocusedRowChanged += GridView_Results_FocusedRowChanged;
             gridView_Results.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
-            rectFront = rectBack = new Rectangle(-1, -1, 0, 0);
             SetReadOnly(gridView_Results);
         }
         void SetReadOnly(GridView gv)
@@ -181,6 +182,11 @@ namespace spc_client.ShowForm
 
         void ReSetInfo()
         {
+            finalDB = null;
+            finalDB = new List<RetNgTypesPai>();
+            allQueryNum = 0; //指的是一共查询的月份个数
+            currentNum = 0; // 标识当前运行了几个
+
             chartControl1.DataSource = null;
             chartControl_NG.DataSource = null;
             gridControl_Results.DataSource = null;
@@ -205,6 +211,7 @@ namespace spc_client.ShowForm
         public override void QueryReset()
         {
             ReSetInfo();
+
             MySmartThreadPool.Instance().QueueWorkItem(() =>
             {
                 if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
