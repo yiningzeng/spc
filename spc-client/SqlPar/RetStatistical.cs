@@ -16,8 +16,9 @@ namespace spc_client.SqlPar
         public int count_error_pcb { get; set; }
         public int count_warning_pcb { get; set; }
         public int count_good_pcb { get; set; }
-        public float pcb_ppm { get; set; }
+        public double pcb_ppm { get; set; }
         public string defect_rate { get; set; }
         public string pass_rate { get; set; }
+        public DateTime create_time { get; set; }
     }
 }

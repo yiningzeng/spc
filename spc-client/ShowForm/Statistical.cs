@@ -30,8 +30,9 @@ namespace spc_client.ShowForm
     public partial class Statistical : XtraFormBase
     {
         List<RetNgTypesPai> finalDB = new List<RetNgTypesPai>();
-        int allQueryNum = 0; //指的是一共查询的月份个数
-        int currentNum = 0; // 标识当前运行了几个
+
+        List<RetStatistical> finalRetStatistical = new List<RetStatistical>();
+        SubTableQueryHelper<RetStatistical> retStatisticalSHelper = new SubTableQueryHelper<RetStatistical>();
         public Statistical()
         {
             InitializeComponent();
@@ -70,21 +71,27 @@ namespace spc_client.ShowForm
         }
         private void ShowChart(RetStatistical retStatistical)
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add(new DataColumn("ItemName")); //项目名称
-            dt.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
+            try
+            {
+                DataTable dt = new DataTable();
+                dt.Columns.Add(new DataColumn("ItemName")); //项目名称
+                dt.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
 
-            dt.Rows.Add(new object[] { "不良率", float.Parse(retStatistical.defect_rate.Replace("%","")) / 100 });
-            dt.Rows.Add(new object[] { "直通率", float.Parse(retStatistical.pass_rate.Replace("%", "")) / 100 });
-            DataTable dt2 = new DataTable();
-            dt2.Columns.Add(new DataColumn("ItemName")); //项目名称
-            dt2.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
+                dt.Rows.Add(new object[] { "不良率", float.Parse(retStatistical.defect_rate.Replace("%", "")) / 100 });
+                dt.Rows.Add(new object[] { "直通率", float.Parse(retStatistical.pass_rate.Replace("%", "")) / 100 });
+                DataTable dt2 = new DataTable();
+                dt2.Columns.Add(new DataColumn("ItemName")); //项目名称
+                dt2.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
 
-            dt2.Rows.Add(new object[] { "不良板数", retStatistical.count_error_pcb});
-            dt2.Rows.Add(new object[] { "误报板数", retStatistical.count_warning_pcb });
-            dt2.Rows.Add(new object[] { "GOOD板数", retStatistical.count_good_pcb });
-            CreatePieChart(retStatistical.software_id, dt, dt2);
-            CreateBarChart(retStatistical);
+                dt2.Rows.Add(new object[] { "不良板数", retStatistical.count_error_pcb });
+                dt2.Rows.Add(new object[] { "误报板数", retStatistical.count_warning_pcb });
+                dt2.Rows.Add(new object[] { "GOOD板数", retStatistical.count_good_pcb });
+                CreatePieChart(retStatistical.software_id, dt, dt2);
+                CreateBarChart(retStatistical);
+            }
+            catch
+            {
+            }
         }
         private void CreateBarChart(RetStatistical retStatistical)
         {
@@ -184,8 +191,11 @@ namespace spc_client.ShowForm
         {
             finalDB = null;
             finalDB = new List<RetNgTypesPai>();
-            allQueryNum = 0; //指的是一共查询的月份个数
-            currentNum = 0; // 标识当前运行了几个
+            finalRetStatistical = null;
+            finalRetStatistical = new List<RetStatistical>();
+            retStatisticalSHelper = null;
+            retStatisticalSHelper = new SubTableQueryHelper<RetStatistical>();
+            //finalRetStatistical.Clear();
 
             chartControl1.DataSource = null;
             chartControl_NG.DataSource = null;
@@ -211,29 +221,64 @@ namespace spc_client.ShowForm
         public override void QueryReset()
         {
             ReSetInfo();
-
-            MySmartThreadPool.Instance().QueueWorkItem(() =>
-            {
-                if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
-                SpcModel spcModel = DB.Instance();
-                try
+            if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
+            List<string> sqls = Utils.GetQueryStrs(QueryPars.GetMainStatisticalStrV2(), QueryPars.startTime, QueryPars.endTime, "aoi_pcbs");
+            retStatisticalSHelper.Run(sqls,
+                (temp, isDone) =>
                 {
-                    List<RetStatistical> rets = spcModel.Database.SqlQuery<RetStatistical>(QueryPars.GetMainStatisticalStr()).ToList();
-                    this.BeginInvoke((Action)(() =>
+                    if (temp.Count > 0)
                     {
-                        gridControl_Results.DataSource = rets;
-                    }));
-                }
-                catch (Exception er)
-                {
+                        if (finalRetStatistical.Count > 0)
+                        {
+                            for (int i =0; i< finalRetStatistical.Count; i++)
+                            {
+                                var one = finalRetStatistical[i];
+                                foreach (var tempOne in temp)
+                                {
+                                    if (tempOne.pc_id == one.pc_id && tempOne.software_id == one.software_id)
+                                    {
+                                        one.count_error_pcb += tempOne.count_error_pcb;
+                                        one.count_good_pcb += tempOne.count_good_pcb;
+                                        one.count_pcb += tempOne.count_pcb;
+                                        one.count_warning_pcb += tempOne.count_warning_pcb;
+                                        finalRetStatistical[i] = one;
+                                    }
+                                }
+                            }
+                            //RetStatistical one = finalRetStatistical[finalRetStatistical.Count - 1];
+                            //if (one.create_time >= temp[0].create_time)
+                            //{
+                            //    finalRetStatistical.AddRange(temp);
+                            //}
+                            //else
+                            //{
+                            //    temp.AddRange(finalRetStatistical);
+                            //    finalRetStatistical = temp;
+                            //}
+                        }
+                        else
+                        {
+                            finalRetStatistical.AddRange(temp);
+                        }
+                    }
 
-                }
-                finally
-                {
-                    if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
-                    spcModel.Dispose();
-                }
-            });
+                    if (isDone)
+                    {
+                        foreach (var one in finalRetStatistical)
+                        {
+                            one.pcb_ppm = Math.Round((double)one.count_warning_pcb / (double)one.count_pcb, 2);
+                            
+                            one.defect_rate = (one.count_error_pcb * 100 / one.count_pcb).ToString("f2") + "%";
+
+                            one.pass_rate = (one.count_good_pcb * 100 / one.count_pcb ).ToString("f2") + "%";
+                        }
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            gridControl_Results.DataSource = finalRetStatistical;
+                            if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+                        }));
+                    }
+                });
         }
 
     }

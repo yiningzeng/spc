@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace spc_client.Tools
 {
-    public class SubTableQuery<T>
+    public class SubTableQueryHelper<T>
     {
         public delegate void Callback(List<T> listRes, bool isDone);
-        public int allQueryNum = 0; //指的是一共查询的月份个数
-        public int currentNum = 0; // 标识当前运行了几个
-        public SubTableQuery()
+        private int allQueryNum = 0; // 指的是一共查询的月份个数
+        private int currentNum = 0; // 标识当前运行了几个
+        public SubTableQueryHelper()
         {
 
         }
@@ -36,9 +36,9 @@ namespace spc_client.Tools
                     }
                     finally
                     {
+                        spcModel.Dispose();
                         currentNum++;
                         callback(res, currentNum == allQueryNum);
-                        spcModel.Dispose();
                     }
                 }, qStr);
             }

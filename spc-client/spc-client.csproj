@@ -154,7 +154,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tools\SubTableQuery.cs" />
+    <Compile Include="Tools\SubTableQueryHelper.cs" />
     <Compile Include="Update.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -30,7 +30,7 @@ namespace spc_client.ShowForm
     {
         List<AoiPcbs> finalDB = new List<AoiPcbs>();
         AoiPcbs currentPcb = null;
-        SubTableQuery<AoiPcbs> pcbsSubTableQuery = new SubTableQuery<AoiPcbs>();
+        SubTableQueryHelper<AoiPcbs> pcbsSubTableQuery = new SubTableQueryHelper<AoiPcbs>();
         Rectangle rectFront,rectBack;
         public ShowDetail()
         {
@@ -238,7 +238,7 @@ namespace spc_client.ShowForm
             finalDB = null;
             finalDB = new List<AoiPcbs>();
             pcbsSubTableQuery = null;
-            pcbsSubTableQuery = new SubTableQuery<AoiPcbs>();
+            pcbsSubTableQuery = new SubTableQueryHelper<AoiPcbs>();
             pictureBox_Front.Image = null;
             pictureBox_Back.Image = null;
             gridControl_Pcbs.DataSource = null;
@@ -265,7 +265,7 @@ namespace spc_client.ShowForm
 
             pcbsSubTableQuery.Run(
                 Utils.GetQueryStrs(QueryPars.GetPcbsQueryStr(), QueryPars.startTime, QueryPars.endTime, "aoi_pcbs"),
-                new SubTableQuery<AoiPcbs>.Callback((temp, isDone) =>
+                new SubTableQueryHelper<AoiPcbs>.Callback((temp, isDone) =>
                 {
                     if (temp.Count > 0)
                     {

@@ -92,46 +92,33 @@ namespace spc_client.SqlPar
         /// <summary>
         /// 单个月份的统计查询语句
         /// </summary>
-        /// <param name="dateSuffix"></param>
         /// <returns></returns>
-        public static string GetMainStatisticalStrV2(string dateSuffix)
+        public static string GetMainStatisticalStrV2()
         {
             string whereStr = String.Format(" WHERE software_id = `aoi_softwares`.`id` AND create_time BETWEEN '{0}' AND '{1}'",
                 startTime.ToString("yyyy-MM-dd HH:mm:ss"),
                  endTime.ToString("yyyy-MM-dd HH:mm:ss"));
 
             string queryStr = String.Format("SELECT DISTINCT" +
-                                            "	`{0}`.`id` AS `pcb_id`," +
                                             "	`aoi_pcs`.`id` AS `pc_id`," +
                                             "	`aoi_pcs`.`pc_name` AS `pc_name`," +
                                             "	`aoi_pcs`.`pc_ip` AS `pc_ip`," +
                                             "	`aoi_softwares`.`software_name` AS `software_name`," +
-                                            "	`aoi_softwares`.`side_number` AS `side_number`," +
-                                            "	`{0}`.`pcb_number` AS `pcb_number`," +
-                                            "	`{0}`.`pcb_name` AS `pcb_name`," +
-                                            "	`{0}`.`carrier_width` AS `carrier_width`," +
-                                            "	`{0}`.`carrier_height` AS `carrier_height`," +
-                                            "	`{0}`.`pcb_width` AS `pcb_width`," +
-                                            "	`{0}`.`pcb_height` AS `pcb_height`," +
-                                            "	`{0}`.`pcb_childen_number` AS `pcb_childen_number`," +
-                                            "	`{0}`.`pcb_path` AS `pcb_path`," +
-                                            "	`{0}`.`ng_count` AS `ng_count`," +
-                                            "	`{0}`.`is_misjudge` AS `is_misjudge`," +
-                                            "	`{0}`.`is_error` AS `is_error`," +
-                                            "	`{0}`.`create_time` AS `create_time`," +
                                             "	`aoi_softwares`.`id` AS `software_id`," +
-                                            "	( SELECT COUNT( * ) FROM `{0}` {3}) AS 'count_pcb'," +
-                                            "	( SELECT SUM( is_error = 1 ) FROM `{0}` {3}) AS 'count_error_pcb'," +
-                                            "	( SELECT SUM( is_misjudge = 1 ) FROM `{0}` {3}) AS 'count_warning_pcb'," +
-                                            "	( SELECT SUM( is_error = 0 ) FROM `{0}` {3}) AS 'count_good_pcb' " +
+                                            "	( SELECT COUNT( * ) FROM `{{0}}` {2}) AS 'count_pcb'," +
+                                            "	( SELECT SUM( is_error = 1 ) FROM `{{0}}` {2}) AS 'count_error_pcb'," +
+                                            "	( SELECT SUM( is_misjudge = 1 ) FROM `{{0}}` {2}) AS 'count_warning_pcb'," +
+                                            "	( SELECT SUM( is_error = 0 ) FROM `{{0}}` {2}) AS 'count_good_pcb'," +
+                                            "	( SELECT SUM( is_misjudge = 1 ) / COUNT( * ) FROM `{{0}}` {2}) AS 'pcb_ppm'," +
+                                            "	0.00 AS 'defect_rate'," +
+                                            "	0.00 AS 'pass_rate'" +
                                             " FROM" +
                                             "	(" +
-                                            "	( `aoi_softwares` JOIN `{0}` ON ( `{0}`.`software_id` = `aoi_softwares`.`id` ) )" +
+                                            "	( `aoi_softwares` JOIN `{{0}}` ON ( `{{0}}`.`software_id` = `aoi_softwares`.`id` ) )" +
                                             "	JOIN `aoi_pcs` ON ( `aoi_softwares`.`pc_id` = `aoi_pcs`.`id` ) " +
                                             "	)" +
-                                            " WHERE {0}.create_time BETWEEN '{1}' AND '{2}'",
-                                             
-                                            "aoi_pcbs" + dateSuffix,
+                                            " WHERE {{0}}.create_time BETWEEN '{0}' AND '{1}' ORDER BY software_id",
+
                                             startTime.ToString("yyyy-MM-dd HH:mm:ss"),
                                             endTime.ToString("yyyy-MM-dd HH:mm:ss"),
                                             whereStr);
