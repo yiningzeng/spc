@@ -60,6 +60,35 @@ namespace spc_client.Tools
             return res;
         }
 
+        /// <summary>
+        /// 获取两个时间之间的所有分表的查询语句，如果是当月的话那么就不会加时间后缀
+        /// </summary>
+        /// <param name="sql">基本的查询语句，带需要替换表名的查询语句</param>
+        /// <param name="startDateTime">开始时间</param>
+        /// <param name="endDateTime">结束时间</param>
+        /// <param name="prefix">表名前缀</param>
+        /// <returns></returns>
+        public static List<string> GetQueryStrs(string sql, DateTime startDateTime, DateTime endDateTime, string prefix)
+        {
+            List<string> res = new List<string>();
+            res.Add(String.Format(sql, GetFinalTableName(startDateTime, prefix)));
+
+            DateTime tempStartDt = DateTime.Parse(startDateTime.ToString("yyyy-MM"));
+            DateTime tempEndDt = DateTime.Parse(endDateTime.ToString("yyyy-MM"));
+            while (true)
+            {
+                tempStartDt = DateTime.Parse(tempStartDt.AddMonths(1).ToString("yyyy-MM"));
+                if (tempStartDt <= tempEndDt) // 开始时间加了一个月比结束时间还-*小，加一个
+                {
+                    res.Add(String.Format(sql, GetFinalTableName(tempStartDt, prefix)));
+                    // 这里加完就可以退出了！因为大于当月的其他月份的是完全不存在的
+                    if (tempStartDt.Month >= DateTime.Now.Month && tempStartDt.Year == DateTime.Now.Year) break;
+                }
+                else break;
+            }
+            return res;
+        }
+
 
         public static int[] Sort(int[] arr)
         {

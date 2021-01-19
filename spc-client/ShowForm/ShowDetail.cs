@@ -30,8 +30,7 @@ namespace spc_client.ShowForm
     {
         List<AoiPcbs> finalDB = new List<AoiPcbs>();
         AoiPcbs currentPcb = null;
-        int allQueryNum = 0; //指的是一共查询的月份个数
-        int currentNum = 0; // 标识当前运行了几个
+        SubTableQuery<AoiPcbs> pcbsSubTableQuery = new SubTableQuery<AoiPcbs>();
         Rectangle rectFront,rectBack;
         public ShowDetail()
         {
@@ -238,16 +237,16 @@ namespace spc_client.ShowForm
         {
             finalDB = null;
             finalDB = new List<AoiPcbs>();
-            currentNum = allQueryNum = 0;
+            pcbsSubTableQuery = null;
+            pcbsSubTableQuery = new SubTableQuery<AoiPcbs>();
             pictureBox_Front.Image = null;
             pictureBox_Back.Image = null;
             gridControl_Pcbs.DataSource = null;
             gridControl_Results.DataSource = null;
         }
 
-        void MergeIntoDb(List<AoiPcbs> temp)
+        void MergeIntoDb(List<AoiPcbs> temp, bool isDone)
         {
-            currentNum++;
             if (temp.Count > 0)
             {
                 if (finalDB.Count > 0)
@@ -269,7 +268,7 @@ namespace spc_client.ShowForm
                 }
             }
 
-            if(currentNum == allQueryNum)
+            if(isDone)
             {
                 this.BeginInvoke((Action)(() =>
                 {
@@ -296,30 +295,11 @@ namespace spc_client.ShowForm
             }
             if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
 
-            List<string> tables = Utils.GetQueryTables(QueryPars.startTime, QueryPars.endTime, "aoi_pcbs");
-            allQueryNum = tables.Count;
-            foreach (var tb in tables)
-            {
-                MySmartThreadPool.Instance().QueueWorkItem((t) =>
-                {
-                    SpcModel spcModel = DB.Instance();
-                    List<AoiPcbs> aoiPcbs = new List<AoiPcbs>();
-                    try
-                    {
-                        string sql = String.Format(QueryPars.GetPcbsQueryStr(), t);
-                        aoiPcbs = spcModel.pcbs.SqlQuery(sql).ToList();
-                    }
-                    catch (Exception er)
-                    {
 
-                    }
-                    finally
-                    {
-                        MergeIntoDb(aoiPcbs);
-                        spcModel.Dispose();
-                    }
-                }, tb);
-            }
+            pcbsSubTableQuery.Run(
+                Utils.GetQueryStrs(QueryPars.GetPcbsQueryStr(), QueryPars.startTime, QueryPars.endTime, "aoi_pcbs"),
+                new SubTableQuery<AoiPcbs>.Callback(MergeIntoDb));
+           
             //if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
         }
 
