@@ -57,14 +57,23 @@ namespace spc_client
                                     lbErr.Visible = true;
                                     lbErrNum.Visible = true;
                                     lbErrNum.Text = (int.Parse(lbErrNum.Text) + 1).ToString();
-                                    lbNow.Text = (int.Parse(lbNow.Text) + 1).ToString();
                                 }));
                             }
-                            f.Delete();
-
+                        }
+                        catch (Exception er) {
                             this.BeginInvoke((Action)(() =>
                             {
-                                if (int.Parse(lbErrNum.Text) + int.Parse(lbNow.Text) == fileInfos.Length)
+                                lbErr.Visible = true;
+                                lbErrNum.Visible = true;
+                                lbErrNum.Text = (int.Parse(lbErrNum.Text) + 1).ToString();
+                            }));
+                        }
+                        finally
+                        {
+                            f.Delete();
+                            this.BeginInvoke((Action)(() =>
+                            {
+                                if (int.Parse(lbErrNum.Text) + int.Parse(lbNow.Text) >= fileInfos.Length)
                                 {
                                     if (MessageBox.Show(lbNow.Text + "个更新完成", "提醒", MessageBoxButtons.OK) == DialogResult.OK)
                                     {
@@ -73,7 +82,6 @@ namespace spc_client
                                 }
                             }));
                         }
-                        catch (Exception er) { }
                     }, fileInfo);
                 }
             }
