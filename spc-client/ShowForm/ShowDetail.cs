@@ -245,39 +245,6 @@ namespace spc_client.ShowForm
             gridControl_Results.DataSource = null;
         }
 
-        void MergeIntoDb(List<AoiPcbs> temp, bool isDone)
-        {
-            if (temp.Count > 0)
-            {
-                if (finalDB.Count > 0)
-                {
-                    AoiPcbs aoiPcbs = finalDB[finalDB.Count - 1];
-                    if (aoiPcbs.create_time >= temp[0].create_time)
-                    {
-                        finalDB.AddRange(temp);
-                    }
-                    else
-                    {
-                        temp.AddRange(finalDB);
-                        finalDB = temp;
-                    }
-                }
-                else
-                {
-                    finalDB.AddRange(temp);
-                }
-            }
-
-            if(isDone)
-            {
-                this.BeginInvoke((Action)(() =>
-                {
-                    gridControl_Pcbs.DataSource = finalDB;
-                    if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
-                }));
-            }
-        }
-
         public override void Export()
         {
             ShowDetailNew showDetailNew = new ShowDetailNew();
@@ -287,8 +254,8 @@ namespace spc_client.ShowForm
         public override void QueryReset()
         {
             ReSetInfo();
-           
-            if(QueryPars.enableResult)
+
+            if (QueryPars.enableResult)
             {
                 //string aa = gridView_Results.ActiveFilterString;
                 gridView_Results.ActiveFilterString = String.Format("[ng_str] = '{0}'", QueryPars.ng_type);
@@ -298,8 +265,39 @@ namespace spc_client.ShowForm
 
             pcbsSubTableQuery.Run(
                 Utils.GetQueryStrs(QueryPars.GetPcbsQueryStr(), QueryPars.startTime, QueryPars.endTime, "aoi_pcbs"),
-                new SubTableQuery<AoiPcbs>.Callback(MergeIntoDb));
-           
+                new SubTableQuery<AoiPcbs>.Callback((temp, isDone) =>
+                {
+                    if (temp.Count > 0)
+                    {
+                        if (finalDB.Count > 0)
+                        {
+                            AoiPcbs aoiPcbs = finalDB[finalDB.Count - 1];
+                            if (aoiPcbs.create_time >= temp[0].create_time)
+                            {
+                                finalDB.AddRange(temp);
+                            }
+                            else
+                            {
+                                temp.AddRange(finalDB);
+                                finalDB = temp;
+                            }
+                        }
+                        else
+                        {
+                            finalDB.AddRange(temp);
+                        }
+                    }
+
+                    if (isDone)
+                    {
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            gridControl_Pcbs.DataSource = finalDB;
+                            if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+                        }));
+                    }
+                }));
+
             //if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
         }
 
