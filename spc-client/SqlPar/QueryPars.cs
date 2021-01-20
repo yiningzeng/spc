@@ -124,5 +124,43 @@ namespace spc_client.SqlPar
                                             whereStr);
             return queryStr;
         }
+
+        /// <summary>
+        /// 获取查询页面饼图的单表查询语句
+        /// </summary>
+        /// <returns></returns>
+        public static string GetChartPieBaseSql(string oneSoftwareId)
+        {
+            //"# 这里left join on 加了if主要是如果result_ng_type_id =''表示为ok的数据" + 
+            return String.Format(" SELECT" +
+                                    "	*," +
+                                    "	COUNT( * ) AS 'count' " +
+                                    " FROM" +
+                                    "	(" +
+                                    " SELECT" +
+                                    "	aoi_ng_types.software_id," +
+                                    "	ng_type_id," +
+                                    "	result_ng_type_id," +
+                                    " IF" +
+                                    "	( result_ng_type_id = '', 'OK', ng_str ) AS 'result_ng_str'," +
+                                    "	{{0}}.create_time" +
+                                    " FROM" +
+                                    "	{{0}}" +
+                                    "	LEFT JOIN aoi_ng_types ON aoi_ng_types.id =" +
+                                    " IF" +
+                                    "	( {{0}}.result_ng_type_id = '', {{0}}.ng_type_id, {{0}}.result_ng_type_id ) " +
+                                    " WHERE" +
+                                    "	! ISNULL( result_ng_type_id ) " +
+                                    "	AND ! ISNULL( ng_type_id ) " +
+                                    "	AND software_id = '{0}' AND {{0}}.create_time BETWEEN '{1}' AND '{2}'" +
+                                    "	) AS fin " +
+                                    " GROUP BY" +
+                                    "	result_ng_type_id," +
+                                    "	software_id",
+
+                                    oneSoftwareId,
+                                    startTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    endTime.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
     }
 }

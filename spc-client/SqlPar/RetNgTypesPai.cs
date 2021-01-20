@@ -8,7 +8,7 @@ namespace spc_client.SqlPar
 {
     class RetNgTypesPai
     {
-        public string ng_str { get; set; }
-        public int num { get; set; }
+        public string result_ng_str { get; set; }
+        public int count { get; set; }
     }
 }
