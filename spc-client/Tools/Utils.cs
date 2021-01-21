@@ -21,6 +21,23 @@ namespace spc_client.Tools
         /// <param name="time"></param>
         /// <param name="prefix"></param>
         /// <returns></returns>
+        public static string GetFinalDateTimeSuffix(DateTime time)
+        {
+            if (time.Month == DateTime.Now.Month && time.Year == DateTime.Now.Year) // 开始时间是否是当月
+            {
+                return "";
+            }
+            else
+            {
+                return String.Format("_{0}", time.ToString("yyyy_MM"));
+            }
+        }
+        /// <summary>
+        /// 主要用于判断是否是当月，如果是当月那么返回不加前缀的表名
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
         public static string GetFinalTableName(DateTime time, string prefix)
         {
             if (time.Month == DateTime.Now.Month && time.Year == DateTime.Now.Year) // 开始时间是否是当月
@@ -61,7 +78,7 @@ namespace spc_client.Tools
         }
 
         /// <summary>
-        /// 获取两个时间之间的所有分表的查询语句，如果是当月的话那么就不会加时间后缀
+        /// 主要用于单表的查询等,获取两个时间之间的所有分表的查询语句，如果是当月的话那么就不会加时间后缀
         /// </summary>
         /// <param name="sql">基本的查询语句，带需要替换表名的查询语句</param>
         /// <param name="startDateTime">开始时间</param>
@@ -89,6 +106,34 @@ namespace spc_client.Tools
             return res;
         }
 
+        /// <summary>
+        /// 主要用于查询语句中存在多张日期表的查询等,获取两个时间之间的所有分表的查询语句，如果是当月的话那么就不会加时间后缀
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="startDateTime"></param>
+        /// <param name="endDateTime"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        public static List<string> GetQueryStrsOnlyReplaceDate(string sql, DateTime startDateTime, DateTime endDateTime)
+        {
+            List<string> res = new List<string>();
+            res.Add(String.Format(sql, GetFinalDateTimeSuffix(startDateTime)));
+
+            DateTime tempStartDt = DateTime.Parse(startDateTime.ToString("yyyy-MM"));
+            DateTime tempEndDt = DateTime.Parse(endDateTime.ToString("yyyy-MM"));
+            while (true)
+            {
+                tempStartDt = DateTime.Parse(tempStartDt.AddMonths(1).ToString("yyyy-MM"));
+                if (tempStartDt <= tempEndDt) // 开始时间加了一个月比结束时间还-*小，加一个
+                {
+                    res.Add(String.Format(sql, GetFinalDateTimeSuffix(tempStartDt)));
+                    // 这里加完就可以退出了！因为大于当月的其他月份的是完全不存在的
+                    if (tempStartDt.Month >= DateTime.Now.Month && tempStartDt.Year == DateTime.Now.Year) break;
+                }
+                else break;
+            }
+            return res;
+        }
 
         public static int[] Sort(int[] arr)
         {

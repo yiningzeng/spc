@@ -36,10 +36,76 @@ namespace spc_client.SqlPar
             {
                 queryStr += " AND software_id = " + softwareId;
             }
-            return String.Format("SELECT * FROM ({0}) ap " +
-                "LEFT JOIN (SELECT * from (SELECT id as software_id, software_name, pc_id FROM aoi_softwares) temp " +
-                "LEFT JOIN aoi_pcs ON temp.pc_id = aoi_pcs.id) t2 ON ap.software_id = t2.software_id", queryStr);
+            return String.Format(" SELECT " +
+                                "  	*  " +
+                                "  FROM " +
+                                "  	( " +
+                                "  SELECT " +
+                                "  	pc_id, " +
+                                "  	pc_name, " +
+                                "  	pc_ip, " +
+                                "  	software_name, " +
+                                "  	ap.*  " +
+                                "  FROM " +
+                                "  	( {0}) ap " +
+                                "  	LEFT JOIN ( " +
+                                "  SELECT " +
+                                "  	*  " +
+                                "  FROM " +
+                                "  	( SELECT id AS software_id_2, software_name, pc_id FROM aoi_softwares ) temp " +
+                                "  	LEFT JOIN aoi_pcs ON temp.pc_id = aoi_pcs.id  " +
+                                "  	) t2 ON ap.software_id = t2.software_id_2  " +
+                                "  	) aa  " +
+                                "  ORDER BY " +
+                                "  	create_time DESC ",
+                                queryStr);
         }
+
+        public static string GetPcbsQueryStrExport()
+        {
+            string queryStr = String.Format(" SELECT " +
+                                             " aoi_softwares.id AS software_id, " +
+                                             " aoi_softwares.software_name AS software_name, " +
+                                             " aoi_softwares.pc_id AS pc_id, " +
+                                             " aoi_softwares.side_number AS side_number, " +
+                                             " aoi_pcbs{{0}}.id AS pcb_id, " +
+                                             " aoi_pcbs{{0}}.pcb_number AS pcb_number, " +
+                                             " aoi_pcbs{{0}}.pcb_name AS pcb_name, " +
+                                             " aoi_pcbs{{0}}.carrier_width AS carrier_width, " +
+                                             " aoi_pcbs{{0}}.carrier_height AS carrier_height, " +
+                                             " aoi_pcbs{{0}}.pcb_width AS pcb_width, " +
+                                             " aoi_pcbs{{0}}.pcb_height AS pcb_height, " +
+                                             " aoi_pcbs{{0}}.pcb_childen_number AS pcb_childen_number, " +
+                                             " aoi_pcbs{{0}}.pcb_path AS pcb_path, " +
+                                             " aoi_pcbs{{0}}.ng_count AS ng_count, " +
+                                             " aoi_pcbs{{0}}.is_misjudge AS all_is_misjudge, " +
+                                             " aoi_pcbs{{0}}.is_error AS is_error, " +
+                                             " aoi_results{{0}}.is_back AS is_back, " +
+                                             " aoi_results{{0}}.score AS score, " +
+                                             " aoi_results{{0}}.area AS area, " +
+                                             " aoi_results{{0}}.region AS region, " +
+                                             " aoi_results{{0}}.ng_type_id AS ng_type_id, " +
+                                             " aoi_results{{0}}.is_misjudge AS is_misjudge, " +
+                                             " aoi_results{{0}}.result_ng_type_id AS result_ng_type_id, " +
+                                             " aoi_results{{0}}.part_image_path AS part_image_path, " +
+                                             " aoi_results{{0}}.create_time AS create_time, " +
+                                             " aoi_ng_types.ng_str AS ng_str, " +
+                                             " (SELECT ng_str FROM aoi_ng_types WHERE id = result_ng_type_id) as result_ng_str, " +
+                                             " aoi_pcs.pc_name AS pc_name, " +
+                                             " aoi_pcs.pc_ip AS pc_ip " +
+                                             " FROM " +
+                                             " ((((aoi_results{{0}} " +
+                                             " JOIN aoi_pcbs{{0}} ON (aoi_results{{0}}.pcb_id = aoi_pcbs{{0}}.id)) " +
+                                             " JOIN aoi_softwares ON (aoi_pcbs{{0}}.software_id = aoi_softwares.id)) " +
+                                             " JOIN aoi_ng_types ON (aoi_ng_types.software_id = aoi_softwares.id AND aoi_results{{0}}.ng_type_id = aoi_ng_types.id)) " +
+                                             " JOIN aoi_pcs ON (aoi_softwares.pc_id = aoi_pcs.id)) " +
+                                             " WHERE " +
+                                             " aoi_results{{0}}.create_time BETWEEN '{0}' AND '{1}'",
+                                             startTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                                             endTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            return queryStr;
+        }
+
         public static string GetAllInfoQueryStr()
         {
             string queryStr = String.Format("SELECT *, FORMAT(score,2) AS score_final FROM all_info_pcbs WHERE all_info_pcbs.create_time BETWEEN '{0}' AND '{1}'",

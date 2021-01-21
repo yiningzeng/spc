@@ -29,10 +29,11 @@ namespace spc_client.ShowForm
 {
     public partial class Statistical : XtraFormBase
     {
-        List<RetNgTypesPai> finalDB = new List<RetNgTypesPai>();
-
-        List<RetStatistical> finalRetStatistical = new List<RetStatistical>();
+        List<RetStatistical> finalRetStatisticalDb = new List<RetStatistical>();
         SubTableQueryHelper<RetStatistical> retStatisticalSHelper = new SubTableQueryHelper<RetStatistical>();
+
+        List<RetNgTypesPai> finalNgPaiDb = new List<RetNgTypesPai>();
+        SubTableQueryHelper<RetNgTypesPai> ngPaiHelper = new SubTableQueryHelper<RetNgTypesPai>();
         public Statistical()
         {
             InitializeComponent();
@@ -100,17 +101,7 @@ namespace spc_client.ShowForm
             series1.Points.Add(new SeriesPoint("不良板数", retStatistical.count_error_pcb));
             series1.Points.Add(new SeriesPoint("误报板数", retStatistical.count_warning_pcb));
             series1.Points.Add(new SeriesPoint("GOOD板数", retStatistical.count_good_pcb));
-
-            // Create the second side-by-side bar series and add points to it.
-            //Series series2 = new Series("Side-by-Side Bar Series 2", ViewType.Bar);
-            //series2.Points.Add(new SeriesPoint("A", 15));
-            //series2.Points.Add(new SeriesPoint("B", 18));
-            //series2.Points.Add(new SeriesPoint("C", 25));
-            //series2.Points.Add(new SeriesPoint("D", 33));
-
-            // Add the series to the chart.
             chartControl1.Series.Add(series1);
-            //chartControl1.Series.Add(series2);
         }
         private void CreatePieChart(string software_id, DataTable dt, DataTable dt2)
         {
@@ -123,10 +114,8 @@ namespace spc_client.ShowForm
             series.ValueScaleType = ScaleType.Numerical;
             //取值字段
             series.ValueDataMembers.AddRange(new string[] { "ItemValue" });
-            //(series.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
-            ////显示百分比和项目名称(业务员姓名)
-            series.PointOptions.PointView = PointView.ArgumentAndValues;
-            series.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
+            series.LegendTextPattern = "{A}: {V} ({VP:P0})";
+            series.Label.TextPattern = "{A}: {V} ({VP:P0})";
             chartControl3.Series.Add(series);
 
             series = new Series("饼图3", ViewType.Pie);
@@ -137,64 +126,79 @@ namespace spc_client.ShowForm
             series.ValueScaleType = ScaleType.Numerical;
             //取值字段
             series.ValueDataMembers.AddRange(new string[] { "ItemValue" });
-            //(series.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
-            ////显示百分比和项目名称(业务员姓名)
-            series.PointOptions.PointView = PointView.ArgumentAndValues;
-            series.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
+            series.LegendTextPattern = "{A}: {V} ({VP:P0})";
+            series.Label.TextPattern = "{A}: {V} ({VP:P0})";
             chartControl3.Series.Add(series);
 
-          
-            //MySmartThreadPool.Instance().QueueWorkItem(() =>
-            //{
-            //    if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
-            //    SpcModel spcModel = DB.Instance();
-            //    try
-            //    {
-            //        List<RetNgTypesPai> rets = spcModel.Database.SqlQuery<RetNgTypesPai>(string.Format("SELECT ng_str, COUNT(*) as num FROM softwares_ngtype WHERE software_id = '{0}' and create_time BETWEEN '{1}' AND '{2}'  GROUP BY ng_str", software_id, QueryPars.startTime, QueryPars.endTime)).ToList();
-            //        this.BeginInvoke((Action)(() =>
-            //        {
-            //            chartControl_NG.Series.Clear();
-            //            Series series2 = new Series("饼图1", ViewType.Pie);
-            //            series2.DataSource = rets;
-            //            //series.ArgumentScaleType = ScaleType.Qualitative;
-            //            //项目名称
-            //            series2.ArgumentDataMember = "ng_str";
-            //            series2.ValueScaleType = ScaleType.Numerical;
-            //            //取值字段
-            //            series2.ValueDataMembers.AddRange(new string[] { "num" });
-            //            //(series2.Label as PieSeriesLabel).Position = PieSeriesLabelPosition.Inside;
-            //            ////显示百分比和项目名称(业务员姓名)
-            //            series2.PointOptions.PointView = PointView.ArgumentAndValues;
-            //            series2.PointOptions.ValueNumericOptions.Format = NumericFormat.Percent;
-            //            chartControl_NG.Series.Add(series2);
 
-            //        }));
-            //    }
-            //    catch (Exception er)
-            //    {
+            #region 缺陷饼图
+            if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
+            finalNgPaiDb.Clear();
+            Console.Out.WriteLine("---------------");
+            List<string> sqls = Utils.GetQueryStrs(QueryPars.GetChartPieBaseSql(software_id), QueryPars.startTime, QueryPars.endTime, "aoi_results");
+            ngPaiHelper.Run(sqls,
+                (sql, temp, isDone) =>
+                {
+                    if (temp.Count > 0)
+                    {
+                        lock (finalNgPaiDb)
+                        {
+                            Dictionary<string, RetNgTypesPai> fuckTemp = finalNgPaiDb.ToDictionary(v => v.result_ng_str, v => v);
+                            foreach (var one in temp)
+                            {
+                                string key = one.result_ng_str;
+                                if (fuckTemp.ContainsKey(key))
+                                {
+                                    var tempOne = fuckTemp[key];
+                                    tempOne.count += one.count;
+                                    fuckTemp[key] = tempOne;
+                                }
+                                else
+                                {
+                                    fuckTemp.Add(key, one);
+                                }
+                            }
+                            finalNgPaiDb = fuckTemp.Values.ToList();
+                        }
+                    }
+                    if (isDone)
+                    {
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            chartControl_NG.Series.Clear();
+                            Series series2 = new Series("饼图1", ViewType.Pie);
+                            series2.DataSource = finalNgPaiDb;
+                            //series.ArgumentScaleType = ScaleType.Qualitative;
+                            //项目名称
+                            series2.ArgumentDataMember = "result_ng_str";
+                            series2.ValueScaleType = ScaleType.Numerical;
+                            //series2.ToolTipPointPattern = "{A}: {V}(个)";
+                            series2.LegendTextPattern = "{A}: {V} ({VP:P0})";
+                            series2.Label.TextPattern = "{A}: {V} ({VP:P0})";
+                            //取值字段
+                            series2.ValueDataMembers.AddRange(new string[] { "count" });
+                            series2.ToolTipEnabled = DevExpress.Utils.DefaultBoolean.True;
+                            chartControl_NG.Series.Add(series2);
 
-            //    }
-            //    finally
-            //    {
-            //        try
-            //        {
-            //            if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
-            //        }
-            //        catch { }
-    
-            //        spcModel.Dispose();
-            //    }
-            //});
+                            if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+
+                            Console.Out.WriteLine("---------------");
+                        }));
+                    }
+                });
+            #endregion
         }
 
         void ReSetInfo()
         {
-            finalDB = null;
-            finalDB = new List<RetNgTypesPai>();
-            finalRetStatistical = null;
-            finalRetStatistical = new List<RetStatistical>();
+            finalNgPaiDb = null;
+            finalNgPaiDb = new List<RetNgTypesPai>();
+            finalRetStatisticalDb = null;
+            finalRetStatisticalDb = new List<RetStatistical>();
             retStatisticalSHelper = null;
             retStatisticalSHelper = new SubTableQueryHelper<RetStatistical>();
+            ngPaiHelper = null;
+            ngPaiHelper = new SubTableQueryHelper<RetNgTypesPai>();
             //finalRetStatistical.Clear();
 
             chartControl1.DataSource = null;
@@ -222,59 +226,50 @@ namespace spc_client.ShowForm
         {
             ReSetInfo();
             if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
+
             List<string> sqls = Utils.GetQueryStrs(QueryPars.GetMainStatisticalStrV2(), QueryPars.startTime, QueryPars.endTime, "aoi_pcbs");
             retStatisticalSHelper.Run(sqls,
-                (temp, isDone) =>
+                (sql, temp, isDone) =>
                 {
                     if (temp.Count > 0)
                     {
-                        if (finalRetStatistical.Count > 0)
+                        lock (finalRetStatisticalDb)
                         {
-                            for (int i =0; i< finalRetStatistical.Count; i++)
+                            Dictionary<string, RetStatistical> fuckTemp = finalRetStatisticalDb.ToDictionary(v => v.pc_id + v.software_id, v => v);
+                            foreach(var one in temp)
                             {
-                                var one = finalRetStatistical[i];
-                                foreach (var tempOne in temp)
+                                string key = one.pc_id + one.software_id;
+                                if (fuckTemp.ContainsKey(key))
                                 {
-                                    if (tempOne.pc_id == one.pc_id && tempOne.software_id == one.software_id)
-                                    {
-                                        one.count_error_pcb += tempOne.count_error_pcb;
-                                        one.count_good_pcb += tempOne.count_good_pcb;
-                                        one.count_pcb += tempOne.count_pcb;
-                                        one.count_warning_pcb += tempOne.count_warning_pcb;
-                                        finalRetStatistical[i] = one;
-                                    }
+                                    var tempOne = fuckTemp[key];
+                                    tempOne.count_error_pcb += one.count_error_pcb;
+                                    tempOne.count_good_pcb += one.count_good_pcb;
+                                    tempOne.count_pcb += one.count_pcb;
+                                    tempOne.count_warning_pcb += one.count_warning_pcb;
+                                    fuckTemp[key] = tempOne;
+                                }
+                                else
+                                {
+                                    fuckTemp.Add(key, one);
                                 }
                             }
-                            //RetStatistical one = finalRetStatistical[finalRetStatistical.Count - 1];
-                            //if (one.create_time >= temp[0].create_time)
-                            //{
-                            //    finalRetStatistical.AddRange(temp);
-                            //}
-                            //else
-                            //{
-                            //    temp.AddRange(finalRetStatistical);
-                            //    finalRetStatistical = temp;
-                            //}
-                        }
-                        else
-                        {
-                            finalRetStatistical.AddRange(temp);
+                            finalRetStatisticalDb = fuckTemp.Values.ToList();
                         }
                     }
-
+                    
                     if (isDone)
                     {
-                        foreach (var one in finalRetStatistical)
+                        foreach (var one in finalRetStatisticalDb)
                         {
                             one.pcb_ppm = Math.Round((double)one.count_warning_pcb / (double)one.count_pcb, 2);
-                            
+
                             one.defect_rate = (one.count_error_pcb * 100 / one.count_pcb).ToString("f2") + "%";
 
-                            one.pass_rate = (one.count_good_pcb * 100 / one.count_pcb ).ToString("f2") + "%";
+                            one.pass_rate = (one.count_good_pcb * 100 / one.count_pcb).ToString("f2") + "%";
                         }
                         this.BeginInvoke((Action)(() =>
                         {
-                            gridControl_Results.DataSource = finalRetStatistical;
+                            gridControl_Results.DataSource = finalRetStatisticalDb;
                             if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
                         }));
                     }

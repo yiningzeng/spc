@@ -29,6 +29,18 @@
         private void InitializeComponent()
         {
             this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
+            this.gridControl_Export = new DevExpress.XtraGrid.GridControl();
+            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumn10 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn11 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn12 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn13 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn14 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn15 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn16 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn17 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn18 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn19 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridControl_Pcbs = new DevExpress.XtraGrid.GridControl();
             this.gridView_Pcbs = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridColumn1 = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -54,6 +66,8 @@
             this.imageBox_Part = new Cyotek.Windows.Forms.ImageBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
             this.splitContainerControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_Export)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl_Pcbs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView_Pcbs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1)).BeginInit();
@@ -86,6 +100,122 @@
             this.splitContainerControl1.Size = new System.Drawing.Size(1350, 633);
             this.splitContainerControl1.SplitterPosition = 520;
             this.splitContainerControl1.TabIndex = 0;
+            // 
+            // gridControl_Export
+            // 
+            this.gridControl_Export.Location = new System.Drawing.Point(16, 114);
+            this.gridControl_Export.MainView = this.gridView1;
+            this.gridControl_Export.Name = "gridControl_Export";
+            this.gridControl_Export.Size = new System.Drawing.Size(330, 293);
+            this.gridControl_Export.TabIndex = 1;
+            this.gridControl_Export.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridView1});
+            this.gridControl_Export.Visible = false;
+            // 
+            // gridView1
+            // 
+            this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumn10,
+            this.gridColumn11,
+            this.gridColumn12,
+            this.gridColumn13,
+            this.gridColumn14,
+            this.gridColumn15,
+            this.gridColumn16,
+            this.gridColumn17,
+            this.gridColumn18,
+            this.gridColumn19});
+            this.gridView1.GridControl = this.gridControl_Export;
+            this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsBehavior.ReadOnly = true;
+            this.gridView1.OptionsClipboard.AllowExcelFormat = DevExpress.Utils.DefaultBoolean.True;
+            // 
+            // gridColumn10
+            // 
+            this.gridColumn10.Caption = "NG类别";
+            this.gridColumn10.FieldName = "ng_str";
+            this.gridColumn10.Name = "gridColumn10";
+            this.gridColumn10.Visible = true;
+            this.gridColumn10.VisibleIndex = 6;
+            this.gridColumn10.Width = 140;
+            // 
+            // gridColumn11
+            // 
+            this.gridColumn11.Caption = "AI得分";
+            this.gridColumn11.FieldName = "score";
+            this.gridColumn11.Name = "gridColumn11";
+            this.gridColumn11.Visible = true;
+            this.gridColumn11.VisibleIndex = 7;
+            this.gridColumn11.Width = 60;
+            // 
+            // gridColumn12
+            // 
+            this.gridColumn12.Caption = "人工复判结果";
+            this.gridColumn12.FieldName = "result_ng_str";
+            this.gridColumn12.Name = "gridColumn12";
+            this.gridColumn12.Visible = true;
+            this.gridColumn12.VisibleIndex = 8;
+            this.gridColumn12.Width = 143;
+            // 
+            // gridColumn13
+            // 
+            this.gridColumn13.Caption = "结果";
+            this.gridColumn13.FieldName = "NG";
+            this.gridColumn13.Name = "gridColumn13";
+            // 
+            // gridColumn14
+            // 
+            this.gridColumn14.Caption = "设备编号";
+            this.gridColumn14.FieldName = "pc_name";
+            this.gridColumn14.Name = "gridColumn14";
+            this.gridColumn14.Visible = true;
+            this.gridColumn14.VisibleIndex = 0;
+            this.gridColumn14.Width = 133;
+            // 
+            // gridColumn15
+            // 
+            this.gridColumn15.Caption = "检测时间";
+            this.gridColumn15.FieldName = "create_time";
+            this.gridColumn15.Name = "gridColumn15";
+            this.gridColumn15.Visible = true;
+            this.gridColumn15.VisibleIndex = 1;
+            this.gridColumn15.Width = 133;
+            // 
+            // gridColumn16
+            // 
+            this.gridColumn16.Caption = "程序名";
+            this.gridColumn16.FieldName = "software_name";
+            this.gridColumn16.Name = "gridColumn16";
+            this.gridColumn16.Visible = true;
+            this.gridColumn16.VisibleIndex = 2;
+            this.gridColumn16.Width = 120;
+            // 
+            // gridColumn17
+            // 
+            this.gridColumn17.Caption = "条码";
+            this.gridColumn17.FieldName = "pcb_number";
+            this.gridColumn17.Name = "gridColumn17";
+            this.gridColumn17.Visible = true;
+            this.gridColumn17.VisibleIndex = 3;
+            this.gridColumn17.Width = 120;
+            // 
+            // gridColumn18
+            // 
+            this.gridColumn18.Caption = "子板数量";
+            this.gridColumn18.FieldName = "pcb_childen_number";
+            this.gridColumn18.Name = "gridColumn18";
+            this.gridColumn18.Visible = true;
+            this.gridColumn18.VisibleIndex = 4;
+            this.gridColumn18.Width = 60;
+            // 
+            // gridColumn19
+            // 
+            this.gridColumn19.Caption = "NG数量";
+            this.gridColumn19.FieldName = "ng_count";
+            this.gridColumn19.Name = "gridColumn19";
+            this.gridColumn19.Visible = true;
+            this.gridColumn19.VisibleIndex = 5;
+            this.gridColumn19.Width = 60;
             // 
             // gridControl_Pcbs
             // 
@@ -184,6 +314,7 @@
             this.splitContainerControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainerControl2.Location = new System.Drawing.Point(0, 0);
             this.splitContainerControl2.Name = "splitContainerControl2";
+            this.splitContainerControl2.Panel1.Controls.Add(this.gridControl_Export);
             this.splitContainerControl2.Panel1.Controls.Add(this.gridControl_Results);
             this.splitContainerControl2.Panel1.Text = "Panel1";
             this.splitContainerControl2.Panel2.Controls.Add(this.splitContainerControl3);
@@ -302,7 +433,7 @@
             // 
             this.xtraTabPage2.Controls.Add(this.pictureBox_Back);
             this.xtraTabPage2.Name = "xtraTabPage2";
-            this.xtraTabPage2.Size = new System.Drawing.Size(449, 231);
+            this.xtraTabPage2.Size = new System.Drawing.Size(431, 231);
             this.xtraTabPage2.Text = "反面";
             // 
             // pictureBox_Back
@@ -310,7 +441,7 @@
             this.pictureBox_Back.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox_Back.Location = new System.Drawing.Point(0, 0);
             this.pictureBox_Back.Name = "pictureBox_Back";
-            this.pictureBox_Back.Size = new System.Drawing.Size(449, 231);
+            this.pictureBox_Back.Size = new System.Drawing.Size(431, 231);
             this.pictureBox_Back.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_Back.TabIndex = 0;
             this.pictureBox_Back.TabStop = false;
@@ -352,6 +483,8 @@
             this.Text = "整板结果";
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).EndInit();
             this.splitContainerControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_Export)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl_Pcbs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView_Pcbs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1.CalendarTimeProperties)).EndInit();
@@ -400,5 +533,17 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn8;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn9;
         private DevExpress.XtraEditors.PanelControl panelControl1;
+        private DevExpress.XtraGrid.GridControl gridControl_Export;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn10;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn11;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn12;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn13;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn14;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn15;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn16;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn17;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn18;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn19;
     }
 }

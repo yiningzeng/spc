@@ -27,6 +27,9 @@ namespace spc_client.ShowForm
 {
     public partial class ShowDetailNew : XtraFormBase
     {
+        List<RetAllInfoPcbs> finalDB = new List<RetAllInfoPcbs>();
+        SubTableQueryHelper<RetAllInfoPcbs> pcbsSubTableQuery = new SubTableQueryHelper<RetAllInfoPcbs>();
+
         string frontImg = "", backImg = "";
         Rectangle rectFront,rectBack;
         public ShowDetailNew()
@@ -164,6 +167,8 @@ namespace spc_client.ShowForm
 
         void ReSetInfo()
         {
+            pcbsSubTableQuery = null;
+            pcbsSubTableQuery = new SubTableQueryHelper<RetAllInfoPcbs>();
             pictureBox_Front.Image = null;
             pictureBox_Back.Image = null;
             gridControl_Results.DataSource = null;
@@ -194,28 +199,39 @@ namespace spc_client.ShowForm
                 gridView_Results.ActiveFilterString = String.Format("[ng_str] = '{0}'", QueryPars.ng_type);
             }
 
-            MySmartThreadPool.Instance().QueueWorkItem(() =>
-            {
-                if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
-                SpcModel spcModel = DB.Instance();
-                try
+            pcbsSubTableQuery.Run(
+                Utils.GetQueryStrsOnlyReplaceDate(QueryPars.GetPcbsQueryStrExport(), QueryPars.startTime, QueryPars.endTime),
+                new SubTableQueryHelper<RetAllInfoPcbs>.Callback((sql, temp, isDone) =>
                 {
-                    List<RetAllInfoPcbs> aoiPcbs = spcModel.Database.SqlQuery<RetAllInfoPcbs>(QueryPars.GetAllInfoQueryStr()).ToList();
-                    this.BeginInvoke((Action)(() =>
+                    if (temp.Count > 0)
                     {
-                        gridControl_Results.DataSource = aoiPcbs;
-                    }));
-                }
-                catch (Exception er)
-                {
+                        if (finalDB.Count > 0)
+                        {
+                            RetAllInfoPcbs aoiPcbs = finalDB[finalDB.Count - 1];
+                            if (aoiPcbs.create_time >= temp[0].create_time)
+                            {
+                                finalDB.AddRange(temp);
+                            }
+                            else
+                            {
+                                temp.AddRange(finalDB);
+                                finalDB = temp;
+                            }
+                        }
+                        else
+                        {
+                            finalDB.AddRange(temp);
+                        }
+                    }
 
-                }
-                finally
-                {
-                    if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
-                    spcModel.Dispose();
-                }
-            });
+                    if (isDone)
+                    {
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            gridControl_Results.DataSource = finalDB;
+                        }));
+                    }
+                }));
         }
 
         /// <summary>

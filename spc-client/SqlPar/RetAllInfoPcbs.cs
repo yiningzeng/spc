@@ -19,11 +19,12 @@ namespace spc_client.SqlPar
         public int ng_count { get; set; }
         //is_back,score,area,region,ng_str,result_string,pc_ip,pcb_path,part_image_path, pcb_id
         public int? is_back { get; set; }
-        public float? score_final { get; set; }
+        public float? score { get; set; }
         //int PassPcbNums = "(select count(*) from pcbs where is_misjudge = 0 and is_error = 0)";
         public string area { get; set; }
         public string region { get; set; }
-        public string ng_str { get; set; } 
+        public string ng_str { get; set; }
+        public string result_ng_str { get; set; }
         public string result_ng_type_id { get; set; }
         public string ng_type_id { get; set; }
         public string NG { get; set; }
@@ -31,7 +32,7 @@ namespace spc_client.SqlPar
         public string pcb_path { get; set; }
         public string part_image_path { get; set; }
         public string pcb_id { get; set; }
-        public string create_time { get; set; }
+        public DateTime create_time { get; set; }
 
         public string PathConcatenate(string s1, string s2)
         {

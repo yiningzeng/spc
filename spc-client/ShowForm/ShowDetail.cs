@@ -31,6 +31,10 @@ namespace spc_client.ShowForm
         List<AoiPcbs> finalDB = new List<AoiPcbs>();
         AoiPcbs currentPcb = null;
         SubTableQueryHelper<AoiPcbs> pcbsSubTableQuery = new SubTableQueryHelper<AoiPcbs>();
+
+        List<RetAllInfoPcbs> exportFinalDB = new List<RetAllInfoPcbs>();
+        SubTableQueryHelper<RetAllInfoPcbs> exportPcbsSubTableQuery = new SubTableQueryHelper<RetAllInfoPcbs>();
+
         Rectangle rectFront,rectBack;
         public ShowDetail()
         {
@@ -247,9 +251,51 @@ namespace spc_client.ShowForm
 
         public override void Export()
         {
-            ShowDetailNew showDetailNew = new ShowDetailNew();
-            showDetailNew.Export();
-            showDetailNew.Dispose();
+            exportFinalDB = new List<RetAllInfoPcbs>();
+            exportPcbsSubTableQuery = new SubTableQueryHelper<RetAllInfoPcbs>();
+            exportPcbsSubTableQuery.Run(
+                 Utils.GetQueryStrsOnlyReplaceDate(QueryPars.GetPcbsQueryStrExport(), QueryPars.startTime, QueryPars.endTime),
+                 new SubTableQueryHelper<RetAllInfoPcbs>.Callback((sql, temp, isDone) =>
+                 {
+                     if (temp.Count > 0)
+                     {
+                         if (exportFinalDB.Count > 0)
+                         {
+                             RetAllInfoPcbs aoiPcbs = exportFinalDB[exportFinalDB.Count - 1];
+                             if (aoiPcbs.create_time >= temp[0].create_time)
+                             {
+                                 exportFinalDB.AddRange(temp);
+                             }
+                             else
+                             {
+                                 temp.AddRange(exportFinalDB);
+                                 exportFinalDB = temp;
+                             }
+                         }
+                         else
+                         {
+                             exportFinalDB.AddRange(temp);
+                         }
+                     }
+
+                     if (isDone)
+                     {
+                         this.BeginInvoke((Action)(() =>
+                         {
+                             gridControl_Export.DataSource = exportFinalDB;
+                             SaveFileDialog saveFileDialog = new SaveFileDialog();
+                             saveFileDialog.Title = "导出Excel";
+                             saveFileDialog.Filter = "Excel文件(*.xls)|*.xls";
+                             DialogResult dialogResult = saveFileDialog.ShowDialog(this);
+                             if (dialogResult == DialogResult.OK)
+                             {
+                                 DevExpress.XtraPrinting.XlsExportOptions options = new DevExpress.XtraPrinting.XlsExportOptions();
+                                 gridControl_Export.ExportToXls(saveFileDialog.FileName);
+                                 XtraMessageBox.Show("保存成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                             }
+                         }));
+                     }
+                 }));
         }
         public override void QueryReset()
         {
@@ -265,7 +311,7 @@ namespace spc_client.ShowForm
 
             pcbsSubTableQuery.Run(
                 Utils.GetQueryStrs(QueryPars.GetPcbsQueryStr(), QueryPars.startTime, QueryPars.endTime, "aoi_pcbs"),
-                new SubTableQueryHelper<AoiPcbs>.Callback((temp, isDone) =>
+                new SubTableQueryHelper<AoiPcbs>.Callback((sql, temp, isDone) =>
                 {
                     if (temp.Count > 0)
                     {
