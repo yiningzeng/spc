@@ -74,6 +74,66 @@ namespace spc_client.ShowForm
         {
             try
             {
+                #region 缺陷饼图
+                if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
+                finalNgPaiDb.Clear();
+                Console.Out.WriteLine("---------------");
+                List<string> sqls = Utils.GetQueryStrs(QueryPars.GetChartPieBaseSql(retStatistical.software_id), QueryPars.startTime, QueryPars.endTime, "aoi_results");
+                ngPaiHelper.Run(sqls,
+                    (sql, temp, isDone) =>
+                    {
+                        if (temp.Count > 0)
+                        {
+                            lock (finalNgPaiDb)
+                            {
+                                Dictionary<string, RetNgTypesPai> fuckTemp = finalNgPaiDb.ToDictionary(v => v.result_ng_str, v => v);
+                                foreach (var one in temp)
+                                {
+                                    string key = one.result_ng_str;
+                                    if (fuckTemp.ContainsKey(key))
+                                    {
+                                        var tempOne = fuckTemp[key];
+                                        tempOne.count += one.count;
+                                        fuckTemp[key] = tempOne;
+                                    }
+                                    else
+                                    {
+                                        fuckTemp.Add(key, one);
+                                    }
+                                }
+                                finalNgPaiDb = fuckTemp.Values.ToList();
+                            }
+                        }
+                        if (isDone)
+                        {
+                            this.BeginInvoke((Action)(() =>
+                            {
+                                chartControl_NG.Series.Clear();
+                                Series series2 = new Series("饼图1", ViewType.Pie);
+                                series2.DataSource = finalNgPaiDb;
+                                //series.ArgumentScaleType = ScaleType.Qualitative;
+                                //项目名称
+                                series2.ArgumentDataMember = "result_ng_str";
+                                series2.ValueScaleType = ScaleType.Numerical;
+                                //series2.ToolTipPointPattern = "{A}: {V}(个)";
+                                series2.LegendTextPattern = "{A}: {V} ({VP:P0})";
+                                series2.Label.TextPattern = "{A}: {V} ({VP:P0})";
+                                //取值字段
+                                series2.ValueDataMembers.AddRange(new string[] { "count" });
+                                series2.ToolTipEnabled = DevExpress.Utils.DefaultBoolean.True;
+                                chartControl_NG.Series.Add(series2);
+
+                                if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+
+                                Console.Out.WriteLine("---------------");
+                            }));
+                        }
+                    });
+                #endregion
+            }
+            catch(Exception er) { }
+            try
+            {
                 DataTable dt = new DataTable();
                 dt.Columns.Add(new DataColumn("ItemName")); //项目名称
                 dt.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
@@ -130,63 +190,6 @@ namespace spc_client.ShowForm
             series.Label.TextPattern = "{A}: {V} ({VP:P0})";
             chartControl3.Series.Add(series);
 
-
-            #region 缺陷饼图
-            if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
-            finalNgPaiDb.Clear();
-            Console.Out.WriteLine("---------------");
-            List<string> sqls = Utils.GetQueryStrs(QueryPars.GetChartPieBaseSql(software_id), QueryPars.startTime, QueryPars.endTime, "aoi_results");
-            ngPaiHelper.Run(sqls,
-                (sql, temp, isDone) =>
-                {
-                    if (temp.Count > 0)
-                    {
-                        lock (finalNgPaiDb)
-                        {
-                            Dictionary<string, RetNgTypesPai> fuckTemp = finalNgPaiDb.ToDictionary(v => v.result_ng_str, v => v);
-                            foreach (var one in temp)
-                            {
-                                string key = one.result_ng_str;
-                                if (fuckTemp.ContainsKey(key))
-                                {
-                                    var tempOne = fuckTemp[key];
-                                    tempOne.count += one.count;
-                                    fuckTemp[key] = tempOne;
-                                }
-                                else
-                                {
-                                    fuckTemp.Add(key, one);
-                                }
-                            }
-                            finalNgPaiDb = fuckTemp.Values.ToList();
-                        }
-                    }
-                    if (isDone)
-                    {
-                        this.BeginInvoke((Action)(() =>
-                        {
-                            chartControl_NG.Series.Clear();
-                            Series series2 = new Series("饼图1", ViewType.Pie);
-                            series2.DataSource = finalNgPaiDb;
-                            //series.ArgumentScaleType = ScaleType.Qualitative;
-                            //项目名称
-                            series2.ArgumentDataMember = "result_ng_str";
-                            series2.ValueScaleType = ScaleType.Numerical;
-                            //series2.ToolTipPointPattern = "{A}: {V}(个)";
-                            series2.LegendTextPattern = "{A}: {V} ({VP:P0})";
-                            series2.Label.TextPattern = "{A}: {V} ({VP:P0})";
-                            //取值字段
-                            series2.ValueDataMembers.AddRange(new string[] { "count" });
-                            series2.ToolTipEnabled = DevExpress.Utils.DefaultBoolean.True;
-                            chartControl_NG.Series.Add(series2);
-
-                            if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
-
-                            Console.Out.WriteLine("---------------");
-                        }));
-                    }
-                });
-            #endregion
         }
 
         void ReSetInfo()
