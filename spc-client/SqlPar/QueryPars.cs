@@ -217,6 +217,7 @@ namespace spc_client.SqlPar
                                     "	( {{0}}.result_ng_type_id = '', {{0}}.ng_type_id, {{0}}.result_ng_type_id ) " +
                                     " WHERE" +
                                     "	! ISNULL( result_ng_type_id ) " +
+                                    "   AND  aoi_results.is_misjudge != -1 " +
                                     "	AND ! ISNULL( ng_type_id ) " +
                                     "	AND software_id = '{0}' AND {{0}}.create_time BETWEEN '{1}' AND '{2}'" +
                                     "	) AS fin " +

@@ -82,6 +82,7 @@ namespace spc_client.ShowForm
                 ngPaiHelper.Run(sqls,
                     (sql, temp, isDone) =>
                     {
+                        // LogHelper.WriteLog("缺陷饼图 > " + sql);
                         if (temp.Count > 0)
                         {
                             lock (finalNgPaiDb)
@@ -131,7 +132,9 @@ namespace spc_client.ShowForm
                     });
                 #endregion
             }
-            catch(Exception er) { }
+            catch(Exception er) {
+                LogHelper.WriteLog("缺陷饼图出错", er);
+            }
             try
             {
                 DataTable dt = new DataTable();
@@ -150,8 +153,9 @@ namespace spc_client.ShowForm
                 CreatePieChart(retStatistical.software_id, dt, dt2);
                 CreateBarChart(retStatistical);
             }
-            catch
+            catch (Exception er)
             {
+                LogHelper.WriteLog("画其他图表出错", er);
             }
         }
         private void CreateBarChart(RetStatistical retStatistical)
@@ -234,6 +238,7 @@ namespace spc_client.ShowForm
             retStatisticalSHelper.Run(sqls,
                 (sql, temp, isDone) =>
                 {
+                    // LogHelper.WriteLog("统计数据 > " + sql);
                     if (temp.Count > 0)
                     {
                         lock (finalRetStatisticalDb)
