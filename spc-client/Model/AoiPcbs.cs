@@ -78,7 +78,8 @@ namespace spc_client.Model
         public string pc_ip { get; set; }
         public string software_name { get; set; }
         public List<AoiResults> results { get; set; }
-
+        public List<AoiResult2D> results_2d { get; set; }
+        
         public string PathConcatenate(string s1, string s2)
         {
             if (s1.EndsWith("\\")) s1 = s1.Substring(0, s1.Length - 1);
