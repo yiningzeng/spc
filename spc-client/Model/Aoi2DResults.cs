@@ -10,9 +10,8 @@ using Newtonsoft.Json;
 
 namespace spc_client.Model
 {
-    [Serializable]
-    [Table(name: "aoi_results2d")]
-    public class AoiResult2D
+    [Table(name: "aoi_results_2d")]
+    public class Aoi2DResults
     {
         [Description("主键")]
         [Key]
@@ -52,7 +51,7 @@ namespace spc_client.Model
 
         [Column(name: "area", TypeName = "varchar")]
         [StringLength(250)]
-        [Description("区域")]
+        [Description("区域, [0]表示全局大图的x,[1]表示全局大图的y")]
         public string Area { get; set; }
 
         [Column(name: "ng_type", TypeName = "varchar")]
@@ -80,8 +79,7 @@ namespace spc_client.Model
         [Description("创建时间")]
         public DateTime CreateTime { get; set; }
 
-
         [JsonProperty("ngDetails")]
-        public List<AoiResults2dDetail> ngDetails;
+        public List<Aoi2DResultsDetail> ngDetails;
     }
 }

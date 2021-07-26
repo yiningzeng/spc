@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>spc.ico</ApplicationIcon>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -157,8 +157,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\AoiResults2dDetail.cs" />
-    <Compile Include="Model\AoiResults2d.cs" />
+    <Compile Include="Model\Aoi2dResultsDetail.cs" />
+    <Compile Include="Model\Aoi2DResults.cs" />
+    <Compile Include="Tools\JsonData.cs" />
     <Compile Include="Tools\SubTableQueryHelper.cs" />
     <Compile Include="Update.cs">
       <SubType>Form</SubType>
@@ -311,7 +312,7 @@
     <Folder Include="StatisticsForm\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="spc.ico" />
+    <Content Include="logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

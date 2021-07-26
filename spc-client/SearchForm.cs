@@ -22,8 +22,8 @@ namespace spc_client
         XtraFormBase xtraFormBase;
         void IniDefaultValue()
         {
-            dateEdit_Start.EditValue = DateTime.Now.AddHours(-1).ToString("yyyy/M/d H:mm:ss");
-            dateEdit_End.EditValue = DateTime.Now.ToString("yyyy/M/d H:mm:ss");
+            dateEdit_Start.EditValue = DateTime.Now.AddHours(-1).ToString("yyyy/MM/dd HH:mm:ss");
+            dateEdit_End.EditValue = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
         }
 
         void IniButton(GroupControl groupControl)

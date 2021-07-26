@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace spc_client.Model
 {
@@ -16,6 +17,7 @@ namespace spc_client.Model
         [Key]
         [Column(name: "id", TypeName = "varchar")]
         [StringLength(50)]
+        [JsonProperty("Id")]
         public string id { get; set; }
 
         [Column(name: "software_id", TypeName = "varchar")]
@@ -30,6 +32,7 @@ namespace spc_client.Model
         [Column(name: "pcb_name")]
         [StringLength(250)]
         [Description("PCB名称")]
+        [JsonProperty("PcbName")]
         public string pcb_name { get; set; }
 
         [Column(name: "carrier_width")]
@@ -50,11 +53,13 @@ namespace spc_client.Model
 
         [Column(name: "pcb_childen_number")]
         [Description("PCB名称")]
+        [JsonProperty("PcbChildenNumber")]
         public int pcb_childen_number { get; set; }
 
         [Column(name: "pcb_path")]
         [StringLength(250)]
         [Description("对应的FTP保存的地址")]
+        [JsonProperty("PcbPath")]
         public string pcb_path { get; set; }
 
         [Column(name: "ng_count")]
@@ -73,12 +78,17 @@ namespace spc_client.Model
 
         [Column(name: "create_time")]
         [Description("创建时间")]
+        [JsonProperty("CreateTime")]
         public DateTime create_time { get; set; }
 
+        [NotMapped]
         public string pc_ip { get; set; }
+        [NotMapped]
         public string software_name { get; set; }
+        [NotMapped]
         public List<AoiResults> results { get; set; }
-        public List<AoiResult2D> results_2d { get; set; }
+        [NotMapped]
+        public List<Aoi2DResults> results_2d { get; set; }
         
         public string PathConcatenate(string s1, string s2)
         {

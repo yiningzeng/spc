@@ -3,6 +3,7 @@ using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors;
 using DevExpress.XtraSplashScreen;
 using DevExpress.XtraTabbedMdi;
+using Newtonsoft.Json;
 using spc_client.Model;
 using spc_client.ShowForm;
 using spc_client.Tools;
@@ -212,6 +213,69 @@ namespace spc_client
         private void barButtonItemUpdate_ItemClick(object sender, ItemClickEventArgs e)
         {
             CheckUpdate();
+        }
+
+        private void barButtonItem5_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Title = "C# Corner Open File Dialog";
+            openFileDialog1.InitialDirectory = @"D:\Power-Ftp";
+            openFileDialog1.Filter = "All files（*.*）|*.*|All files (*.*)|*.* ";
+            /*
+             * FilterIndex 属性用于选择了何种文件类型,缺省设置为0,系统取Filter属性设置第一项
+             * ,相当于FilterIndex 属性设置为1.如果你编了3个文件类型，当FilterIndex ＝2时是指第2个.
+             */
+            openFileDialog1.FilterIndex = 0;
+            /*
+             *如果值为false，那么下一次选择文件的初始目录是上一次你选择的那个目录，
+             *不固定；如果值为true，每次打开这个对话框初始目录不随你的选择而改变，是固定的  
+             */
+            openFileDialog1.RestoreDirectory = true;
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                //textBox1.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog1.FileName);
+                ////System.IO.Path.GetFullPath(openFileDialog1.FileName); //绝对路径
+                ////System.IO.Path.GetExtension(openFileDialog1.FileName); //文件扩展名
+                ////System.IO.Path.GetFileNameWithoutExtension(openFileDialog1.FileName); //文件名没有扩展名
+                ////System.IO.Path.GetFileName(openFileDialog1.FileName); //得到文件
+                                                                         
+                JsonData<AoiPcbs> aoi = JsonConvert.DeserializeObject<JsonData<AoiPcbs>>(File.ReadAllText(openFileDialog1.FileName));
+                aoi.data.software_id = "26185648716497920";
+                aoi.data.pc_ip = "192.168.31.134";
+                SpcModel spcModel = DB.Instance();
+                //List<AoiResult2D> ngTypes = spcModel.results2d.Where(p => p.PcbId == "26628831906055168").ToList();
+
+
+                foreach (var i in aoi.data.results_2d)
+                {
+                    Aoi2DResults a = new Aoi2DResults()
+                    {
+                        Id = i.Id,
+                    };
+                    a.IsBack = i.IsBack;
+                    a.IsMisjudge = i.IsMisjudge;
+                    a.LotName = i.LotName;
+                    a.NgType = i.NgType;
+                    a.PartImagePath = i.PartImagePath;
+                    a.PartName = i.PartName;
+                    a.PcbId = i.PcbId;
+                    a.ResultString = i.ResultString;
+                    a.SubBoard = i.SubBoard;
+                    a.Angle = i.Angle;
+                    a.Area = i.Area;
+                    a.CreateTime = i.CreateTime;
+
+                    spcModel._2dResultsDetail.AddRange(i.ngDetails);
+                    spcModel._2dResults.Add(a);
+                }
+                spcModel.SaveChanges();
+            }
+        }
+
+        private void barButtonItem6_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            SpcModel spcModel = DB.Instance();
+            List<Aoi2DResults> ngTypes = spcModel._2dResults.Where(p => p.PcbId == "26628831906055168").ToList();
         }
     }
 }

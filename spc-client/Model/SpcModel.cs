@@ -44,8 +44,9 @@ namespace spc_client.Model
         public DbSet<AoiNgTypes> ngTypes { get; set; }
         public DbSet<AoiPcbs> pcbs { get; set; }
         public DbSet<AoiResults> results { get; set; }
-        public DbSet<AoiResult2D> results2d { get; set; }
-        public DbSet<AoiResults2dDetail> results2dDetail { get; set; }
+        public DbSet<Aoi2DResults> _2dResults { get; set; }
+
+        public DbSet<Aoi2DResultsDetail> _2dResultsDetail { get; set; }
         //public DbSet<Marker> markers { get; set; }
         // public virtual DbSet<MyEntity> MyEntities { get; set; }
     }

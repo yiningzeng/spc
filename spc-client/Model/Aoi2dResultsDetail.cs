@@ -6,9 +6,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace spc_client.Model
 {
-    [Serializable]
-    [Table(name: "aoi_results2d_detail")]
-    public class AoiResults2dDetail
+    [Table(name: "aoi_results_2d_detail")]
+    public class Aoi2DResultsDetail
     {
         [Description("主键")]
         [Key]
@@ -26,9 +25,14 @@ namespace spc_client.Model
         [Description("对应的Part的id")]
         public string PartId { get; set; }
 
+        [Column(name: "pcb_id", TypeName = "varchar")]
+        [StringLength(50)]
+        [Description("对应的pcb板id")]
+        public string PcbId { get; set; }
+
         [Column(name: "area", TypeName = "varchar")]
         [StringLength(250)]
-        [Description("区域")]
+        [Description("区域，[0]表示局部图的相对中心点位移x，[1]表示局部图的相对中心点位移y，[2]局部图的Width，[3]局部图的Height，[4]局部图的Angle")]
         public string Area { get; set; }
 
         [Column(name: "ng_type", TypeName = "varchar")]

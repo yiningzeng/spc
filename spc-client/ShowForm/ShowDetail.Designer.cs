@@ -29,6 +29,31 @@
         private void InitializeComponent()
         {
             this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
+            this.gridControl_Pcbs = new DevExpress.XtraGrid.GridControl();
+            this.gridView_Pcbs = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumn1 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.repositoryItemDateEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
+            this.gridColumn8 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn2 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn3 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn4 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.splitContainerControl2 = new DevExpress.XtraEditors.SplitContainerControl();
+            this.xtraTabControl2 = new DevExpress.XtraTab.XtraTabControl();
+            this.xtraTabPage3 = new DevExpress.XtraTab.XtraTabPage();
+            this.gridControl_AIResults = new DevExpress.XtraGrid.GridControl();
+            this.gridView_AIResults = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn6 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn7 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn9 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.xtraTabPage4 = new DevExpress.XtraTab.XtraTabPage();
+            this.gridControl_2DResults = new DevExpress.XtraGrid.GridControl();
+            this.gridView_2DResults = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumn20 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn21 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn22 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn23 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.xtraTabPage5 = new DevExpress.XtraTab.XtraTabPage();
             this.gridControl_Export = new DevExpress.XtraGrid.GridControl();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridColumn10 = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -41,21 +66,6 @@
             this.gridColumn17 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn18 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn19 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridControl_Pcbs = new DevExpress.XtraGrid.GridControl();
-            this.gridView_Pcbs = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.gridColumn1 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.repositoryItemDateEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
-            this.gridColumn8 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumn2 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumn3 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumn4 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.splitContainerControl2 = new DevExpress.XtraEditors.SplitContainerControl();
-            this.gridControl_Results = new DevExpress.XtraGrid.GridControl();
-            this.gridView_Results = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumn6 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumn7 = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.gridColumn9 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.splitContainerControl3 = new DevExpress.XtraEditors.SplitContainerControl();
             this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
             this.xtraTabPage1 = new DevExpress.XtraTab.XtraTabPage();
@@ -66,16 +76,23 @@
             this.imageBox_Part = new Cyotek.Windows.Forms.ImageBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
             this.splitContainerControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl_Export)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl_Pcbs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView_Pcbs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl2)).BeginInit();
             this.splitContainerControl2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl_Results)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView_Results)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl2)).BeginInit();
+            this.xtraTabControl2.SuspendLayout();
+            this.xtraTabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_AIResults)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView_AIResults)).BeginInit();
+            this.xtraTabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_2DResults)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView_2DResults)).BeginInit();
+            this.xtraTabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_Export)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl3)).BeginInit();
             this.splitContainerControl3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
@@ -101,16 +118,286 @@
             this.splitContainerControl1.SplitterPosition = 520;
             this.splitContainerControl1.TabIndex = 0;
             // 
+            // gridControl_Pcbs
+            // 
+            this.gridControl_Pcbs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridControl_Pcbs.Location = new System.Drawing.Point(0, 0);
+            this.gridControl_Pcbs.MainView = this.gridView_Pcbs;
+            this.gridControl_Pcbs.Name = "gridControl_Pcbs";
+            this.gridControl_Pcbs.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
+            this.repositoryItemDateEdit1});
+            this.gridControl_Pcbs.Size = new System.Drawing.Size(520, 633);
+            this.gridControl_Pcbs.TabIndex = 0;
+            this.gridControl_Pcbs.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridView_Pcbs});
+            // 
+            // gridView_Pcbs
+            // 
+            this.gridView_Pcbs.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumn1,
+            this.gridColumn8,
+            this.gridColumn2,
+            this.gridColumn3,
+            this.gridColumn4});
+            this.gridView_Pcbs.GridControl = this.gridControl_Pcbs;
+            this.gridView_Pcbs.Name = "gridView_Pcbs";
+            this.gridView_Pcbs.OptionsBehavior.ReadOnly = true;
+            // 
+            // gridColumn1
+            // 
+            this.gridColumn1.Caption = "检查时间";
+            this.gridColumn1.ColumnEdit = this.repositoryItemDateEdit1;
+            this.gridColumn1.FieldName = "create_time";
+            this.gridColumn1.Name = "gridColumn1";
+            this.gridColumn1.Visible = true;
+            this.gridColumn1.VisibleIndex = 0;
+            this.gridColumn1.Width = 159;
+            // 
+            // repositoryItemDateEdit1
+            // 
+            this.repositoryItemDateEdit1.AutoHeight = false;
+            this.repositoryItemDateEdit1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemDateEdit1.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemDateEdit1.CalendarTimeProperties.DisplayFormat.FormatString = "G";
+            this.repositoryItemDateEdit1.CalendarTimeProperties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            this.repositoryItemDateEdit1.CalendarTimeProperties.EditFormat.FormatString = "G";
+            this.repositoryItemDateEdit1.CalendarTimeProperties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            this.repositoryItemDateEdit1.CalendarTimeProperties.Mask.EditMask = "G";
+            this.repositoryItemDateEdit1.CalendarView = DevExpress.XtraEditors.Repository.CalendarView.ClassicNew;
+            this.repositoryItemDateEdit1.DisplayFormat.FormatString = "G";
+            this.repositoryItemDateEdit1.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            this.repositoryItemDateEdit1.EditFormat.FormatString = "G";
+            this.repositoryItemDateEdit1.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            this.repositoryItemDateEdit1.Mask.EditMask = "G";
+            this.repositoryItemDateEdit1.Name = "repositoryItemDateEdit1";
+            this.repositoryItemDateEdit1.VistaDisplayMode = DevExpress.Utils.DefaultBoolean.False;
+            // 
+            // gridColumn8
+            // 
+            this.gridColumn8.Caption = "程序名";
+            this.gridColumn8.FieldName = "software_name";
+            this.gridColumn8.Name = "gridColumn8";
+            this.gridColumn8.Visible = true;
+            this.gridColumn8.VisibleIndex = 1;
+            this.gridColumn8.Width = 91;
+            // 
+            // gridColumn2
+            // 
+            this.gridColumn2.Caption = "条码号";
+            this.gridColumn2.FieldName = "pcb_number";
+            this.gridColumn2.Name = "gridColumn2";
+            this.gridColumn2.Visible = true;
+            this.gridColumn2.VisibleIndex = 2;
+            this.gridColumn2.Width = 129;
+            // 
+            // gridColumn3
+            // 
+            this.gridColumn3.Caption = "子基板数";
+            this.gridColumn3.FieldName = "pcb_childen_number";
+            this.gridColumn3.Name = "gridColumn3";
+            this.gridColumn3.Visible = true;
+            this.gridColumn3.VisibleIndex = 3;
+            this.gridColumn3.Width = 62;
+            // 
+            // gridColumn4
+            // 
+            this.gridColumn4.Caption = "NG数量";
+            this.gridColumn4.FieldName = "ng_count";
+            this.gridColumn4.Name = "gridColumn4";
+            this.gridColumn4.Visible = true;
+            this.gridColumn4.VisibleIndex = 4;
+            this.gridColumn4.Width = 52;
+            // 
+            // splitContainerControl2
+            // 
+            this.splitContainerControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerControl2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerControl2.Name = "splitContainerControl2";
+            this.splitContainerControl2.Panel1.Controls.Add(this.xtraTabControl2);
+            this.splitContainerControl2.Panel1.Text = "Panel1";
+            this.splitContainerControl2.Panel2.Controls.Add(this.splitContainerControl3);
+            this.splitContainerControl2.Panel2.Text = "Panel2";
+            this.splitContainerControl2.Size = new System.Drawing.Size(820, 633);
+            this.splitContainerControl2.SplitterPosition = 377;
+            this.splitContainerControl2.TabIndex = 1;
+            // 
+            // xtraTabControl2
+            // 
+            this.xtraTabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.xtraTabControl2.Location = new System.Drawing.Point(0, 0);
+            this.xtraTabControl2.Name = "xtraTabControl2";
+            this.xtraTabControl2.SelectedTabPage = this.xtraTabPage3;
+            this.xtraTabControl2.Size = new System.Drawing.Size(377, 633);
+            this.xtraTabControl2.TabIndex = 1;
+            this.xtraTabControl2.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.xtraTabPage3,
+            this.xtraTabPage4,
+            this.xtraTabPage5});
+            // 
+            // xtraTabPage3
+            // 
+            this.xtraTabPage3.Controls.Add(this.gridControl_AIResults);
+            this.xtraTabPage3.Name = "xtraTabPage3";
+            this.xtraTabPage3.Size = new System.Drawing.Size(375, 603);
+            this.xtraTabPage3.Text = "AI";
+            // 
+            // gridControl_AIResults
+            // 
+            this.gridControl_AIResults.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridControl_AIResults.Location = new System.Drawing.Point(0, 0);
+            this.gridControl_AIResults.MainView = this.gridView_AIResults;
+            this.gridControl_AIResults.Name = "gridControl_AIResults";
+            this.gridControl_AIResults.Size = new System.Drawing.Size(375, 603);
+            this.gridControl_AIResults.TabIndex = 0;
+            this.gridControl_AIResults.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridView_AIResults});
+            // 
+            // gridView_AIResults
+            // 
+            this.gridView_AIResults.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumn5,
+            this.gridColumn6,
+            this.gridColumn7,
+            this.gridColumn9});
+            this.gridView_AIResults.GridControl = this.gridControl_AIResults;
+            this.gridView_AIResults.Name = "gridView_AIResults";
+            this.gridView_AIResults.OptionsBehavior.ReadOnly = true;
+            this.gridView_AIResults.OptionsClipboard.AllowExcelFormat = DevExpress.Utils.DefaultBoolean.True;
+            // 
+            // gridColumn5
+            // 
+            this.gridColumn5.Caption = "NG类别";
+            this.gridColumn5.FieldName = "ng_str";
+            this.gridColumn5.Name = "gridColumn5";
+            this.gridColumn5.OptionsColumn.AllowEdit = false;
+            this.gridColumn5.OptionsColumn.ReadOnly = true;
+            this.gridColumn5.Visible = true;
+            this.gridColumn5.VisibleIndex = 0;
+            this.gridColumn5.Width = 106;
+            // 
+            // gridColumn6
+            // 
+            this.gridColumn6.Caption = "AI得分";
+            this.gridColumn6.FieldName = "score";
+            this.gridColumn6.Name = "gridColumn6";
+            this.gridColumn6.Visible = true;
+            this.gridColumn6.VisibleIndex = 1;
+            this.gridColumn6.Width = 85;
+            // 
+            // gridColumn7
+            // 
+            this.gridColumn7.Caption = "人工检验";
+            this.gridColumn7.FieldName = "result_ng_str";
+            this.gridColumn7.Name = "gridColumn7";
+            this.gridColumn7.Visible = true;
+            this.gridColumn7.VisibleIndex = 2;
+            this.gridColumn7.Width = 106;
+            // 
+            // gridColumn9
+            // 
+            this.gridColumn9.Caption = "结果";
+            this.gridColumn9.FieldName = "NG";
+            this.gridColumn9.Name = "gridColumn9";
+            this.gridColumn9.Visible = true;
+            this.gridColumn9.VisibleIndex = 3;
+            this.gridColumn9.Width = 53;
+            // 
+            // xtraTabPage4
+            // 
+            this.xtraTabPage4.Controls.Add(this.gridControl_2DResults);
+            this.xtraTabPage4.Name = "xtraTabPage4";
+            this.xtraTabPage4.Size = new System.Drawing.Size(375, 603);
+            this.xtraTabPage4.Text = "2D";
+            // 
+            // gridControl_2DResults
+            // 
+            this.gridControl_2DResults.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridControl_2DResults.Location = new System.Drawing.Point(0, 0);
+            this.gridControl_2DResults.MainView = this.gridView_2DResults;
+            this.gridControl_2DResults.Name = "gridControl_2DResults";
+            this.gridControl_2DResults.Size = new System.Drawing.Size(375, 603);
+            this.gridControl_2DResults.TabIndex = 1;
+            this.gridControl_2DResults.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridView_2DResults});
+            // 
+            // gridView_2DResults
+            // 
+            this.gridView_2DResults.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumn20,
+            this.gridColumn21,
+            this.gridColumn22,
+            this.gridColumn23});
+            this.gridView_2DResults.GridControl = this.gridControl_2DResults;
+            this.gridView_2DResults.GroupCount = 1;
+            this.gridView_2DResults.GroupSummary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridGroupSummaryItem(DevExpress.Data.SummaryItemType.Count, "", null, "总计={0}")});
+            this.gridView_2DResults.Name = "gridView_2DResults";
+            this.gridView_2DResults.OptionsBehavior.ReadOnly = true;
+            this.gridView_2DResults.OptionsClipboard.AllowExcelFormat = DevExpress.Utils.DefaultBoolean.True;
+            this.gridView_2DResults.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
+            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn20, DevExpress.Data.ColumnSortOrder.Ascending)});
+            // 
+            // gridColumn20
+            // 
+            this.gridColumn20.Caption = "料号";
+            this.gridColumn20.FieldName = "lot_name";
+            this.gridColumn20.Name = "gridColumn20";
+            this.gridColumn20.OptionsColumn.AllowEdit = false;
+            this.gridColumn20.OptionsColumn.ReadOnly = true;
+            this.gridColumn20.Summary.AddRange(new DevExpress.XtraGrid.GridSummaryItem[] {
+            new DevExpress.XtraGrid.GridColumnSummaryItem(),
+            new DevExpress.XtraGrid.GridColumnSummaryItem(DevExpress.Data.SummaryItemType.None, "part_name", "")});
+            this.gridColumn20.Visible = true;
+            this.gridColumn20.VisibleIndex = 0;
+            this.gridColumn20.Width = 106;
+            // 
+            // gridColumn21
+            // 
+            this.gridColumn21.Caption = "元件";
+            this.gridColumn21.FieldName = "part_name";
+            this.gridColumn21.Name = "gridColumn21";
+            this.gridColumn21.Visible = true;
+            this.gridColumn21.VisibleIndex = 0;
+            this.gridColumn21.Width = 85;
+            // 
+            // gridColumn22
+            // 
+            this.gridColumn22.Caption = "缺陷";
+            this.gridColumn22.FieldName = "ng_type";
+            this.gridColumn22.Name = "gridColumn22";
+            this.gridColumn22.Visible = true;
+            this.gridColumn22.VisibleIndex = 1;
+            this.gridColumn22.Width = 106;
+            // 
+            // gridColumn23
+            // 
+            this.gridColumn23.Caption = "结果";
+            this.gridColumn23.FieldName = "NG";
+            this.gridColumn23.Name = "gridColumn23";
+            this.gridColumn23.Visible = true;
+            this.gridColumn23.VisibleIndex = 2;
+            this.gridColumn23.Width = 53;
+            // 
+            // xtraTabPage5
+            // 
+            this.xtraTabPage5.Controls.Add(this.gridControl_Export);
+            this.xtraTabPage5.Name = "xtraTabPage5";
+            this.xtraTabPage5.PageVisible = false;
+            this.xtraTabPage5.Size = new System.Drawing.Size(375, 603);
+            this.xtraTabPage5.Text = "导出";
+            // 
             // gridControl_Export
             // 
-            this.gridControl_Export.Location = new System.Drawing.Point(16, 114);
+            this.gridControl_Export.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridControl_Export.Location = new System.Drawing.Point(0, 0);
             this.gridControl_Export.MainView = this.gridView1;
             this.gridControl_Export.Name = "gridControl_Export";
-            this.gridControl_Export.Size = new System.Drawing.Size(330, 293);
+            this.gridControl_Export.Size = new System.Drawing.Size(375, 603);
             this.gridControl_Export.TabIndex = 1;
             this.gridControl_Export.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
-            this.gridControl_Export.Visible = false;
             // 
             // gridView1
             // 
@@ -217,173 +504,6 @@
             this.gridColumn19.VisibleIndex = 5;
             this.gridColumn19.Width = 60;
             // 
-            // gridControl_Pcbs
-            // 
-            this.gridControl_Pcbs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridControl_Pcbs.Location = new System.Drawing.Point(0, 0);
-            this.gridControl_Pcbs.MainView = this.gridView_Pcbs;
-            this.gridControl_Pcbs.Name = "gridControl_Pcbs";
-            this.gridControl_Pcbs.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
-            this.repositoryItemDateEdit1});
-            this.gridControl_Pcbs.Size = new System.Drawing.Size(520, 633);
-            this.gridControl_Pcbs.TabIndex = 0;
-            this.gridControl_Pcbs.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView_Pcbs});
-            // 
-            // gridView_Pcbs
-            // 
-            this.gridView_Pcbs.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.gridColumn1,
-            this.gridColumn8,
-            this.gridColumn2,
-            this.gridColumn3,
-            this.gridColumn4});
-            this.gridView_Pcbs.GridControl = this.gridControl_Pcbs;
-            this.gridView_Pcbs.Name = "gridView_Pcbs";
-            this.gridView_Pcbs.OptionsBehavior.ReadOnly = true;
-            // 
-            // gridColumn1
-            // 
-            this.gridColumn1.Caption = "检查时间";
-            this.gridColumn1.ColumnEdit = this.repositoryItemDateEdit1;
-            this.gridColumn1.FieldName = "create_time";
-            this.gridColumn1.Name = "gridColumn1";
-            this.gridColumn1.Visible = true;
-            this.gridColumn1.VisibleIndex = 0;
-            this.gridColumn1.Width = 159;
-            // 
-            // repositoryItemDateEdit1
-            // 
-            this.repositoryItemDateEdit1.AutoHeight = false;
-            this.repositoryItemDateEdit1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemDateEdit1.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemDateEdit1.CalendarTimeProperties.DisplayFormat.FormatString = "G";
-            this.repositoryItemDateEdit1.CalendarTimeProperties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-            this.repositoryItemDateEdit1.CalendarTimeProperties.EditFormat.FormatString = "G";
-            this.repositoryItemDateEdit1.CalendarTimeProperties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-            this.repositoryItemDateEdit1.CalendarTimeProperties.Mask.EditMask = "G";
-            this.repositoryItemDateEdit1.CalendarView = DevExpress.XtraEditors.Repository.CalendarView.ClassicNew;
-            this.repositoryItemDateEdit1.DisplayFormat.FormatString = "G";
-            this.repositoryItemDateEdit1.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-            this.repositoryItemDateEdit1.EditFormat.FormatString = "G";
-            this.repositoryItemDateEdit1.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-            this.repositoryItemDateEdit1.Mask.EditMask = "G";
-            this.repositoryItemDateEdit1.Name = "repositoryItemDateEdit1";
-            this.repositoryItemDateEdit1.VistaDisplayMode = DevExpress.Utils.DefaultBoolean.False;
-            // 
-            // gridColumn8
-            // 
-            this.gridColumn8.Caption = "程序名";
-            this.gridColumn8.FieldName = "software_name";
-            this.gridColumn8.Name = "gridColumn8";
-            this.gridColumn8.Visible = true;
-            this.gridColumn8.VisibleIndex = 1;
-            this.gridColumn8.Width = 91;
-            // 
-            // gridColumn2
-            // 
-            this.gridColumn2.Caption = "条码号";
-            this.gridColumn2.FieldName = "pcb_number";
-            this.gridColumn2.Name = "gridColumn2";
-            this.gridColumn2.Visible = true;
-            this.gridColumn2.VisibleIndex = 2;
-            this.gridColumn2.Width = 129;
-            // 
-            // gridColumn3
-            // 
-            this.gridColumn3.Caption = "子基板数";
-            this.gridColumn3.FieldName = "pcb_childen_number";
-            this.gridColumn3.Name = "gridColumn3";
-            this.gridColumn3.Visible = true;
-            this.gridColumn3.VisibleIndex = 3;
-            this.gridColumn3.Width = 62;
-            // 
-            // gridColumn4
-            // 
-            this.gridColumn4.Caption = "NG数量";
-            this.gridColumn4.FieldName = "ng_count";
-            this.gridColumn4.Name = "gridColumn4";
-            this.gridColumn4.Visible = true;
-            this.gridColumn4.VisibleIndex = 4;
-            this.gridColumn4.Width = 52;
-            // 
-            // splitContainerControl2
-            // 
-            this.splitContainerControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainerControl2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainerControl2.Name = "splitContainerControl2";
-            this.splitContainerControl2.Panel1.Controls.Add(this.gridControl_Export);
-            this.splitContainerControl2.Panel1.Controls.Add(this.gridControl_Results);
-            this.splitContainerControl2.Panel1.Text = "Panel1";
-            this.splitContainerControl2.Panel2.Controls.Add(this.splitContainerControl3);
-            this.splitContainerControl2.Panel2.Text = "Panel2";
-            this.splitContainerControl2.Size = new System.Drawing.Size(820, 633);
-            this.splitContainerControl2.SplitterPosition = 377;
-            this.splitContainerControl2.TabIndex = 1;
-            // 
-            // gridControl_Results
-            // 
-            this.gridControl_Results.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridControl_Results.Location = new System.Drawing.Point(0, 0);
-            this.gridControl_Results.MainView = this.gridView_Results;
-            this.gridControl_Results.Name = "gridControl_Results";
-            this.gridControl_Results.Size = new System.Drawing.Size(377, 633);
-            this.gridControl_Results.TabIndex = 0;
-            this.gridControl_Results.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView_Results});
-            // 
-            // gridView_Results
-            // 
-            this.gridView_Results.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.gridColumn5,
-            this.gridColumn6,
-            this.gridColumn7,
-            this.gridColumn9});
-            this.gridView_Results.GridControl = this.gridControl_Results;
-            this.gridView_Results.Name = "gridView_Results";
-            this.gridView_Results.OptionsBehavior.ReadOnly = true;
-            this.gridView_Results.OptionsClipboard.AllowExcelFormat = DevExpress.Utils.DefaultBoolean.True;
-            // 
-            // gridColumn5
-            // 
-            this.gridColumn5.Caption = "NG类别";
-            this.gridColumn5.FieldName = "ng_str";
-            this.gridColumn5.Name = "gridColumn5";
-            this.gridColumn5.OptionsColumn.AllowEdit = false;
-            this.gridColumn5.OptionsColumn.ReadOnly = true;
-            this.gridColumn5.Visible = true;
-            this.gridColumn5.VisibleIndex = 0;
-            this.gridColumn5.Width = 106;
-            // 
-            // gridColumn6
-            // 
-            this.gridColumn6.Caption = "AI得分";
-            this.gridColumn6.FieldName = "score";
-            this.gridColumn6.Name = "gridColumn6";
-            this.gridColumn6.Visible = true;
-            this.gridColumn6.VisibleIndex = 1;
-            this.gridColumn6.Width = 85;
-            // 
-            // gridColumn7
-            // 
-            this.gridColumn7.Caption = "人工检验";
-            this.gridColumn7.FieldName = "result_ng_str";
-            this.gridColumn7.Name = "gridColumn7";
-            this.gridColumn7.Visible = true;
-            this.gridColumn7.VisibleIndex = 2;
-            this.gridColumn7.Width = 106;
-            // 
-            // gridColumn9
-            // 
-            this.gridColumn9.Caption = "结果";
-            this.gridColumn9.FieldName = "NG";
-            this.gridColumn9.Name = "gridColumn9";
-            this.gridColumn9.Visible = true;
-            this.gridColumn9.VisibleIndex = 3;
-            this.gridColumn9.Width = 53;
-            // 
             // splitContainerControl3
             // 
             this.splitContainerControl3.Collapsed = true;
@@ -483,16 +603,23 @@
             this.Text = "整板结果";
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).EndInit();
             this.splitContainerControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl_Export)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl_Pcbs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView_Pcbs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl2)).EndInit();
             this.splitContainerControl2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl_Results)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView_Results)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl2)).EndInit();
+            this.xtraTabControl2.ResumeLayout(false);
+            this.xtraTabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_AIResults)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView_AIResults)).EndInit();
+            this.xtraTabPage4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_2DResults)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView_2DResults)).EndInit();
+            this.xtraTabPage5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_Export)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl3)).EndInit();
             this.splitContainerControl3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).EndInit();
@@ -512,8 +639,8 @@
         private DevExpress.XtraEditors.SplitContainerControl splitContainerControl1;
         private DevExpress.XtraGrid.GridControl gridControl_Pcbs;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView_Pcbs;
-        private DevExpress.XtraGrid.GridControl gridControl_Results;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridView_Results;
+        private DevExpress.XtraGrid.GridControl gridControl_AIResults;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView_AIResults;
         private DevExpress.XtraEditors.SplitContainerControl splitContainerControl2;
         private DevExpress.XtraEditors.SplitContainerControl splitContainerControl3;
         private Cyotek.Windows.Forms.ImageBox imageBox_Part;
@@ -545,5 +672,15 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn17;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn18;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn19;
+        private DevExpress.XtraTab.XtraTabControl xtraTabControl2;
+        private DevExpress.XtraTab.XtraTabPage xtraTabPage3;
+        private DevExpress.XtraTab.XtraTabPage xtraTabPage4;
+        private DevExpress.XtraTab.XtraTabPage xtraTabPage5;
+        private DevExpress.XtraGrid.GridControl gridControl_2DResults;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView_2DResults;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn20;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn21;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn22;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn23;
     }
 }

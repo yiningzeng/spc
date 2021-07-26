@@ -18,11 +18,7 @@ namespace spc_client.UserControls
             InitializeComponent();
         }
 
-        public virtual void QueryReset()
-        {
-        }
-        public virtual void Export()
-        {
-        }
+        public virtual void QueryReset(){ }
+        public virtual void Export(){ }
     }
 }
