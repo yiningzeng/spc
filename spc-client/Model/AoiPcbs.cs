@@ -81,13 +81,13 @@ namespace spc_client.Model
         [JsonProperty("CreateTime")]
         public DateTime create_time { get; set; }
 
-        [NotMapped]
+        //[NotMapped]
         public string pc_ip { get; set; }
-        [NotMapped]
+        //[NotMapped]
         public string software_name { get; set; }
-        [NotMapped]
+        //[NotMapped]
         public List<AoiResults> results { get; set; }
-        [NotMapped]
+        //[NotMapped]
         public List<Aoi2DResults> results_2d { get; set; }
         
         public string PathConcatenate(string s1, string s2)

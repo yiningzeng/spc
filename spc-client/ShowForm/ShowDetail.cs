@@ -23,6 +23,7 @@ using System.IO;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.Utils;
 using DevExpress.XtraGrid.Columns;
+using HalconDotNet;
 
 namespace spc_client.ShowForm
 {
@@ -41,6 +42,7 @@ namespace spc_client.ShowForm
             InitializeComponent();
             gridView_Pcbs.FocusedRowChanged += GridView_Pcbs_FocusedRowChanged;
             gridView_AIResults.FocusedRowChanged += GridView_Results_FocusedRowChanged;
+            gridView_2DResults.FocusedRowChanged += GridView_2DResults_FocusedRowChanged;
             gridView_Pcbs.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
             gridView_AIResults.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
             gridView_2DResults.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
@@ -48,7 +50,12 @@ namespace spc_client.ShowForm
             SetReadOnly(gridView_Pcbs);
             SetReadOnly(gridView_AIResults);
             SetReadOnly(gridView_2DResults);
+            tabResultSelect.SelectedPageChanged += TabResultSelect_SelectedPageChanged;
+
+            hSmartWindowControl1.MouseWheel += hSmartWindowControl1.HSmartWindowControl_MouseWheel;
         }
+
+
 
         void SetReadOnly(GridView gv)
         {
@@ -94,18 +101,20 @@ namespace spc_client.ShowForm
 
         private void ShowAiResultInfo(string pc_ip, string pcb_path, RetResults currentRetResult)
         {
+            imageBox_Part.BringToFront();
+            hSmartWindowControl1.SendToBack();
             string[] reg = currentRetResult.area.Split(',');
             int x = Convert.ToInt32(double.Parse(reg[0]));
             int y = Convert.ToInt32(double.Parse(reg[1]));
             int w = Convert.ToInt32(double.Parse(reg[2]));
             int h = Convert.ToInt32(double.Parse(reg[3]));
             Rectangle rect = new Rectangle(x, y, w, h);
-            DrawCrossLine(Convert.ToBoolean(currentRetResult.is_back), rect);
+            if (tabResultSelect.SelectedTabPageIndex == 0) DrawCrossLine(Convert.ToBoolean(currentRetResult.is_back), rect);
             MySmartThreadPool.Instance().QueueWorkItem((ap) =>
             {
                 try
                 {
-                    string[] region = currentRetResult.region.Split(',');
+                    string[] region = ap.region.Split(',');
                     Rectangle rectRegion = new Rectangle(Convert.ToInt32(double.Parse(region[0])),
                         Convert.ToInt32(double.Parse(region[1])),
                         Convert.ToInt32(double.Parse(region[2])),
@@ -147,66 +156,79 @@ namespace spc_client.ShowForm
                 catch(Exception er) { }
             }, currentRetResult);
         }
-        private void Show2DResultInfo(string pc_ip, string pcb_path, _2DRetResults currentRetResult)
+
+        public void _2DShow(string file, _2DRetResults currentRetResult)
         {
             string[] reg = currentRetResult.area.Split(',');
-            double centerMoveX = double.Parse(reg[0]);
-            double centerMoveY = double.Parse(reg[1]);
+            double x = double.Parse(reg[0]);
+            double y = double.Parse(reg[1]);
             double w = double.Parse(reg[2]);
             double h = double.Parse(reg[3]);
-            
-            DrawCrossLine(Convert.ToBoolean(currentRetResult.is_back), rect);
-            MySmartThreadPool.Instance().QueueWorkItem((ap) =>
-            {
-                try
-                {
-                    string[] region = currentRetResult.region.Split(',');
-                    Rectangle rectRegion = new Rectangle(Convert.ToInt32(double.Parse(region[0])),
-                        Convert.ToInt32(double.Parse(region[1])),
-                        Convert.ToInt32(double.Parse(region[2])),
-                        Convert.ToInt32(double.Parse(region[3])));
-                    string file = ap.PathConcatenate(ap.GetBasePath(pc_ip, pcb_path), ap.part_image_path);
-                    if (File.Exists(file))
-                    {
-                        Image image = Image.FromFile(file);
-                        {
+            double a = double.Parse(reg[4]);
+            HOperatorSet.ReadImage(out HObject hObject, file);
+            HOperatorSet.GetImageSize(hObject, out HTuple width, out HTuple height);
+            HOperatorSet.GenRectangle2ContourXld(out HObject rect, height / 2 + y, width / 2 + x, new HTuple(a).TupleRad(), w / 2, h / 2);
 
-                            using (Graphics g = Graphics.FromImage(image))
-                            {
-                                using (Pen pen = new Pen(Color.Red, 3))
-                                {
-                                    g.DrawRectangle(pen, rectRegion.X, rectRegion.Y, rectRegion.Width, rectRegion.Height);
-                                }
-                            }
-                        }
-                        this.BeginInvoke((Action<Image, int, Rectangle>)((img, isback, r2) =>
-                        {
-                            imageBox_Part.TextDisplayMode = Cyotek.Windows.Forms.ImageBoxGridDisplayMode.None;
-                            xtraTabControl1.SelectedTabPageIndex = isback;
-                            if (imageBox_Part.Image != null) imageBox_Part.Image.Dispose();
-                            imageBox_Part.Image = img;
-                            imageBox_Part.CenterAt(new Point(r2.X, r2.Y));
-                            imageBox_Part.Invalidate();
-                        }), image.Clone(), ap.is_back, rectRegion);
-                        image.Dispose();
-                    }
-                    else
-                    {
-                        this.BeginInvoke((Action)(() =>
-                        {
-                            if (imageBox_Part.Image != null) imageBox_Part.Image.Dispose();
-                            imageBox_Part.TextDisplayMode = Cyotek.Windows.Forms.ImageBoxGridDisplayMode.Client;
-                        }));
-                    }
-                }
-                catch (Exception er) { }
-            }, currentRetResult);
+            this.BeginInvoke(new Action<HObject, HObject>((ho, rc) =>
+            {
+                HOperatorSet.ClearWindow(hSmartWindowControl1.HalconWindow);
+                HOperatorSet.SetColor(hSmartWindowControl1.HalconWindow, "red");
+                HOperatorSet.DispObj(hObject, hSmartWindowControl1.HalconWindow);
+                HOperatorSet.DispObj(rc, hSmartWindowControl1.HalconWindow);
+                hSmartWindowControl1.SetFullImagePart();
+                rc.Dispose();
+                ho.Dispose();
+            }), hObject, rect);
+        }
+        private void Show2DResultInfo(string pc_ip, string pcb_path, _2DRetResults currentRetResult)
+        {
+            imageBox_Part.SendToBack();
+            hSmartWindowControl1.BringToFront();
+            string[] reg = currentRetResult.cross.Split(',');
+            double centerMoveX = double.Parse(reg[0]);
+            double centerMoveY = double.Parse(reg[1]);
+     
+            Rectangle rect = new Rectangle(Convert.ToInt32(centerMoveX), Convert.ToInt32(centerMoveY), 1, 1);
+            if (tabResultSelect.SelectedTabPageIndex == 1)
+            DrawCrossLine(Convert.ToBoolean(currentRetResult.is_back), rect);
+
+            string filePath = currentRetResult.PathConcatenate(currentRetResult.GetBasePath(pc_ip, pcb_path), currentRetResult.part_image_path);
+            Task.Run(() => _2DShow(filePath, currentRetResult));
         }
 
         private void GridView_Results_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
-            if (currentPcb == null || gridView_AIResults.GetFocusedRow() == null) return;
-            ShowAiResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, gridView_AIResults.GetFocusedRow() as RetResults);
+            if (tabResultSelect.SelectedTabPageIndex == 0)
+            {
+                if (currentPcb == null || gridView_AIResults.GetFocusedRow() == null) return;
+                ShowAiResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, gridView_AIResults.GetFocusedRow() as RetResults);
+            }
+        }
+        private void GridView_2DResults_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            if (tabResultSelect.SelectedTabPageIndex == 1)
+            {
+                if (currentPcb == null || gridView_2DResults.GetFocusedRow() == null) return;
+                Show2DResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, gridView_2DResults.GetFocusedRow() as _2DRetResults);
+            }
+        }
+        private void TabResultSelect_SelectedPageChanged(object sender, DevExpress.XtraTab.TabPageChangedEventArgs e)
+        {
+            switch (tabResultSelect.SelectedTabPageIndex)
+            {
+                case 0:
+                    imageBox_Part.BringToFront();
+                    hSmartWindowControl1.SendToBack();
+                    if (currentPcb == null || gridView_AIResults.GetFocusedRow() == null) return;
+                    ShowAiResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, gridView_AIResults.GetFocusedRow() as RetResults);
+                    break;
+                case 1:
+                    imageBox_Part.SendToBack();
+                    hSmartWindowControl1.BringToFront();
+                    if (currentPcb == null || gridView_2DResults.GetFocusedRow() == null) return;
+                    Show2DResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, gridView_2DResults.GetFocusedRow() as _2DRetResults);
+                    break;
+            }
         }
 
         private void GridView_Pcbs_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
@@ -214,7 +236,7 @@ namespace spc_client.ShowForm
             currentPcb = gridView_Pcbs.GetFocusedRow() as AoiPcbs;
             if (currentPcb == null) return;
             if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
-            MySmartThreadPool.Instance().QueueWorkItem((ap) =>
+            MySmartThreadPool.Instance().QueueWorkItem(async (ap) =>
             {
                 SpcModel spcModel = DB.Instance();
                 try
@@ -245,77 +267,88 @@ namespace spc_client.ShowForm
                     ap.PathConcatenate(ap.GetBasePath(), "back.jpg"));
                     #endregion
 
-                    #region AI查询
-                    string aiResultTable = Utils.GetFinalTableName(ap.create_time, "aoi_results");
-                    string aiSql = String.Format("SELECT" +
-                                    "	is_back," +
-                                    "	score," +
-                                    "	area," +
-                                    "	region," +
-                                    "	( SELECT ng_str FROM aoi_ng_types WHERE id = ng_type_id ) AS ng_str," +
-                                    "	( SELECT ng_str FROM aoi_ng_types WHERE id = result_ng_type_id ) AS result_ng_str," +
-                                    "	ng_type_id," +
-                                    "	result_ng_type_id," +
-                                    "	IF(result_ng_type_id != '', 'NG', 'OK') AS NG," +
-                                    "	part_image_path," +
-                                    "	pcb_id " +
-                                    "FROM" +
-                                    "   {0} WHERE pcb_id = '{1}'", aiResultTable, ap.id);
-                    List<RetResults> retResults = spcModel.Database.SqlQuery<RetResults>(aiSql).ToList();
-                    #endregion
 
-                    #region 2d
-                    string _2DResultDetailTable = Utils.GetFinalTableName(ap.create_time, "aoi_results_2d_detail");
-                    string _2DResultTable = Utils.GetFinalTableName(ap.create_time, "aoi_results_2d");
-                    string _2dSql = String.Format("SELECT" +
-                                                "	*, IF(result_string != '', 'NG', 'OK') AS NG " +
-                                                "FROM" +
-                                                "	( SELECT * FROM `{1}` WHERE pcb_id = '{0}' ) AS fu" +
-                                                "	LEFT JOIN (" +
-                                                "SELECT" +
-                                                "	id AS 'part_id'," +
-                                                "	lot_name," +
-                                                "	part_name," +
-                                                "	sub_board," +
-                                                "	angle," +
-                                                "	area AS 'cross'," +
-                                                "	ng_type AS 'all_ng_type' " +
-                                                "FROM" +
-                                                "	`{2}` " +
-                                                "WHERE" +
-                                                "	pcb_id = '{0}' " +
-                                                "	) AS fu2 ON fu.part_id = fu2.part_id", ap.id, _2DResultDetailTable, _2DResultTable);
-                    List<_2DRetResults> _2dRetResults = spcModel.Database.SqlQuery<_2DRetResults>(_2dSql).ToList();
-                    #endregion
-                    this.BeginInvoke((Action<List<RetResults>, List<_2DRetResults>>)((d1, d2) =>
+                    // 2D
+                    await Task.Run(() =>
                     {
-                        gridControl_AIResults.DataSource = d1;
-                        gridControl_2DResults.DataSource = d2;
-
-                    }), retResults, _2dRetResults);
-                    if (retResults.Count > 0)
-                    {
-                        MySmartThreadPool.Instance().QueueWorkItem((a) =>
+                        try
                         {
-                            this.BeginInvoke((Action)(() =>
+                            #region 2d
+                            string _2DResultDetailTable = Utils.GetFinalTableName(ap.create_time, "aoi_results_2d_detail");
+                            string _2DResultTable = Utils.GetFinalTableName(ap.create_time, "aoi_results_2d");
+                            string _2dSql = String.Format("SELECT" +
+                                                        "	*, IF(result_string != '', 'NG', 'OK') AS NG " +
+                                                        "FROM" +
+                                                        "	( SELECT * FROM `{1}` WHERE pcb_id = '{0}' ) AS fu" +
+                                                        "	LEFT JOIN (" +
+                                                        "SELECT" +
+                                                        "	id AS 'part_id'," +
+                                                        "	lot_name," +
+                                                        "	part_name," +
+                                                        "	sub_board," +
+                                                        "	angle," +
+                                                        "	area AS 'cross'," +
+                                                        "	ng_type AS 'all_ng_type' " +
+                                                        "FROM" +
+                                                        "	`{2}` " +
+                                                        "WHERE" +
+                                                        "	pcb_id = '{0}' " +
+                                                        "	) AS fu2 ON fu.part_id = fu2.part_id", ap.id, _2DResultDetailTable, _2DResultTable);
+                            List<_2DRetResults> _2dRetResults = spcModel.Database.SqlQuery<_2DRetResults>(_2dSql).ToList();
+                            #endregion
+                            this.BeginInvoke((Action<List<_2DRetResults>>)((d2) =>
                             {
-                                ShowAiResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, a);
-                            }));
-
-                        }, retResults[0]);
-                    }
-
-                    if (_2dRetResults.Count > 0)
+                                gridControl_2DResults.DataSource = d2;
+                                if (tabResultSelect.SelectedTabPageIndex == 1)
+                                {
+                                    if (d2.Count > 0)
+                                    {
+                                        Show2DResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, d2[0]);
+                                    }
+                                }
+                            }), _2dRetResults);
+                        }
+                        catch (Exception er) { }
+                    });
+                    // AI
+                    await Task.Run(() =>
                     {
-                        MySmartThreadPool.Instance().QueueWorkItem((a) =>
+                        try
                         {
-                            this.BeginInvoke((Action)(() =>
-                            {
-                                ShowResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, a);
-                            }));
+                            #region AI查询
+                            string aiResultTable = Utils.GetFinalTableName(ap.create_time, "aoi_results");
+                            string aiSql = String.Format("SELECT" +
+                                            "	is_back," +
+                                            "	score," +
+                                            "	area," +
+                                            "	region," +
+                                            "	( SELECT ng_str FROM aoi_ng_types WHERE id = ng_type_id ) AS ng_str," +
+                                            "	( SELECT ng_str FROM aoi_ng_types WHERE id = result_ng_type_id ) AS result_ng_str," +
+                                            "	ng_type_id," +
+                                            "	result_ng_type_id," +
+                                            "	IF(result_ng_type_id != '', 'NG', 'OK') AS NG," +
+                                            "	part_image_path," +
+                                            "	pcb_id " +
+                                            "FROM" +
+                                            "   {0} WHERE pcb_id = '{1}'", aiResultTable, ap.id);
+                            List<RetResults> retResults = spcModel.Database.SqlQuery<RetResults>(aiSql).ToList();
 
-                        }, _2dRetResults[0]);
-                    }
+                            this.BeginInvoke((Action<List<RetResults>>)((d1) =>
+                            {
+                                gridControl_AIResults.DataSource = d1;
+
+                                if (tabResultSelect.SelectedTabPageIndex == 0)
+                                {
+                                    if (d1.Count > 0)
+                                    {
+                                        ShowAiResultInfo(currentPcb.pc_ip, currentPcb.pcb_path, d1[0]);
+                                    }
+                                }
+                            }), retResults);
+                            #endregion
+                        }
+                        catch (Exception er) { }
+                    });
                 }
                 catch (Exception er)
                 {

@@ -7,6 +7,7 @@ using DevExpress.Skins;
 using DevExpress.XtraSplashScreen;
 using System.Threading;
 using spc_client.Tools;
+using HalconDotNet;
 
 namespace spc_client
 {
@@ -18,6 +19,10 @@ namespace spc_client
         [STAThread]
         static void Main()
         {
+            HOperatorSet.SetSystem("do_low_error", "false"); ///少报错
+            HOperatorSet.SetSystem("clip_region", "false"); //region在图像外不切掉
+            HOperatorSet.SetSystem("border_shape_models", "true"); //依然匹配边缘的图形
+            HOperatorSet.SetSystem("use_window_thread", "true");
             //Snowflake snowflake = new Snowflake(1);
             //for (int i = 0;i < 20; i++){
             //    Console.WriteLine(snowflake.nextId().ToString());

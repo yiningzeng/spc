@@ -38,7 +38,7 @@
             this.gridColumn3 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn4 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.splitContainerControl2 = new DevExpress.XtraEditors.SplitContainerControl();
-            this.xtraTabControl2 = new DevExpress.XtraTab.XtraTabControl();
+            this.tabResultSelect = new DevExpress.XtraTab.XtraTabControl();
             this.xtraTabPage3 = new DevExpress.XtraTab.XtraTabPage();
             this.gridControl_AIResults = new DevExpress.XtraGrid.GridControl();
             this.gridView_AIResults = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -73,6 +73,7 @@
             this.xtraTabPage2 = new DevExpress.XtraTab.XtraTabPage();
             this.pictureBox_Back = new System.Windows.Forms.PictureBox();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
+            this.hSmartWindowControl1 = new HalconDotNet.HSmartWindowControl();
             this.imageBox_Part = new Cyotek.Windows.Forms.ImageBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
             this.splitContainerControl1.SuspendLayout();
@@ -82,8 +83,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl2)).BeginInit();
             this.splitContainerControl2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl2)).BeginInit();
-            this.xtraTabControl2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tabResultSelect)).BeginInit();
+            this.tabResultSelect.SuspendLayout();
             this.xtraTabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl_AIResults)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView_AIResults)).BeginInit();
@@ -142,6 +143,8 @@
             this.gridView_Pcbs.GridControl = this.gridControl_Pcbs;
             this.gridView_Pcbs.Name = "gridView_Pcbs";
             this.gridView_Pcbs.OptionsBehavior.ReadOnly = true;
+            this.gridView_Pcbs.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
+            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn1, DevExpress.Data.ColumnSortOrder.Descending)});
             // 
             // gridColumn1
             // 
@@ -215,7 +218,7 @@
             this.splitContainerControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainerControl2.Location = new System.Drawing.Point(0, 0);
             this.splitContainerControl2.Name = "splitContainerControl2";
-            this.splitContainerControl2.Panel1.Controls.Add(this.xtraTabControl2);
+            this.splitContainerControl2.Panel1.Controls.Add(this.tabResultSelect);
             this.splitContainerControl2.Panel1.Text = "Panel1";
             this.splitContainerControl2.Panel2.Controls.Add(this.splitContainerControl3);
             this.splitContainerControl2.Panel2.Text = "Panel2";
@@ -223,15 +226,15 @@
             this.splitContainerControl2.SplitterPosition = 377;
             this.splitContainerControl2.TabIndex = 1;
             // 
-            // xtraTabControl2
+            // tabResultSelect
             // 
-            this.xtraTabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.xtraTabControl2.Location = new System.Drawing.Point(0, 0);
-            this.xtraTabControl2.Name = "xtraTabControl2";
-            this.xtraTabControl2.SelectedTabPage = this.xtraTabPage3;
-            this.xtraTabControl2.Size = new System.Drawing.Size(377, 633);
-            this.xtraTabControl2.TabIndex = 1;
-            this.xtraTabControl2.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.tabResultSelect.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabResultSelect.Location = new System.Drawing.Point(0, 0);
+            this.tabResultSelect.Name = "tabResultSelect";
+            this.tabResultSelect.SelectedTabPage = this.xtraTabPage3;
+            this.tabResultSelect.Size = new System.Drawing.Size(377, 633);
+            this.tabResultSelect.TabIndex = 1;
+            this.tabResultSelect.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.xtraTabPage3,
             this.xtraTabPage4,
             this.xtraTabPage5});
@@ -516,7 +519,7 @@
             this.splitContainerControl3.Panel2.Controls.Add(this.panelControl1);
             this.splitContainerControl3.Panel2.Text = "Panel2";
             this.splitContainerControl3.Size = new System.Drawing.Size(433, 633);
-            this.splitContainerControl3.SplitterPosition = 261;
+            this.splitContainerControl3.SplitterPosition = 313;
             this.splitContainerControl3.TabIndex = 0;
             // 
             // xtraTabControl1
@@ -525,7 +528,7 @@
             this.xtraTabControl1.Location = new System.Drawing.Point(0, 0);
             this.xtraTabControl1.Name = "xtraTabControl1";
             this.xtraTabControl1.SelectedTabPage = this.xtraTabPage1;
-            this.xtraTabControl1.Size = new System.Drawing.Size(433, 261);
+            this.xtraTabControl1.Size = new System.Drawing.Size(433, 313);
             this.xtraTabControl1.TabIndex = 1;
             this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.xtraTabPage1,
@@ -535,7 +538,7 @@
             // 
             this.xtraTabPage1.Controls.Add(this.pictureBox_Front);
             this.xtraTabPage1.Name = "xtraTabPage1";
-            this.xtraTabPage1.Size = new System.Drawing.Size(431, 231);
+            this.xtraTabPage1.Size = new System.Drawing.Size(431, 283);
             this.xtraTabPage1.Text = "正面";
             // 
             // pictureBox_Front
@@ -543,7 +546,7 @@
             this.pictureBox_Front.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox_Front.Location = new System.Drawing.Point(0, 0);
             this.pictureBox_Front.Name = "pictureBox_Front";
-            this.pictureBox_Front.Size = new System.Drawing.Size(431, 231);
+            this.pictureBox_Front.Size = new System.Drawing.Size(431, 283);
             this.pictureBox_Front.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_Front.TabIndex = 0;
             this.pictureBox_Front.TabStop = false;
@@ -553,7 +556,7 @@
             // 
             this.xtraTabPage2.Controls.Add(this.pictureBox_Back);
             this.xtraTabPage2.Name = "xtraTabPage2";
-            this.xtraTabPage2.Size = new System.Drawing.Size(431, 231);
+            this.xtraTabPage2.Size = new System.Drawing.Size(431, 283);
             this.xtraTabPage2.Text = "反面";
             // 
             // pictureBox_Back
@@ -561,7 +564,7 @@
             this.pictureBox_Back.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox_Back.Location = new System.Drawing.Point(0, 0);
             this.pictureBox_Back.Name = "pictureBox_Back";
-            this.pictureBox_Back.Size = new System.Drawing.Size(431, 231);
+            this.pictureBox_Back.Size = new System.Drawing.Size(431, 283);
             this.pictureBox_Back.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_Back.TabIndex = 0;
             this.pictureBox_Back.TabStop = false;
@@ -569,12 +572,31 @@
             // 
             // panelControl1
             // 
+            this.panelControl1.Controls.Add(this.hSmartWindowControl1);
             this.panelControl1.Controls.Add(this.imageBox_Part);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelControl1.Location = new System.Drawing.Point(0, 0);
             this.panelControl1.Name = "panelControl1";
-            this.panelControl1.Size = new System.Drawing.Size(433, 362);
+            this.panelControl1.Size = new System.Drawing.Size(433, 310);
             this.panelControl1.TabIndex = 1;
+            // 
+            // hSmartWindowControl1
+            // 
+            this.hSmartWindowControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.hSmartWindowControl1.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
+            this.hSmartWindowControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hSmartWindowControl1.HDoubleClickToFitContent = true;
+            this.hSmartWindowControl1.HDrawingObjectsModifier = HalconDotNet.HSmartWindowControl.DrawingObjectsModifier.None;
+            this.hSmartWindowControl1.HImagePart = new System.Drawing.Rectangle(0, 0, 640, 480);
+            this.hSmartWindowControl1.HKeepAspectRatio = true;
+            this.hSmartWindowControl1.HMoveContent = true;
+            this.hSmartWindowControl1.HZoomContent = HalconDotNet.HSmartWindowControl.ZoomContent.WheelForwardZoomsIn;
+            this.hSmartWindowControl1.Location = new System.Drawing.Point(2, 2);
+            this.hSmartWindowControl1.Margin = new System.Windows.Forms.Padding(0);
+            this.hSmartWindowControl1.Name = "hSmartWindowControl1";
+            this.hSmartWindowControl1.Size = new System.Drawing.Size(429, 306);
+            this.hSmartWindowControl1.TabIndex = 1;
+            this.hSmartWindowControl1.WindowSize = new System.Drawing.Size(429, 306);
             // 
             // imageBox_Part
             // 
@@ -587,7 +609,7 @@
             this.imageBox_Part.Location = new System.Drawing.Point(2, 2);
             this.imageBox_Part.Name = "imageBox_Part";
             this.imageBox_Part.SelectionColor = System.Drawing.Color.Transparent;
-            this.imageBox_Part.Size = new System.Drawing.Size(429, 358);
+            this.imageBox_Part.Size = new System.Drawing.Size(429, 306);
             this.imageBox_Part.TabIndex = 0;
             this.imageBox_Part.Text = "图片缺失";
             this.imageBox_Part.TextBackColor = System.Drawing.Color.Gray;
@@ -609,8 +631,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl2)).EndInit();
             this.splitContainerControl2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl2)).EndInit();
-            this.xtraTabControl2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.tabResultSelect)).EndInit();
+            this.tabResultSelect.ResumeLayout(false);
             this.xtraTabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridControl_AIResults)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView_AIResults)).EndInit();
@@ -672,7 +694,7 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn17;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn18;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn19;
-        private DevExpress.XtraTab.XtraTabControl xtraTabControl2;
+        private DevExpress.XtraTab.XtraTabControl tabResultSelect;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage3;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage4;
         private DevExpress.XtraTab.XtraTabPage xtraTabPage5;
@@ -682,5 +704,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn21;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn22;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn23;
+        private HalconDotNet.HSmartWindowControl hSmartWindowControl1;
     }
 }

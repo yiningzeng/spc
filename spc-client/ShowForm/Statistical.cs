@@ -32,8 +32,10 @@ namespace spc_client.ShowForm
         List<RetStatistical> finalRetStatisticalDb = new List<RetStatistical>();
         SubTableQueryHelper<RetStatistical> retStatisticalSHelper = new SubTableQueryHelper<RetStatistical>();
 
-        List<RetNgTypesPai> finalNgPaiDb = new List<RetNgTypesPai>();
-        SubTableQueryHelper<RetNgTypesPai> ngPaiHelper = new SubTableQueryHelper<RetNgTypesPai>();
+        List<RetNgTypesPai> finalNgPaiDb_AI = new List<RetNgTypesPai>();
+        List<RetNgTypesPai> finalNgPaiDb_2D = new List<RetNgTypesPai>();
+        SubTableQueryHelper<RetNgTypesPai> ngPaiHelper_AI = new SubTableQueryHelper<RetNgTypesPai>();
+        SubTableQueryHelper<RetNgTypesPai> ngPaiHelper_2D = new SubTableQueryHelper<RetNgTypesPai>();
         public Statistical()
         {
             InitializeComponent();
@@ -67,27 +69,55 @@ namespace spc_client.ShowForm
         private void GridView_Results_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
             if (gridView_Results.GetFocusedRow() != null)
-                ShowChart(gridView_Results.GetFocusedRow() as RetStatistical);
+            {
+                chartControl_All.Series.Clear();
+                RetStatistical retStatistical = gridView_Results.GetFocusedRow() as RetStatistical;
+                ShowAiChart(retStatistical);
+                Show2DChart(retStatistical);
+
+                try
+                {
+                    DataTable dt = new DataTable();
+                    dt.Columns.Add(new DataColumn("ItemName")); //项目名称
+                    dt.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
+
+                    dt.Rows.Add(new object[] { "不良率", float.Parse(retStatistical.defect_rate.Replace("%", "")) / 100 });
+                    dt.Rows.Add(new object[] { "直通率", float.Parse(retStatistical.pass_rate.Replace("%", "")) / 100 });
+                    DataTable dt2 = new DataTable();
+                    dt2.Columns.Add(new DataColumn("ItemName")); //项目名称
+                    dt2.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
+
+                    dt2.Rows.Add(new object[] { "不良板数", retStatistical.count_error_pcb });
+                    dt2.Rows.Add(new object[] { "误报板数", retStatistical.count_warning_pcb });
+                    dt2.Rows.Add(new object[] { "GOOD板数", retStatistical.count_good_pcb });
+                    CreatePieChart(retStatistical.software_id, dt, dt2);
+                    CreateBarChart(retStatistical);
+                }
+                catch (Exception er)
+                {
+                    LogHelper.WriteLog("画其他图表出错", er);
+                }
+            }
             //ShowResultInfo(gridView_Results.GetFocusedRow() as RetResults);
         }
-        private void ShowChart(RetStatistical retStatistical)
+        private void ShowAiChart(RetStatistical retStatistical)
         {
             try
             {
                 #region 缺陷饼图
                 if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
-                finalNgPaiDb.Clear();
+                finalNgPaiDb_AI.Clear();
                 Console.Out.WriteLine("---------------");
-                List<string> sqls = Utils.GetQueryStrs(QueryPars.GetChartPieBaseSql(retStatistical.software_id), QueryPars.startTime, QueryPars.endTime, "aoi_results");
-                ngPaiHelper.Run(sqls,
+                List<string> sqls = Utils.GetQueryStrs(QueryPars.GetChartPieBaseSql_AI(retStatistical.software_id), QueryPars.startTime, QueryPars.endTime, "aoi_results");
+                ngPaiHelper_AI.Run(sqls,
                     (sql, temp, isDone) =>
                     {
                         // LogHelper.WriteLog("缺陷饼图 > " + sql);
                         if (temp.Count > 0)
                         {
-                            lock (finalNgPaiDb)
+                            lock (finalNgPaiDb_AI)
                             {
-                                Dictionary<string, RetNgTypesPai> fuckTemp = finalNgPaiDb.ToDictionary(v => v.result_ng_str, v => v);
+                                Dictionary<string, RetNgTypesPai> fuckTemp = finalNgPaiDb_AI.ToDictionary(v => v.result_ng_str, v => v);
                                 foreach (var one in temp)
                                 {
                                     string key = one.result_ng_str;
@@ -102,27 +132,26 @@ namespace spc_client.ShowForm
                                         fuckTemp.Add(key, one);
                                     }
                                 }
-                                finalNgPaiDb = fuckTemp.Values.ToList();
+                                finalNgPaiDb_AI = fuckTemp.Values.ToList();
                             }
                         }
                         if (isDone)
                         {
                             this.BeginInvoke((Action)(() =>
                             {
-                                chartControl_NG.Series.Clear();
                                 Series series2 = new Series("饼图1", ViewType.Pie);
-                                series2.DataSource = finalNgPaiDb;
+                                series2.DataSource = finalNgPaiDb_AI;
                                 //series.ArgumentScaleType = ScaleType.Qualitative;
                                 //项目名称
                                 series2.ArgumentDataMember = "result_ng_str";
                                 series2.ValueScaleType = ScaleType.Numerical;
                                 //series2.ToolTipPointPattern = "{A}: {V}(个)";
-                                series2.LegendTextPattern = "{A}: {V} ({VP:P0})";
-                                series2.Label.TextPattern = "{A}: {V} ({VP:P0})";
+                                series2.LegendTextPattern = "AI - {A}: {V} ({VP:P0})";
+                                series2.Label.TextPattern = "AI - {A}: {V} ({VP:P0})";
                                 //取值字段
                                 series2.ValueDataMembers.AddRange(new string[] { "count" });
                                 series2.ToolTipEnabled = DevExpress.Utils.DefaultBoolean.True;
-                                chartControl_NG.Series.Add(series2);
+                                chartControl_All.Series.Add(series2);
 
                                 if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
 
@@ -132,30 +161,75 @@ namespace spc_client.ShowForm
                     });
                 #endregion
             }
-            catch(Exception er) {
+            catch (Exception er)
+            {
                 LogHelper.WriteLog("缺陷饼图出错", er);
             }
+            
+        }
+        private void Show2DChart(RetStatistical retStatistical)
+        {
             try
             {
-                DataTable dt = new DataTable();
-                dt.Columns.Add(new DataColumn("ItemName")); //项目名称
-                dt.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
+                #region 缺陷饼图
+                if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
+                finalNgPaiDb_2D.Clear();
+                Console.Out.WriteLine("---------------");
+                List<string> sqls = Utils.GetQueryStrs(QueryPars.GetChartPieBaseSql_2D(retStatistical.software_id), QueryPars.startTime, QueryPars.endTime, "aoi_results_2d_detail");
+                ngPaiHelper_2D.Run(sqls,
+                    (sql, temp, isDone) =>
+                    {
+                        // LogHelper.WriteLog("缺陷饼图 > " + sql);
+                        if (temp.Count > 0)
+                        {
+                            lock (finalNgPaiDb_2D)
+                            {
+                                Dictionary<string, RetNgTypesPai> fuckTemp = finalNgPaiDb_2D.ToDictionary(v => v.result_ng_str, v => v);
+                                foreach (var one in temp)
+                                {
+                                    string key = one.result_ng_str;
+                                    if (fuckTemp.ContainsKey(key))
+                                    {
+                                        var tempOne = fuckTemp[key];
+                                        tempOne.count += one.count;
+                                        fuckTemp[key] = tempOne;
+                                    }
+                                    else
+                                    {
+                                        fuckTemp.Add(key, one);
+                                    }
+                                }
+                                finalNgPaiDb_2D = fuckTemp.Values.ToList();
+                            }
+                        }
+                        if (isDone)
+                        {
+                            this.BeginInvoke((Action)(() =>
+                            {
+                                Series series2 = new Series("饼图1", ViewType.Pie);
+                                series2.DataSource = finalNgPaiDb_2D;
+                                //series.ArgumentScaleType = ScaleType.Qualitative;
+                                //项目名称
+                                series2.ArgumentDataMember = "result_ng_str";
+                                series2.ValueScaleType = ScaleType.Numerical;
+                                //series2.ToolTipPointPattern = "{A}: {V}(个)";
+                                series2.LegendTextPattern = "2D - {A}: {V} ({VP:P0})";
+                                series2.Label.TextPattern = "2D - {A}: {V} ({VP:P0})";
+                                //取值字段
+                                series2.ValueDataMembers.AddRange(new string[] { "count" });
+                                series2.ToolTipEnabled = DevExpress.Utils.DefaultBoolean.True;
+                                chartControl_All.Series.Add(series2);
+                                if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
 
-                dt.Rows.Add(new object[] { "不良率", float.Parse(retStatistical.defect_rate.Replace("%", "")) / 100 });
-                dt.Rows.Add(new object[] { "直通率", float.Parse(retStatistical.pass_rate.Replace("%", "")) / 100 });
-                DataTable dt2 = new DataTable();
-                dt2.Columns.Add(new DataColumn("ItemName")); //项目名称
-                dt2.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
-
-                dt2.Rows.Add(new object[] { "不良板数", retStatistical.count_error_pcb });
-                dt2.Rows.Add(new object[] { "误报板数", retStatistical.count_warning_pcb });
-                dt2.Rows.Add(new object[] { "GOOD板数", retStatistical.count_good_pcb });
-                CreatePieChart(retStatistical.software_id, dt, dt2);
-                CreateBarChart(retStatistical);
+                                Console.Out.WriteLine("---------------");
+                            }));
+                        }
+                    });
+                #endregion
             }
             catch (Exception er)
             {
-                LogHelper.WriteLog("画其他图表出错", er);
+                LogHelper.WriteLog("缺陷饼图出错", er);
             }
         }
         private void CreateBarChart(RetStatistical retStatistical)
@@ -198,21 +272,26 @@ namespace spc_client.ShowForm
 
         void ReSetInfo()
         {
-            finalNgPaiDb = null;
-            finalNgPaiDb = new List<RetNgTypesPai>();
+            finalNgPaiDb_AI = null;
+            finalNgPaiDb_AI = new List<RetNgTypesPai>();
             finalRetStatisticalDb = null;
             finalRetStatisticalDb = new List<RetStatistical>();
             retStatisticalSHelper = null;
             retStatisticalSHelper = new SubTableQueryHelper<RetStatistical>();
-            ngPaiHelper = null;
-            ngPaiHelper = new SubTableQueryHelper<RetNgTypesPai>();
+            ngPaiHelper_AI = null;
+            ngPaiHelper_AI = new SubTableQueryHelper<RetNgTypesPai>();
+
+            ngPaiHelper_2D = null;
+            ngPaiHelper_2D = new SubTableQueryHelper<RetNgTypesPai>();
             //finalRetStatistical.Clear();
 
             chartControl1.DataSource = null;
-            chartControl_NG.DataSource = null;
+            chartControl_AING.DataSource = null;
+            chartControl_All.DataSource = null;
             gridControl_Results.DataSource = null;
             chartControl1.Series.Clear();
-            chartControl_NG.Series.Clear();
+            chartControl_AING.Series.Clear();
+            chartControl_All.Series.Clear();
             chartControl3.Series.Clear();
         }
         public override void Export()

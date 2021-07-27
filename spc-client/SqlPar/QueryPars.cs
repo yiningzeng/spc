@@ -183,7 +183,7 @@ namespace spc_client.SqlPar
                                             "	( `aoi_softwares` JOIN `{{0}}` ON ( `{{0}}`.`software_id` = `aoi_softwares`.`id` ) )" +
                                             "	JOIN `aoi_pcs` ON ( `aoi_softwares`.`pc_id` = `aoi_pcs`.`id` ) " +
                                             "	)" +
-                                            " WHERE {{0}}.create_time BETWEEN '{0}' AND '{1}' ORDER BY software_id",
+                                            " WHERE {{0}}.create_time BETWEEN '{0}' AND '{1}' ORDER BY software_id desc",
 
                                             startTime.ToString("yyyy-MM-dd HH:mm:ss"),
                                             endTime.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -195,7 +195,7 @@ namespace spc_client.SqlPar
         /// 获取查询页面饼图的单表查询语句
         /// </summary>
         /// <returns></returns>
-        public static string GetChartPieBaseSql(string oneSoftwareId)
+        public static string GetChartPieBaseSql_AI(string oneSoftwareId)
         {
             //"# 这里left join on 加了if主要是如果result_ng_type_id =''表示为ok的数据" + 
             return String.Format(" SELECT" +
@@ -217,7 +217,7 @@ namespace spc_client.SqlPar
                                     "	( {{0}}.result_ng_type_id = '', {{0}}.ng_type_id, {{0}}.result_ng_type_id ) " +
                                     " WHERE" +
                                     "	! ISNULL( result_ng_type_id ) " +
-                                    "   AND  aoi_results.is_misjudge != -1 " +
+                                    "   AND  {{0}}.is_misjudge != -1 " +
                                     "	AND ! ISNULL( ng_type_id ) " +
                                     "	AND software_id = '{0}' AND {{0}}.create_time BETWEEN '{1}' AND '{2}'" +
                                     "	) AS fin " +
@@ -225,6 +225,39 @@ namespace spc_client.SqlPar
                                     "	result_ng_type_id," +
                                     "	software_id",
 
+                                    oneSoftwareId,
+                                    startTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                                    endTime.ToString("yyyy-MM-dd HH:mm:ss"));
+        }
+
+        /// <summary>
+        /// 获取查询页面饼图的单表查询语句
+        /// </summary>
+        /// <returns></returns>
+        public static string GetChartPieBaseSql_2D(string oneSoftwareId)
+        {
+            //"# 这里left join on 加了if主要是如果result_ng_type_id =''表示为ok的数据" + 
+            return String.Format(" SELECT" +
+                                    "	*," +
+                                    "	COUNT( * ) AS 'count' " +
+                                    " FROM" +
+                                    "	(" +
+                                    " SELECT" +
+                                    "	software_id," +
+                                    "	ng_type," +
+                                    "	IF(result_string != '', result_string, 'OK') AS 'result_ng_str'," +
+                                    "	{{0}}.create_time" +
+                                    " FROM" +
+                                    "	{{0}}" +
+                                    "	LEFT JOIN aoi_pcbs ON aoi_results_2d_detail.pcb_id = aoi_pcbs.id" +
+                                    " WHERE" +
+                                    "	! ISNULL( ng_type ) " +
+                                    "   AND  {{0}}.is_misjudge != -1 " +
+                                    "	AND software_id = '{0}' AND {{0}}.create_time BETWEEN '{1}' AND '{2}'" +
+                                    "	) AS fin " +
+                                    " GROUP BY" +
+                                    "	result_ng_str," +
+                                    "	software_id",
                                     oneSoftwareId,
                                     startTime.ToString("yyyy-MM-dd HH:mm:ss"),
                                     endTime.ToString("yyyy-MM-dd HH:mm:ss"));

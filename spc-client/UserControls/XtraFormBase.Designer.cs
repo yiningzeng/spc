@@ -28,12 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.splashScreenManager = new DevExpress.XtraSplashScreen.SplashScreenManager(this, typeof(global::spc_client.MyWaitForm), true, true);
+          
             this.SuspendLayout();
             // 
             // splashScreenManager
             // 
-            this.splashScreenManager.ClosingDelay = 500;
             // 
             // XtraFormBase
             // 
@@ -48,6 +47,6 @@
 
         #endregion
 
-        protected DevExpress.XtraSplashScreen.SplashScreenManager splashScreenManager;
+       
     }
 }

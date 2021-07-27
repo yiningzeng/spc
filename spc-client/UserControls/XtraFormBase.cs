@@ -13,9 +13,13 @@ namespace spc_client.UserControls
 {
     public partial class XtraFormBase : DevExpress.XtraEditors.XtraForm
     {
+        public DevExpress.XtraSplashScreen.SplashScreenManager splashScreenManager;
+
         public XtraFormBase()
         {
             InitializeComponent();
+            this.splashScreenManager = new DevExpress.XtraSplashScreen.SplashScreenManager(this, typeof(global::spc_client.MyWaitForm), true, true);
+            this.splashScreenManager.ClosingDelay = 500;
         }
 
         public virtual void QueryReset(){ }

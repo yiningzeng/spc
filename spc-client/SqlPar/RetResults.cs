@@ -60,5 +60,22 @@ namespace spc_client.SqlPar
         public string all_ng_type { get; set; }
         public string NG { get; set; }
         public string create_time { get; set; }
+
+        public string PathConcatenate(string s1, string s2)
+        {
+            if (s1.EndsWith("\\")) s1 = s1.Substring(0, s1.Length - 1);
+            if (!s2.StartsWith("\\")) s2 = "\\" + s2;
+            return String.Format("{0}{1}", s1, s2);
+        }
+        public string GetBasePath(string pc_ip, string pcb_path)
+        {
+            if (pc_ip == null || pcb_path == null) return "";
+            if (pc_ip.Contains("Ftp://"))
+            {
+                pc_ip = pc_ip.Replace("Ftp://", "").Replace("/", "");
+            }
+            if (!pcb_path.StartsWith("\\")) pcb_path += "\\";
+            return String.Format("\\\\{0}{1}", pc_ip, pcb_path);
+        }
     }
 }
