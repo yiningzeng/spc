@@ -159,41 +159,51 @@ namespace spc_client.ShowForm
 
         public void _2DShow(string file, _2DRetResults currentRetResult)
         {
-            string[] reg = currentRetResult.area.Split(',');
-            double x = double.Parse(reg[0]);
-            double y = double.Parse(reg[1]);
-            double w = double.Parse(reg[2]);
-            double h = double.Parse(reg[3]);
-            double a = double.Parse(reg[4]);
-            HOperatorSet.ReadImage(out HObject hObject, file);
-            HOperatorSet.GetImageSize(hObject, out HTuple width, out HTuple height);
-            HOperatorSet.GenRectangle2ContourXld(out HObject rect, height / 2 + y, width / 2 + x, new HTuple(a).TupleRad(), w / 2, h / 2);
-
-            this.BeginInvoke(new Action<HObject, HObject>((ho, rc) =>
+            try
             {
-                HOperatorSet.ClearWindow(hSmartWindowControl1.HalconWindow);
-                HOperatorSet.SetColor(hSmartWindowControl1.HalconWindow, "red");
-                HOperatorSet.DispObj(hObject, hSmartWindowControl1.HalconWindow);
-                HOperatorSet.DispObj(rc, hSmartWindowControl1.HalconWindow);
-                hSmartWindowControl1.SetFullImagePart();
-                rc.Dispose();
-                ho.Dispose();
-            }), hObject, rect);
+                string[] reg = currentRetResult.area.Split(',');
+                double x = double.Parse(reg[0]);
+                double y = double.Parse(reg[1]);
+                double w = double.Parse(reg[2]);
+                double h = double.Parse(reg[3]);
+                double a = double.Parse(reg[4]);
+                HOperatorSet.ReadImage(out HObject hObject, file);
+                HOperatorSet.GetImageSize(hObject, out HTuple width, out HTuple height);
+                HOperatorSet.GenRectangle2ContourXld(out HObject rect, height / 2 + y, width / 2 + x, new HTuple(a).TupleRad(), w / 2, h / 2);
+
+                this.BeginInvoke(new Action<HObject, HObject>((ho, rc) =>
+                {
+                    HOperatorSet.ClearWindow(hSmartWindowControl1.HalconWindow);
+                    HOperatorSet.SetColor(hSmartWindowControl1.HalconWindow, "red");
+                    HOperatorSet.DispObj(hObject, hSmartWindowControl1.HalconWindow);
+                    HOperatorSet.DispObj(rc, hSmartWindowControl1.HalconWindow);
+                    hSmartWindowControl1.SetFullImagePart();
+                    rc.Dispose();
+                    ho.Dispose();
+                }), hObject, rect);
+            }
+            catch (Exception er) { }
+
         }
         private void Show2DResultInfo(string pc_ip, string pcb_path, _2DRetResults currentRetResult)
         {
-            imageBox_Part.SendToBack();
-            hSmartWindowControl1.BringToFront();
-            string[] reg = currentRetResult.cross.Split(',');
-            double centerMoveX = double.Parse(reg[0]);
-            double centerMoveY = double.Parse(reg[1]);
-     
-            Rectangle rect = new Rectangle(Convert.ToInt32(centerMoveX), Convert.ToInt32(centerMoveY), 1, 1);
-            if (tabResultSelect.SelectedTabPageIndex == 1)
-            DrawCrossLine(Convert.ToBoolean(currentRetResult.is_back), rect);
+            try
+            {
+                imageBox_Part.SendToBack();
+                hSmartWindowControl1.BringToFront();
+                string[] reg = currentRetResult.cross.Split(',');
+                double centerMoveX = double.Parse(reg[0]);
+                double centerMoveY = double.Parse(reg[1]);
 
-            string filePath = currentRetResult.PathConcatenate(currentRetResult.GetBasePath(pc_ip, pcb_path), currentRetResult.part_image_path);
-            Task.Run(() => _2DShow(filePath, currentRetResult));
+                Rectangle rect = new Rectangle(Convert.ToInt32(centerMoveX), Convert.ToInt32(centerMoveY), 1, 1);
+                if (tabResultSelect.SelectedTabPageIndex == 1)
+                    DrawCrossLine(Convert.ToBoolean(currentRetResult.is_back), rect);
+
+                string filePath = currentRetResult.PathConcatenate(currentRetResult.GetBasePath(pc_ip, pcb_path), currentRetResult.part_image_path);
+                Task.Run(() => _2DShow(filePath, currentRetResult));
+            }
+            catch (Exception er) { }
+
         }
 
         private void GridView_Results_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
@@ -277,7 +287,7 @@ namespace spc_client.ShowForm
                             string _2DResultDetailTable = Utils.GetFinalTableName(ap.create_time, "aoi_results_2d_detail");
                             string _2DResultTable = Utils.GetFinalTableName(ap.create_time, "aoi_results_2d");
                             string _2dSql = String.Format("SELECT" +
-                                                        "	*, IF(result_string != '', 'NG', 'OK') AS NG " +
+                                                        "	*, IF(is_misjudge = 1, 'NG', 'OK') AS ng_status " +
                                                         "FROM" +
                                                         "	( SELECT * FROM `{1}` WHERE pcb_id = '{0}' ) AS fu" +
                                                         "	LEFT JOIN (" +
@@ -326,7 +336,7 @@ namespace spc_client.ShowForm
                                             "	( SELECT ng_str FROM aoi_ng_types WHERE id = result_ng_type_id ) AS result_ng_str," +
                                             "	ng_type_id," +
                                             "	result_ng_type_id," +
-                                            "	IF(result_ng_type_id != '', 'NG', 'OK') AS NG," +
+                                            "	IF(is_misjudge = 0, 'NG', IF(is_misjudge = 1, 'OK', 'NNG')) AS ng_status," +
                                             "	part_image_path," +
                                             "	pcb_id " +
                                             "FROM" +

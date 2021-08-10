@@ -18,7 +18,7 @@ namespace spc_client.SqlPar
         public string result_ng_str { get; set; }
         public string result_ng_type_id { get; set; }
         public string ng_type_id { get; set; }
-        public string NG { get; set; }
+        public string ng_status { get; set; }
         public string part_image_path { get; set; }
         public string pcb_id { get; set; }
 
@@ -58,7 +58,7 @@ namespace spc_client.SqlPar
         public string angel { get; set; }
         public string cross { get; set; }
         public string all_ng_type { get; set; }
-        public string NG { get; set; }
+        public string ng_status { get; set; }
         public string create_time { get; set; }
 
         public string PathConcatenate(string s1, string s2)

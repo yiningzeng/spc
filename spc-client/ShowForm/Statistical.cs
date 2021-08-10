@@ -29,8 +29,10 @@ namespace spc_client.ShowForm
 {
     public partial class Statistical : XtraFormBase
     {
-        List<RetStatistical> finalRetStatisticalDb = new List<RetStatistical>();
-        SubTableQueryHelper<RetStatistical> retStatisticalSHelper = new SubTableQueryHelper<RetStatistical>();
+        List<RetStatistical> finalRetStatisticalDb_AI = new List<RetStatistical>();
+        List<RetStatistical> finalRetStatisticalDb_2D = new List<RetStatistical>();
+        SubTableQueryHelper<RetStatistical> retStatisticalSHelper_AI = new SubTableQueryHelper<RetStatistical>();
+        SubTableQueryHelper<RetStatistical> retStatisticalSHelper_2D = new SubTableQueryHelper<RetStatistical>();
 
         List<RetNgTypesPai> finalNgPaiDb_AI = new List<RetNgTypesPai>();
         List<RetNgTypesPai> finalNgPaiDb_2D = new List<RetNgTypesPai>();
@@ -39,10 +41,17 @@ namespace spc_client.ShowForm
         public Statistical()
         {
             InitializeComponent();
-            gridView_Results.FocusedRowChanged += GridView_Results_FocusedRowChanged;
-            gridView_Results.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
-            SetReadOnly(gridView_Results);
+            gridView_Results_AI.FocusedRowChanged += GridView_Results_FocusedRowChanged;
+            gridView_Results_AI.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
+
+            gridView_Results_2D.FocusedRowChanged += GridView_Results_2D_FocusedRowChanged;
+            gridView_Results_2D.CustomDrawEmptyForeground += GridView_CustomDrawEmptyForeground;
+            SetReadOnly(gridView_Results_AI);
+            SetReadOnly(gridView_Results_2D);
+
+            xtraTabControl2.SelectedTabPageIndex = 0;
         }
+
         void SetReadOnly(GridView gv)
         {
             foreach (GridColumn item in gv.Columns)
@@ -66,14 +75,29 @@ namespace spc_client.ShowForm
             }
         }
 
+
         private void GridView_Results_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
         {
-            if (gridView_Results.GetFocusedRow() != null)
+            if (xtraTabControl2.SelectedTabPageIndex != 1) return;
+            ChangeAI();
+            //ShowResultInfo(gridView_Results.GetFocusedRow() as RetResults);
+        }
+
+        private void GridView_Results_2D_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
+        {
+            if (xtraTabControl2.SelectedTabPageIndex != 0) return;
+            Change2D();
+        }
+
+
+        private void ChangeAI()
+        {
+            if (gridView_Results_AI.GetFocusedRow() != null)
             {
                 chartControl_All.Series.Clear();
-                RetStatistical retStatistical = gridView_Results.GetFocusedRow() as RetStatistical;
+                RetStatistical retStatistical = gridView_Results_AI.GetFocusedRow() as RetStatistical;
                 ShowAiChart(retStatistical);
-                Show2DChart(retStatistical);
+                //Show2DChart(retStatistical);
 
                 try
                 {
@@ -98,8 +122,51 @@ namespace spc_client.ShowForm
                     LogHelper.WriteLog("画其他图表出错", er);
                 }
             }
-            //ShowResultInfo(gridView_Results.GetFocusedRow() as RetResults);
         }
+
+        private void Change2D()
+        {
+            if (gridView_Results_2D.GetFocusedRow() != null)
+            {
+                chartControl_All.Series.Clear();
+                RetStatistical retStatistical = gridView_Results_2D.GetFocusedRow() as RetStatistical;
+                //ShowAiChart(retStatistical);
+                Show2DChart(retStatistical);
+
+                try
+                {
+                    DataTable dt3 = new DataTable();
+                    dt3.Columns.Add(new DataColumn("ItemName")); //项目名称
+                    dt3.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
+
+                    dt3.Rows.Add(new object[] { "大板GOOD数", retStatistical.count_good_pcb });
+                    dt3.Rows.Add(new object[] { "大板NG数", retStatistical.count_error_pcb });
+
+                    DataTable dt4 = new DataTable();
+                    dt4.Columns.Add(new DataColumn("ItemName")); //项目名称
+                    dt4.Columns.Add(new DataColumn("ItemValue", typeof(decimal))); //取值字段
+
+                    dt4.Rows.Add(new object[] { "子板GOOD数", retStatistical.sub_good_count });
+                    dt4.Rows.Add(new object[] { "子板NG数", retStatistical.sub_ng_count });
+
+                    CreatePieChart(retStatistical.software_id, dt3, dt4);
+
+                    chartControl1.Series.Clear();
+                    Series series1 = new Series("直方图", ViewType.Bar);
+                    series1.Points.Add(new SeriesPoint("NG大板数", retStatistical.count_error_pcb));
+                    series1.Points.Add(new SeriesPoint("GOOD大板数", retStatistical.count_good_pcb));
+                    series1.Points.Add(new SeriesPoint("NG子板数", retStatistical.sub_ng_count));
+                    series1.Points.Add(new SeriesPoint("GOOD子板数", retStatistical.sub_good_count));
+                    chartControl1.Series.Add(series1);
+
+                }
+                catch (Exception er)
+                {
+                    LogHelper.WriteLog("画其他图表出错", er);
+                }
+            }
+        }
+
         private void ShowAiChart(RetStatistical retStatistical)
         {
             try
@@ -139,6 +206,7 @@ namespace spc_client.ShowForm
                         {
                             this.BeginInvoke((Action)(() =>
                             {
+                                chartControl_All.Series.Clear();
                                 Series series2 = new Series("饼图1", ViewType.Pie);
                                 series2.DataSource = finalNgPaiDb_AI;
                                 //series.ArgumentScaleType = ScaleType.Qualitative;
@@ -206,6 +274,7 @@ namespace spc_client.ShowForm
                         {
                             this.BeginInvoke((Action)(() =>
                             {
+                                chartControl_All.Series.Clear();
                                 Series series2 = new Series("饼图1", ViewType.Pie);
                                 series2.DataSource = finalNgPaiDb_2D;
                                 //series.ArgumentScaleType = ScaleType.Qualitative;
@@ -267,17 +336,16 @@ namespace spc_client.ShowForm
             series.LegendTextPattern = "{A}: {V} ({VP:P0})";
             series.Label.TextPattern = "{A}: {V} ({VP:P0})";
             chartControl3.Series.Add(series);
-
         }
 
         void ReSetInfo()
         {
             finalNgPaiDb_AI = null;
             finalNgPaiDb_AI = new List<RetNgTypesPai>();
-            finalRetStatisticalDb = null;
-            finalRetStatisticalDb = new List<RetStatistical>();
-            retStatisticalSHelper = null;
-            retStatisticalSHelper = new SubTableQueryHelper<RetStatistical>();
+            finalRetStatisticalDb_AI = null;
+            finalRetStatisticalDb_AI = new List<RetStatistical>();
+            retStatisticalSHelper_AI = null;
+            retStatisticalSHelper_AI = new SubTableQueryHelper<RetStatistical>();
             ngPaiHelper_AI = null;
             ngPaiHelper_AI = new SubTableQueryHelper<RetNgTypesPai>();
 
@@ -288,7 +356,7 @@ namespace spc_client.ShowForm
             chartControl1.DataSource = null;
             chartControl_AING.DataSource = null;
             chartControl_All.DataSource = null;
-            gridControl_Results.DataSource = null;
+            gridControl_Results_AI.DataSource = null;
             chartControl1.Series.Clear();
             chartControl_AING.Series.Clear();
             chartControl_All.Series.Clear();
@@ -303,7 +371,7 @@ namespace spc_client.ShowForm
             if (dialogResult == DialogResult.OK)
             {
                 DevExpress.XtraPrinting.XlsExportOptions options = new DevExpress.XtraPrinting.XlsExportOptions();
-                gridControl_Results.ExportToXls(saveFileDialog.FileName);
+                gridControl_Results_AI.ExportToXls(saveFileDialog.FileName);
                 XtraMessageBox.Show("保存成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -313,16 +381,17 @@ namespace spc_client.ShowForm
             ReSetInfo();
             if (!splashScreenManager.IsSplashFormVisible) splashScreenManager.ShowWaitForm();
 
-            List<string> sqls = Utils.GetQueryStrs(QueryPars.GetMainStatisticalStrV2(), QueryPars.startTime, QueryPars.endTime, "aoi_pcbs");
-            retStatisticalSHelper.Run(sqls,
+            #region AI
+            List<string> sqls_ai = Utils.GetQueryStrs(QueryPars.GetMainStatisticalStrV2_AI(), QueryPars.startTime, QueryPars.endTime, "aoi_pcbs");
+            retStatisticalSHelper_AI.Run(sqls_ai,
                 (sql, temp, isDone) =>
                 {
                     // LogHelper.WriteLog("统计数据 > " + sql);
                     if (temp.Count > 0)
                     {
-                        lock (finalRetStatisticalDb)
+                        lock (finalRetStatisticalDb_AI)
                         {
-                            Dictionary<string, RetStatistical> fuckTemp = finalRetStatisticalDb.ToDictionary(v => v.pc_id + v.software_id, v => v);
+                            Dictionary<string, RetStatistical> fuckTemp = finalRetStatisticalDb_AI.ToDictionary(v => v.pc_id + v.software_id, v => v);
                             foreach(var one in temp)
                             {
                                 string key = one.pc_id + one.software_id;
@@ -340,15 +409,15 @@ namespace spc_client.ShowForm
                                     fuckTemp.Add(key, one);
                                 }
                             }
-                            finalRetStatisticalDb = fuckTemp.Values.ToList();
+                            finalRetStatisticalDb_AI = fuckTemp.Values.ToList();
                         }
                     }
                     
                     if (isDone)
                     {
-                        foreach (var one in finalRetStatisticalDb)
+                        foreach (var one in finalRetStatisticalDb_AI)
                         {
-                            one.pcb_ppm = Math.Round((double)one.count_warning_pcb / (double)one.count_pcb, 2);
+                            one.pcb_ppm = one.count_error_pcb * 1000000 / one.count_pcb;
 
                             one.defect_rate = (one.count_error_pcb * 100 / one.count_pcb).ToString("f2") + "%";
 
@@ -356,12 +425,86 @@ namespace spc_client.ShowForm
                         }
                         this.BeginInvoke((Action)(() =>
                         {
-                            gridControl_Results.DataSource = finalRetStatisticalDb;
+                            gridControl_Results_AI.DataSource = finalRetStatisticalDb_AI;
                             if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
                         }));
                     }
                 });
+            #endregion
+
+            #region 2D
+            List<string> sqls_2d = Utils.GetQueryStrs(QueryPars.GetMainStatisticalStrV2_2D(), QueryPars.startTime, QueryPars.endTime, "aoi_pcbs");
+            retStatisticalSHelper_2D.Run(sqls_2d,
+                (sql, temp, isDone) =>
+                {
+                    // LogHelper.WriteLog("统计数据 > " + sql);
+                    if (temp.Count > 0)
+                    {
+                        lock (finalRetStatisticalDb_2D)
+                        {
+                            Dictionary<string, RetStatistical> fuckTemp = finalRetStatisticalDb_2D.ToDictionary(v => v.pc_id + v.software_id, v => v);
+                            foreach (var one in temp)
+                            {
+                                string key = one.pc_id + one.software_id;
+                                if (fuckTemp.ContainsKey(key))
+                                {
+                                    var tempOne = fuckTemp[key];
+                                    tempOne.count_error_pcb += one.count_error_pcb;
+                                    tempOne.count_good_pcb += one.count_good_pcb;
+                                    tempOne.count_pcb += one.count_pcb;
+                                    tempOne.count_warning_pcb += one.count_warning_pcb;
+                                    tempOne.sub_ng_count += one.sub_ng_count;
+                                    tempOne.sub_all_count += one.sub_all_count;
+                                    fuckTemp[key] = tempOne;
+                                }
+                                else
+                                {
+                                    fuckTemp.Add(key, one);
+                                }
+                            }
+                            finalRetStatisticalDb_2D = fuckTemp.Values.ToList();
+                        }
+                    }
+
+                    if (isDone)
+                    {
+                        foreach (var one in finalRetStatisticalDb_2D)
+                        {
+                            one.pcb_ppm = one.count_error_pcb * 1000000 / one.count_pcb;
+                            one.ppm_2d = one.sub_ng_count * 1000000 / one.sub_all_count;
+                            one.sub_good_count = one.sub_all_count - one.sub_ng_count;
+                            //one.dppm_2d = one.sub_ng_count * 1000000;
+                            one.defect_rate = (one.count_error_pcb * 100 / one.count_pcb).ToString("f2") + "%";
+                            one.pass_rate = (one.count_good_pcb * 100 / one.count_pcb).ToString("f2") + "%";
+                            one.defect_rate_sub = (one.sub_ng_count * 100 / one.sub_all_count).ToString("f2") + "%";
+                            one.pass_rate_sub = ((one.sub_all_count - one.sub_ng_count) * 100 / one.sub_all_count).ToString("f2") + "%";
+                        }
+                        this.BeginInvoke((Action)(() =>
+                        {
+                            gridControl_Results_2D.DataSource = finalRetStatisticalDb_2D;
+                            if (splashScreenManager.IsSplashFormVisible) splashScreenManager.CloseWaitForm();
+                        }));
+                    }
+                });
+
+
+            #endregion
+
+
+
+
         }
 
+        private void xtraTabControl2_SelectedPageChanged(object sender, DevExpress.XtraTab.TabPageChangedEventArgs e)
+        {
+            if (xtraTabControl2.SelectedTabPageIndex == 0)
+            {
+                Change2D();
+            }
+            else if (xtraTabControl2.SelectedTabPageIndex == 1)
+            {
+                ChangeAI();
+            }
+        }
     }
 }

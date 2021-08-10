@@ -51,6 +51,10 @@ namespace spc_client.Model
         [Description("PCB名称")]
         public int pcb_height { get; set; }
 
+        [Column(name: "pcb_part_number")]
+        [Description("PCB元件数")]
+        public int pcb_part_number { get; set; }
+
         [Column(name: "pcb_childen_number")]
         [Description("PCB名称")]
         [JsonProperty("PcbChildenNumber")]
@@ -62,14 +66,23 @@ namespace spc_client.Model
         [JsonProperty("PcbPath")]
         public string pcb_path { get; set; }
 
-        [Column(name: "ng_count")]
-        [Description("ng计数")]
-        public int ng_count { get; set; }
+        [Column(name: "ng_count_ai")]
+        [Description("ai_ng计数")]
+        public int ng_count_ai { get; set; }
+
+        [Column(name: "ng_count_2d")]
+        [Description("2d_ng计数")]
+        public int ng_count_2d { get; set; }
 
         [DefaultValue(0)]
-        [Column(name: "is_misjudge")]
-        [Description("是否误判, 0否 1是, 只要results下有一个误判，那该值就改为1")]
-        public int is_misjudge { get; set; }
+        [Column(name: "is_misjudge_2d")]
+        [Description("判断结果 , 0表示NG, 1表示OK")]
+        public int is_misjudge_2d { get; set; }
+
+        [DefaultValue(0)]
+        [Column(name: "is_misjudge_ai")]
+        [Description("判断结果 , 0表示ng， 1表示nng(包含判错和误判), 2表示ok")]
+        public int is_misjudge_ai { get; set; }
 
         [DefaultValue(0)]
         [Column(name: "is_error")]

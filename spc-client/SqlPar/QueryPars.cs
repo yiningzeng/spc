@@ -77,8 +77,10 @@ namespace spc_client.SqlPar
                                              " aoi_pcbs{{0}}.pcb_height AS pcb_height, " +
                                              " aoi_pcbs{{0}}.pcb_childen_number AS pcb_childen_number, " +
                                              " aoi_pcbs{{0}}.pcb_path AS pcb_path, " +
-                                             " aoi_pcbs{{0}}.ng_count AS ng_count, " +
-                                             " aoi_pcbs{{0}}.is_misjudge AS all_is_misjudge, " +
+                                             " aoi_pcbs{{0}}.ng_count_ai AS ng_count_ai, " + 
+                                             " aoi_pcbs{{0}}.ng_count_2d AS ng_count_2d, " +
+                                             " aoi_pcbs{{0}}.is_misjudge_ai AS all_is_misjudge_ai, " +
+                                             " aoi_pcbs{{0}}.is_misjudge_2d AS all_is_misjudge_2d, " +
                                              " aoi_pcbs{{0}}.is_error AS is_error, " +
                                              " aoi_results{{0}}.is_back AS is_back, " +
                                              " aoi_results{{0}}.score AS score, " +
@@ -159,7 +161,7 @@ namespace spc_client.SqlPar
         /// 单个月份的统计查询语句
         /// </summary>
         /// <returns></returns>
-        public static string GetMainStatisticalStrV2()
+        public static string GetMainStatisticalStrV2_AI()
         {
             string whereStr = String.Format(" WHERE software_id = `aoi_softwares`.`id` AND create_time BETWEEN '{0}' AND '{1}'",
                 startTime.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -172,12 +174,60 @@ namespace spc_client.SqlPar
                                             "	`aoi_softwares`.`software_name` AS `software_name`," +
                                             "	`aoi_softwares`.`id` AS `software_id`," +
                                             "	( SELECT COUNT( * ) FROM `{{0}}` {2}) AS 'count_pcb'," +
-                                            "	( SELECT SUM( is_error = 1 ) FROM `{{0}}` {2}) AS 'count_error_pcb'," +
-                                            "	( SELECT SUM( is_misjudge = 1 ) FROM `{{0}}` {2}) AS 'count_warning_pcb'," +
-                                            "	( SELECT SUM( is_error = 0 ) FROM `{{0}}` {2}) AS 'count_good_pcb'," +
-                                            "	( SELECT SUM( is_misjudge = 1 ) / COUNT( * ) FROM `{{0}}` {2}) AS 'pcb_ppm'," +
+                                            "	( SELECT SUM( is_misjudge_ai = 0 ) FROM `{{0}}` {2}) AS 'count_error_pcb'," +
+                                            "	( SELECT SUM( is_misjudge_ai = 1 ) FROM `{{0}}` {2}) AS 'count_warning_pcb'," +
+                                            "	( SELECT SUM( is_misjudge_ai = 2 ) FROM `{{0}}` {2}) AS 'count_good_pcb'," +
+                                            "	( SELECT SUM( is_misjudge_ai = 0 ) / COUNT( * ) FROM `{{0}}` {2}) AS 'pcb_ppm'," +
                                             "	0.00 AS 'defect_rate'," +
                                             "	0.00 AS 'pass_rate'" +
+                                            " FROM" +
+                                            "	(" +
+                                            "	( `aoi_softwares` JOIN `{{0}}` ON ( `{{0}}`.`software_id` = `aoi_softwares`.`id` ) )" +
+                                            "	JOIN `aoi_pcs` ON ( `aoi_softwares`.`pc_id` = `aoi_pcs`.`id` ) " +
+                                            "	)" +
+                                            " WHERE {{0}}.create_time BETWEEN '{0}' AND '{1}' ORDER BY software_id desc",
+
+                                            startTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                                            endTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                                            whereStr);
+            return queryStr;
+        }
+
+        /// <summary>
+        /// 单个月份的统计查询语句
+        /// </summary>
+        /// <returns></returns>
+        public static string GetMainStatisticalStrV2_2D()
+        {
+            string whereStr = String.Format(" WHERE software_id = `aoi_softwares`.`id` AND create_time BETWEEN '{0}' AND '{1}'",
+                startTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                 endTime.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            string queryStr = String.Format("SELECT DISTINCT" +
+                                            " 	( " +
+                                            " SELECT " +
+                                            " 	IF ( ISNULL( sum( sub_ng_count ) ), 0, sum( sub_ng_count ) )  " +
+                                            " FROM " +
+                                            " 	(SELECT count( * ) AS sub_ng_count, pcb_id FROM ( SELECT sub_board, pcb_id FROM `aoi_results_2d` WHERE aoi_results_2d.is_misjudge = 0 AND create_time BETWEEN '{0}' AND '{1}' GROUP BY pcb_id, sub_board ) AS aa GROUP BY pcb_id ) AS fu " +
+                                            " 	LEFT JOIN aoi_pcbs ON fu.pcb_id = aoi_pcbs.id  " +
+                                            " WHERE " +
+                                            " 	software_id = `aoi_softwares`.`id`  " +
+                                            " 	) AS sub_ng_count," +
+                                            "	(SELECT IF( ISNULL( SUM( pcb_childen_number ) ), 0, SUM( pcb_childen_number ) ) FROM aoi_pcbs {2} ) AS sub_all_count," +
+                                            "	(SELECT IF( ISNULL( SUM( pcb_part_number ) ), 0, SUM( pcb_part_number ) ) FROM aoi_pcbs {2} ) AS part_all_count," +
+
+                                            "	`aoi_pcs`.`id` AS `pc_id`," +
+                                            "	`aoi_pcs`.`pc_name` AS `pc_name`," +
+                                            "	`aoi_pcs`.`pc_ip` AS `pc_ip`," +
+                                            "	`aoi_softwares`.`software_name` AS `software_name`," +
+                                            "	`aoi_softwares`.`id` AS `software_id`," +
+                                            "	( SELECT COUNT( * ) FROM `{{0}}` {2}) AS 'count_pcb'," +
+                                            "	( SELECT SUM( is_misjudge_2d = 0 ) FROM `{{0}}` {2}) AS 'count_error_pcb'," +
+                                            "	( SELECT SUM( is_misjudge_2d = 1 ) FROM `{{0}}` {2}) AS 'count_good_pcb'," +
+                                            "	( SELECT SUM( is_misjudge_2d = 0 ) / COUNT( * ) FROM `{{0}}` {2}) AS 'ppm_2d'," +
+                                            "	0.00 AS 'defect_rate'," +
+                                            "	0.00 AS 'pass_rate'," +
+                                            "	0.00 AS 'dppm_2d'" +
                                             " FROM" +
                                             "	(" +
                                             "	( `aoi_softwares` JOIN `{{0}}` ON ( `{{0}}`.`software_id` = `aoi_softwares`.`id` ) )" +

@@ -16,7 +16,8 @@ namespace spc_client.SqlPar
         public string pcb_number { get; set; }
         public string pcb_name { get; set; }
         public int pcb_childen_number { get; set; }
-        public int ng_count { get; set; }
+        public int ng_count_ai { get; set; }
+        public int ng_count_2d { get; set; }
         //is_back,score,area,region,ng_str,result_string,pc_ip,pcb_path,part_image_path, pcb_id
         public int? is_back { get; set; }
         public float? score { get; set; }

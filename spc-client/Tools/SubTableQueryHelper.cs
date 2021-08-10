@@ -73,7 +73,7 @@ namespace spc_client.Tools
                     }
                     catch (Exception er)
                     {
-
+                        LogHelper.WriteLog("查询出错", er);
                     }
                     finally
                     {
